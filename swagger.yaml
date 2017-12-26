@@ -1,0 +1,122 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: ap-challenge-feeder-microservice
+  description: >
+    Services that push the challenge data to the elasticsearch service
+  license:
+    name: MIT
+    url: 'http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT'
+host: api.topcoder.com
+basePath: /v3
+schemes:
+  - http
+  - https
+securityDefinitions:
+  bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+paths:
+  /elastic/challenges:
+    put:
+      operationId: pushChallengeFeeders
+      security:
+        - bearer: []
+      description: Push challenge data to the elasticsearch
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: the challenge feeder param
+          schema:
+            type: object
+            properties:
+              param:
+                type: object
+                properties:
+                  index: 
+                    type: string
+                  type: 
+                    type: string
+                  challengeIds: 
+                    type: array
+                    items:
+                      type: number
+                      format: int64
+      responses:
+        '200':
+          description: return null
+          schema:
+            $ref: '#/definitions/NullResponse'
+        '400':
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '401':
+          description: Authentication credentials required
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '403':
+          description: Only admin can perform the operation
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '404':
+          description: If the challenge or any related data can not be found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Errors occur in the server side
+          schema:
+            $ref: '#/definitions/ErrorModel'
+definitions:
+  ResponseMetadata:
+    title: Metadata object for a response
+    type: object
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: Total count of the objects
+  ErrorModel:
+    type: object
+    properties:
+      id:
+        type: string
+        description: unique id identifying the request
+      version:
+        type: string
+      result:
+        type: object
+        properties:
+          success:
+            type: boolean
+          status:
+            description: http status code
+            type: number
+          metadata:
+            $ref: '#/definitions/ResponseMetadata'
+          content:
+            type: object
+  NullResponse:
+    title: The response with null content
+    type: object
+    properties:
+      id:
+        type: string
+        description: unique id identifying the request
+      version:
+        type: string
+      result:
+        type: object
+        properties:
+          success:
+            type: boolean
+          status:
+            type: number
+            description: http status code
+          metadata:
+            $ref: '#/definitions/ResponseMetadata'
+          content:
+            description: This content might be null
+            type: object
