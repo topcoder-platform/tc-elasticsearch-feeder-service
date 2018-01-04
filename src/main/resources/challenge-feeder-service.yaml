@@ -1,5 +1,5 @@
 authRealm: tcjwt
-authDomain: topcoder-dev.com
+authDomain: "${AUTH_DOMAIN:-topcoder-dev.com}"
 
 useResponseFilter: false
 
@@ -12,11 +12,11 @@ databases:
     driverClass: com.informix.jdbc.IfxDriver
 
     # the username
-    user: "${OLTP_USER}"
+    user: "${OLTP_USER:-informix}"
 
-    password: "${OLTP_PW}"
+    password: "${OLTP_PW:-1nf0rm1x}"
 
-    url: "${OLTP_URL}"
+    url: "${OLTP_URL:-jdbc:informix-sqli://cockpit.cloud.topcoder.com:2021/tcs_catalog:INFORMIXSERVER=informixoltp_tcp;IFX_LOCK_MODE_WAIT=5;OPTCOMPIND=0;STMT_CACHE=1;}"
 
     # the password
     # NOTE: password is set as a java system property: i.e., -Ddw.database.password=<password>
@@ -29,9 +29,9 @@ databases:
   
 jestClientConfiguration:
   # the elastic search URL
-  elasticSearchUrl: "${ELASTIC_SEARCH_URL}"
+  elasticSearchUrl: "${ELASTIC_SEARCH_URL:-http://cockpit.cloud.topcoder.com:9200}"
   # the index name for challenges
-  challengesIndexName: "challenges"
+  challengesIndexName: "${CHALLENGES_INDEX_NAME:-challenges}"
   # the max total connections
   maxTotalConnections: 10
   # connection timeout in milli-seconds
@@ -39,11 +39,11 @@ jestClientConfiguration:
   # read timeout in milli-seconds
   readTimeout: 60000
   # AWS signing enabled or not
-  awsSigningEnabled: ${AWS_SIGNING_ENABLED}
+  awsSigningEnabled: "${AWS_SIGNING_ENABLED:-false}"
   # AWS region
-  awsRegion: ${AWS_REGION}
+  awsRegion: "${AWS_REGION:-us-east-1}"
   # AWS service
-  awsService: ${ASW_SERVICE}
+  awsService: "${AWS_SERVICE:-es}"
   
 # use the simple server factory if you only want to run on a single port
 #server:
