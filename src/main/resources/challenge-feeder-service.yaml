@@ -44,6 +44,24 @@ jestClientConfiguration:
   awsRegion: "${AWS_REGION:-us-east-1}"
   # AWS service
   awsService: "${AWS_SERVICE:-es}"
+ 
+ 
+redissonConfiguration:
+  forceInitialLoad: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_FORCE_INITIAL_LOAD:-false}"
+  challengesIndex: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_CHALLENGE_INDEX:-challenges}"
+  challengesType: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_CHALLENGE_TYPE:-challenges}"
+  batchUpdateSize: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_BATCH_UPDATE_SIZE:-100}"
+  lastRunTimestampPrefix: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LAST_RUN_TIMESTAMP_PREFIX:-loadChangedChallengesJobLastRunTimestamp}"
+  lockerKeyName: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LOCK_KEY:-loadChangedChallengesJobLockKey}"
+  useLinuxNativeEpoll: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_USE_LINUX_NATIVE_EPOLL:-false}"
+  lockWatchdogTimeout: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LOCK_WATCHDOG_TIMEOUT:-30000}"
+  singleServerAddress: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LOCK_WATCHDOG_TIMEOUT:-redis://cockpit.cloud.topcoder.com:6379}"
+  clusterEnabled: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_CLUSTER_ENABLED:-false}"
+  nodeAdresses:
+    - "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_NODE1:-redis://localhost:7001}"
+
+jobs:
+  com.appirio.service.challengefeeder.job.LoadChangedChallengesJob: "${LOAD_CHANGED_CHALLENGES_JOB_INTERVAL:-30s}"
   
 # use the simple server factory if you only want to run on a single port
 #server:

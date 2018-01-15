@@ -19,6 +19,7 @@ import com.appirio.service.challengefeeder.api.WinnerData;
 import com.appirio.service.challengefeeder.dao.ChallengeFeederDAO;
 import com.appirio.service.challengefeeder.dto.ChallengeFeederParam;
 import com.appirio.supply.SupplyException;
+import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.FieldSelector;
 import com.appirio.tech.core.api.v3.request.FilterParameter;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
@@ -40,12 +41,17 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * ChallengeFeederManager is used to handle the challenge feeder.
  * 
+ * Version 1.1 - Topcoder - Create CronJob For Populating Changed Challenges To Elasticsearch v1.0
+ * - add getTimestamp method to get the current timestamp from the database
+ * - add pushChallengeFeeder method to call without admin permission check
+ * 
  * @author TCSCODER
- * @version 1.0
+ * @version 1.1 
  */
 public class ChallengeFeederManager {
 
@@ -87,6 +93,17 @@ public class ChallengeFeederManager {
     public void pushChallengeFeeder(AuthUser authUser, ChallengeFeederParam param) throws SupplyException {
         logger.info("Enter of pushChallengeFeeder");
         Helper.checkAdmin(authUser);
+        this.pushChallengeFeeder(param);
+    }
+    
+    /**
+     * Push challenge feeder
+     *
+     * @param authUser the authUser to use
+     * @param param the challenge feeders param to use
+     * @throws SupplyException if any error occurs
+     */
+    public void pushChallengeFeeder(ChallengeFeederParam param) throws SupplyException {
         if (param.getType() == null || param.getType().trim().length() == 0) {
             param.setType("challenges");
         }
@@ -213,7 +230,30 @@ public class ChallengeFeederManager {
             throw se;
         }
     }
+    
+    /**
+     * Get timestamp from the persistence
+     *
+     * @throws SupplyException if any error occurs
+     * @return the Date result
+     */
+    public Date getTimestamp() throws SupplyException {
+        return this.challengeFeederDAO.getTimestamp().getDate();
+    }
 
+    /**
+     * Get changed challenge ids
+     *
+     * @param lastRunTimestamp the lastRunTimestamp to use
+     * @return the List<TCID> result
+     */
+    public List<TCID> getChangedChallengeIds(Date lastRunTimestamp) {
+        if (lastRunTimestamp == null) {
+            throw new IllegalArgumentException("The lastRunTimestamp should be non-null.");
+        }
+        return this.challengeFeederDAO.getChangedChallengeIds(lastRunTimestamp);
+    }
+    
     /**
      * Associate all terms of use
      *

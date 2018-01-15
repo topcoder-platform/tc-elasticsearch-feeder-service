@@ -5,4 +5,7 @@ export TC_JWT_KEY="secret"
 # export AWS_ACCESS_KEY=your key
 # export AWS_SECRET_KEY=your secret
 
+# export REDISSON_LOAD_CHANGED_CHALLENGES_JOB_CLUSTER_ENABLED=true
+export REDISSON_LOAD_CHANGED_CHALLENGES_JOB_FORCE_INITIAL_LOAD=true
+
 java -jar ../target/elasticsearch-feeder-service-*.jar server ../src/main/resources/challenge-feeder-service.yaml
