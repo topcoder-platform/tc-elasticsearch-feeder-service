@@ -15,7 +15,7 @@ deployment:
     branch: ["cc-ecs"]
     commands:      
       - .deploy/ecs_build.sh DEV $CIRCLE_SHA1
-      - .deploy/ecs_deploy.sh terms-service DEV $CIRCLE_SHA1
+      - .deploy/ecs_deploy.sh elastic-feeder-service DEV $CIRCLE_SHA1
   production:
     branch: master
     commands:
