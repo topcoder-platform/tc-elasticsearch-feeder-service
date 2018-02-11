@@ -7,12 +7,21 @@ if [[ -z "$ENV" ]] ; then
 fi
 
 echo "$ENV before case conversion"
+
 AWS_REGION=$(eval "echo \$${ENV}_AWS_REGION")
 AWS_ACCESS_KEY_ID=$(eval "echo \$${ENV}_AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY=$(eval "echo \$${ENV}_AWS_SECRET_ACCESS_KEY")
 AWS_ACCOUNT_ID=$(eval "echo \$${ENV}_AWS_ACCOUNT_ID")
 AWS_REPOSITORY=$(eval "echo \$${ENV}_AWS_REPOSITORY")
+AWS_ECS_CLUSTER=$(eval "echo \$${ENV}_AWS_ECS_CLUSTER")
+AWS_ECS_SERVICE=$(eval "echo \$${ENV}_AWS_ECS_SERVICE")
+family=$(eval "echo \$${ENV}_AWS_ECS_TASK_FAMILY")
+AWS_ECS_CONTAINER_NAME=$(eval "echo \$${ENV}_AWS_ECS_CONTAINER_NAME")
+AUTH_DOMAIN=$(eval "echo \$${ENV}_AUTH_DOMAIN")
 #APP_NAME
+
+JQ="jq --raw-output --exit-status"
+
 
 # Define script variables
 DEPLOY_DIR="$( cd "$( dirname "$0" )" && pwd )"
@@ -154,7 +163,7 @@ make_task_def(){
 							"awslogs-region": "%s",
 							"awslogs-stream-prefix": "ecs"
 				}
-			}
+			}``
 		}
 	]'
 	
