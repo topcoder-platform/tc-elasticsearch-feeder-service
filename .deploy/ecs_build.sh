@@ -181,6 +181,8 @@ register_definition() {
 }
 
 deploy_cluster(){
+  echo "Revision"
+    echo $revision
     make_task_def
     register_definition
     update_result=$(aws ecs update-service --cluster $AWS_ECS_CLUSTER --service $AWS_ECS_SERVICE --task-definition $revision )
