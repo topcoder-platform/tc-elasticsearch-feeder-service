@@ -142,6 +142,13 @@ make_task_def(){
         {
           "name": "TC_JWT_KEY",
           "value": "%s%"
+        },
+        {
+          "name": "ELASTIC_SEARCH_URL",
+          "value": "http://cockpit.cloud.topcoder.com:9200"
+        },{
+          "name": "CHALLENGES_INDEX_NAME",
+          "value": "challenges"
         }
       ],
 		"portMappings": [
