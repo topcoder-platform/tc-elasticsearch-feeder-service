@@ -113,7 +113,7 @@ task_template=$(cat <<-END
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/tc-terms-service",
+          "awslogs-group": "/ecs/tc-elasticsearch-feeder-service",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
         }
@@ -168,21 +168,21 @@ task_template=$(cat <<-END
       "memoryReservation": 512,      
       "image": "%s",      
       "essential": true,      
-      "name": "tc-terms-service"
+      "name": "tc-elasticsearch-feeder-service"
     }
   ],
-  "memory": "2048",
+  "memory": "4096",
   "taskRoleArn": "arn:aws:iam::811668436784:role/ecsTaskExecutionRole",  
-  "family": "tc-terms-service",  
+  "family": "tc-elasticsearch-feeder-service",  
   "requiresCompatibilities": [
     "FARGATE"
   ],
   "networkMode": "awsvpc",
-  "cpu": "1024"
+  "cpu": "2048"
 }
 END
 )
-  family_val= "tc-terms-service" # $family | $($JQ '.taskDefinition.taskDefinitionArn')    
+  family_val= "tc-elasticsearch-feeder-service" # $family | $($JQ '.taskDefinition.taskDefinitionArn')    
   task_def=$(printf "$task_template" "$AUTH_DOMAIN" $AWS_SIGNING_ENABLED $CHALLENGES_INDEX_NAME $ELASTIC_SEARCH_URL $OLTP_PW $OLTP_URL $OLTP_USER $TC_JWT_KEY $TAG)  
   echo $task_def > config.json
 }
