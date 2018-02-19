@@ -18,7 +18,13 @@ AWS_ECS_SERVICE=$(eval "echo \$${ENV}_AWS_ECS_SERVICE")
 family=$(eval "echo \$${ENV}_AWS_ECS_TASK_FAMILY")
 AWS_ECS_CONTAINER_NAME=$(eval "echo \$${ENV}_AWS_ECS_CONTAINER_NAME")
 AUTH_DOMAIN=$(eval "echo \$${ENV}_AUTH_DOMAIN")
+AWS_SIGNING_ENABLED=$(eval "echo \$${ENV}_DEV_AWS_SIGNING_ENABLED")
+ELASTIC_SEARCH_URL=$(eval "echo \$${ENV}_ELASTIC_SEARCH_URL")
+TC_JWT_KEY=$(eval "echo \$${ENV}_TC_JWT_KEY")
 #APP_NAME
+OLTP_USER=$(eval "echo \$${ENV}_OLTP_USER")
+OLTP_PW=$(eval "echo \$${ENV}_OLTP_PW")
+OLTP_URL=$(eval "echo \$${ENV}_OLTP_URL")
 
 JQ="jq --raw-output --exit-status"
 
@@ -99,59 +105,20 @@ check_service_status() {
 }
 
 make_task_def(){
-	task_template='[
-		{
-		"name": "%s",
-		"image": "%s.dkr.ecr.%s.amazonaws.com/%s:%s",
-		"essential": true,
-		"memory": 500,
-		"cpu": 100,
-		"environment": [
-        {
-          "name": "AUTH_DOMAIN",
-          "value": "%s%"
-        },       
-        {
-          "name": "OLTP_PW",
-          "value": "%s%"
-        },
-        {
-          "name": "OLTP_URL",
-          "value": "%s%"
-        },
-        {
-          "name": "OLTP_USER",
-          "value": "%s%"
-        },
-        {
-          "name": "SMTP_HOST",
-          "value": "%s%"
-        },
-        {
-          "name": "SMTP_PASSWORD",
-          "value": "%s%"
-        },
-        {
-          "name": "SMTP_SENDER",
-          "value": "%s%"
-        },
-        {
-          "name": "SMTP_USERNAME",
-          "value": "%s%"
-        },
-        {
-          "name": "TC_JWT_KEY",
-          "value": "%s%"
-        },
-        {
-          "name": "ELASTIC_SEARCH_URL",
-          "value": "http://cockpit.cloud.topcoder.com:9200"
-        },{
-          "name": "CHALLENGES_INDEX_NAME",
-          "value": "challenges"
+task_template=$(cat <<-END
+{
+  "executionRoleArn": "arn:aws:iam::811668436784:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {      
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/tc-terms-service",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
         }
-      ],
-		"portMappings": [
+      },     
+      "portMappings": [
         {
           "hostPort": 8080,
           "protocol": "tcp",
@@ -162,21 +129,63 @@ make_task_def(){
           "protocol": "tcp",
           "containerPort": 8081
         }
-      ],
-		"logConfiguration": {
-			"logDriver": "awslogs",
-				"options": {
-							"awslogs-group": "/ecs/%s",
-							"awslogs-region": "%s",
-							"awslogs-stream-prefix": "ecs"
-				}
-			}``
-		}
-	]'
-	
-	task_def=$(printf $task_template $AWS_ECS_CONTAINER_NAME $AWS_ACCOUNT_ID $AWS_REGION $AWS_REPOSITORY $TAG $AUTH_DOMAIN $OLTP_PW $OLTP_URL $OLTP_URL $OLTP_USER $SMTP_HOST $SMTP_PASSWORD $SMTP_SENDER $SMTP_USERNAME $TC_JWT_KEY $AWS_ECS_CLUSTER $AWS_REGION)
+      ],      
+      "cpu": 2,
+      "environment": [
+        {
+          "name": "AUTH_DOMAIN",
+          "value": "%s"
+        },
+        {
+          "name": "AWS_SIGNING_ENABLED",
+          "value": "%s"
+        },
+        {
+          "name": "CHALLENGES_INDEX_NAME",
+          "value": "%s"
+        },
+        {
+          "name": "ELASTIC_SEARCH_URL",
+          "value": "%s"
+        },
+        {
+          "name": "OLTP_PW",
+          "value": "%s"
+        },
+        {
+          "name": "OLTP_URL",
+          "value": "%s"
+        },
+        {
+          "name": "OLTP_USER",
+          "value": "%s"
+        },
+        {
+          "name": "TC_JWT_KEY",
+          "value": "%s"
+        }
+      ],      
+      "memoryReservation": 512,      
+      "image": "%s",      
+      "essential": true,      
+      "name": "tc-terms-service"
+    }
+  ],
+  "memory": "2048",
+  "taskRoleArn": "arn:aws:iam::811668436784:role/ecsTaskExecutionRole",  
+  "family": "tc-terms-service",  
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "networkMode": "awsvpc",
+  "cpu": "1024"
 }
-
+END
+)
+  family_val= "tc-terms-service" # $family | $($JQ '.taskDefinition.taskDefinitionArn')    
+  task_def=$(printf "$task_template" "$AUTH_DOMAIN" $AWS_SIGNING_ENABLED $CHALLENGES_INDEX_NAME $ELASTIC_SEARCH_URL $OLTP_PW $OLTP_URL $OLTP_USER $TC_JWT_KEY $TAG)  
+  echo $task_def > config.json
+}
 
 register_definition() {
     if revision=$(aws ecs register-task-definition --container-definitions "$task_def" --family $family | $JQ '.taskDefinition.taskDefinitionArn'); then
