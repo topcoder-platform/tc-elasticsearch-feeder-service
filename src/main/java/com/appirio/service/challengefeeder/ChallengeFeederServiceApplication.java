@@ -5,6 +5,7 @@ package com.appirio.service.challengefeeder;
 
 import com.appirio.service.BaseApplication;
 
+import com.appirio.service.challengefeeder.resources.HealthCheckResource;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.service.resourcefactory.ChallengeFeederFactory;
 import com.appirio.service.supply.resources.SupplyDatasourceFactory;
@@ -91,6 +92,7 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
 
         // Register resources here
         env.jersey().register(new ChallengeFeederFactory(jestClient).getResourceInstance());
+        env.jersey().register(new HealthCheckResource());
 
         logger.info("Services registered");
     }
