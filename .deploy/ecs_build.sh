@@ -191,7 +191,7 @@ register_definition() {
     if revision=$(aws ecs register-task-definition --container-definitions "$task_def" --family $family | $JQ '.taskDefinition.taskDefinitionArn'); then
         echo "Revision: $revision"
     else
-        echo "Failed to register task definition"
+        echo "Failed to register task definitionc"
         return 1
     fi
 }
