@@ -183,7 +183,7 @@ task_template=$(cat <<-END
 }
 END
 )
-  family_val= "tc-elasticsearch-feeder-service" # $family | $($JQ '.taskDefinition.taskDefinitionArn')    
+    
   task_def=$(printf "$task_template" "$AUTH_DOMAIN" $AWS_SIGNING_ENABLED $CHALLENGES_INDEX_NAME $ELASTIC_SEARCH_URL $OLTP_PW "$OLTP_URL" $OLTP_USER $TC_JWT_KEY $TAG)  
   echo $task_def > config.json
 }
