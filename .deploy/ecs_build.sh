@@ -18,10 +18,11 @@ AWS_ECS_SERVICE=$(eval "echo \$${ENV}_AWS_ECS_SERVICE")
 family=$(eval "echo \$${ENV}_AWS_ECS_TASK_FAMILY")
 AWS_ECS_CONTAINER_NAME=$(eval "echo \$${ENV}_AWS_ECS_CONTAINER_NAME")
 AUTH_DOMAIN=$(eval "echo \$${ENV}_AUTH_DOMAIN")
-AWS_SIGNING_ENABLED=$(eval "echo \$${ENV}_DEV_AWS_SIGNING_ENABLED")
+AWS_SIGNING_ENABLED=$(eval "echo \$${ENV}_AWS_SIGNING_ENABLED")
 ELASTIC_SEARCH_URL=$(eval "echo \$${ENV}_ELASTIC_SEARCH_URL")
 TC_JWT_KEY=$(eval "echo \$${ENV}_TC_JWT_KEY")
 #APP_NAME
+
 OLTP_USER=$(eval "echo \$${ENV}_OLTP_USER")
 OLTP_PW=$(eval "echo \$${ENV}_OLTP_PW")
 OLTP_URL=$(eval "echo \$${ENV}_OLTP_URL")
@@ -183,7 +184,7 @@ task_template=$(cat <<-END
 END
 )
   family_val= "tc-elasticsearch-feeder-service" # $family | $($JQ '.taskDefinition.taskDefinitionArn')    
-  task_def=$(printf "$task_template" "$AUTH_DOMAIN" $AWS_SIGNING_ENABLED $CHALLENGES_INDEX_NAME $ELASTIC_SEARCH_URL $OLTP_PW $OLTP_URL $OLTP_USER $TC_JWT_KEY $TAG)  
+  task_def=$(printf "$task_template" "$AUTH_DOMAIN" $AWS_SIGNING_ENABLED $CHALLENGES_INDEX_NAME $ELASTIC_SEARCH_URL $OLTP_PW "$OLTP_URL" $OLTP_USER $TC_JWT_KEY $TAG)  
   echo $task_def
   echo $task_def > config.json
 }
