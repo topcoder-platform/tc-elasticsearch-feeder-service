@@ -109,7 +109,8 @@ task_template=$(cat <<-END
 {
   "executionRoleArn": "arn:aws:iam::811668436784:role/ecsTaskExecutionRole",
   "containerDefinitions": [
-    {      
+    { 
+      "dnsSearchDomains": null,     
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -130,7 +131,7 @@ task_template=$(cat <<-END
           "containerPort": 8081
         }
       ],      
-      "cpu": 2,
+      "cpu": 1,
       "environment": [
         {
           "name": "AUTH_DOMAIN",
