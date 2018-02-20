@@ -69,7 +69,7 @@ build_ecr_image() {
 push_ecr_image() {	
 	echo "Pushing Docker Image...."
 	eval $(aws ecr get-login --region $AWS_REGION --no-include-email)
-	echo $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$AWS_REPOSITORY:$TAG
+	echo $TAG
 	docker push $TAG
 	echo "Docker Image published."
 }
@@ -184,6 +184,7 @@ END
 )
   family_val= "tc-elasticsearch-feeder-service" # $family | $($JQ '.taskDefinition.taskDefinitionArn')    
   task_def=$(printf "$task_template" "$AUTH_DOMAIN" $AWS_SIGNING_ENABLED $CHALLENGES_INDEX_NAME $ELASTIC_SEARCH_URL $OLTP_PW $OLTP_URL $OLTP_USER $TC_JWT_KEY $TAG)  
+  echo $task_def
   echo $task_def > config.json
 }
 
