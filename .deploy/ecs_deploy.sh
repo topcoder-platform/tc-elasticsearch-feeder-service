@@ -5,7 +5,7 @@ if [[ -z "$ENV" ]] ; then
 	echo "ENV must be one of - DEV, QA, PROD or LOCAL"
 	exit
 fi
-
+#Compute ENV variables from CC
 echo "$ENV before case conversion"
 
 AWS_REGION=$(eval "echo \$${ENV}_AWS_REGION")
