@@ -12,10 +12,10 @@ test:
 
 deployment:
   development:
-    branch: ["cc-ecs"]
+    branch: ["dev"]
     commands:      
-      - .deploy/ecs_deploy.sh DEV $CIRCLE_SHA1
+      - .deploy/ecs_deploy.sh DEV
   production:
     branch: master
     commands:
-      - .deploy/ecs_deploy.sh PROD $CIRCLE_SHA1
+      - .deploy/ecs_deploy.sh PROD
