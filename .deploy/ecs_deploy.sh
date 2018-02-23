@@ -21,6 +21,7 @@ AUTH_DOMAIN=$(eval "echo \$${ENV}_AUTH_DOMAIN")
 AWS_SIGNING_ENABLED=$(eval "echo \$${ENV}_AWS_SIGNING_ENABLED")
 ELASTIC_SEARCH_URL=$(eval "echo \$${ENV}_ELASTIC_SEARCH_URL")
 TC_JWT_KEY=$(eval "echo \$${ENV}_TC_JWT_KEY")
+REDISSON_LOAD_CHANGED_CHALLENGES_JOB_SINGLE_SERVER_ADDRESS=$(eval "echo \$${ENV}_REDISSON_LOAD_CHANGED_CHALLENGES_JOB_SINGLE_SERVER_ADDRESS")
 #APP_NAME
 
 OLTP_USER=$(eval "echo \$${ENV}_OLTP_USER")
@@ -83,7 +84,7 @@ push_ecr_image() {
 make_task_def(){
   echo "Creating ECS task definition..."  
   task_template=`cat ecs_task_template.json`
-  task_def=$(printf "$task_template" "$AUTH_DOMAIN" $AWS_SIGNING_ENABLED $CHALLENGES_INDEX_NAME $ELASTIC_SEARCH_URL $OLTP_PW "$OLTP_URL" $OLTP_USER $TC_JWT_KEY $TAG)  
+  task_def=$(printf "$task_template" "$AUTH_DOMAIN" $AWS_SIGNING_ENABLED $CHALLENGES_INDEX_NAME $ELASTIC_SEARCH_URL $OLTP_PW "$OLTP_URL" $OLTP_USER $TC_JWT_KEY $TAG $REDISSON_LOAD_CHANGED_CHALLENGES_JOB_SINGLE_SERVER_ADDRESS)  
   echo $task_def > task_def.json
   echo "ECS task definition is created : "
   echo $task_def
@@ -117,7 +118,6 @@ deploy_cluster(){
     echo "Update service intialised successfully for deployment"
     return 0
 }
-
 
 configure_aws_cli
 build_ecr_image
