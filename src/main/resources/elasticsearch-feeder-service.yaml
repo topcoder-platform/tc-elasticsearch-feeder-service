@@ -55,7 +55,7 @@ redissonConfiguration:
   lockerKeyName: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LOCK_KEY:-loadChangedChallengesJobLockKey}"
   useLinuxNativeEpoll: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_USE_LINUX_NATIVE_EPOLL:-false}"
   lockWatchdogTimeout: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LOCK_WATCHDOG_TIMEOUT:-30000}"
-  singleServerAddress: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LOCK_WATCHDOG_TIMEOUT:-redis://cockpit.cloud.topcoder.com:6379}"
+  singleServerAddress: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_SINGLE_SERVER_ADDRESS:-redis://cockpit.cloud.topcoder.com:6379}"
   clusterEnabled: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_CLUSTER_ENABLED:-false}"
   nodeAdresses:
     - "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_NODE1:-redis://localhost:7001}"
