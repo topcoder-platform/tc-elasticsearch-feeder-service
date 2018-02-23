@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2017 TopCoder Inc., All Rights Reserved.
+ * Copyright (C) 2018 TopCoder Inc., All Rights Reserved.
  */
 package com.appirio.service.challengefeeder.resources;
 
-import com.appirio.service.challengefeeder.dto.ChallengeFeederParam;
-import com.appirio.service.challengefeeder.manager.ChallengeFeederManager;
+import com.appirio.service.challengefeeder.dto.DataScienceFeederParam;
+import com.appirio.service.challengefeeder.manager.MarathonMatchFeederManager;
 import com.appirio.service.supply.resources.MetadataApiResponseFactory;
 import com.appirio.supply.ErrorHandler;
 import com.appirio.supply.SupplyException;
@@ -14,6 +14,7 @@ import com.appirio.tech.core.auth.AuthUser;
 import com.codahale.metrics.annotation.Timed;
 
 import io.dropwizard.auth.Auth;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,52 +26,59 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+
 /**
- * Resource to handle the challenge feeder
- * 
- * 
- * @author TCSCODER
+ * Resource to handle the marathon match feeder
+ * <p>
+ * Added in Topcoder - Add Endpoints To Populating Marathon Matches And SRMs Into Elasticsearch v1.0
+ * </p>
+ *
+ * @author TCCoder
  * @version 1.0
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Path("esfeeder/challenges")
-public class ChallengeFeederResource {
+@Path("elastic/mmatches")
+public class MarathonMatchFeederResource {
 
     /**
      * Logger used to log the events
      */
-    private static final Logger logger = LoggerFactory.getLogger(ChallengeFeederResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(MarathonMatchFeederResource.class);
 
     /**
      * Manager to access search business logic
      */
-    private final ChallengeFeederManager challengeFeederManager;
+    private final MarathonMatchFeederManager marathonMatchFeederManager;
 
     /**
-     * Create ChallengeFeederResource
+     * Create MarathonMatchFeederResource
      *
-     * @param challengeFeederManager the challengeManager to use
+     * @param marathonMatchFeederManager
+     *            the marathonMatchFeederManager to use
      */
-    public ChallengeFeederResource(ChallengeFeederManager challengeFeederManager) {
-        this.challengeFeederManager = challengeFeederManager;
+    public MarathonMatchFeederResource(MarathonMatchFeederManager marathonMatchFeederManager) {
+        this.marathonMatchFeederManager = marathonMatchFeederManager;
     }
-    
+
     /**
-     * Push challenge feeders to elasticsearch service
-     * 
-     * @param user the authenticated user
-     * @param request the request
+     * Push marathon match feeders to elasticsearch service
+     *
+     * @param user
+     *            the authenticated user
+     * @param request
+     *            the request
      * @return the api response
      */
     @PUT
     @Timed
-    public ApiResponse pushChallengeFeeders(@Auth AuthUser user, @Valid PostPutRequest<ChallengeFeederParam> request) {
+    public ApiResponse pushMarathonMatchFeeders(@Auth AuthUser user,
+        @Valid PostPutRequest<DataScienceFeederParam> request) {
         try {
             if (request == null || request.getParam() == null) {
                 throw new SupplyException("The request body should be provided", HttpServletResponse.SC_BAD_REQUEST);
             }
-            this.challengeFeederManager.pushChallengeFeeder(user, request.getParam());
+            this.marathonMatchFeederManager.pushMarathonMatchFeeder(user, request.getParam());
             return MetadataApiResponseFactory.createResponse(null);
         } catch (Exception e) {
             return ErrorHandler.handle(e, logger);
