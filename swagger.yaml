@@ -221,7 +221,6 @@ paths:
             $ref: '#/definitions/ErrorModel'
         '404':
           description: If the SRM or any related data can not be found
->>>>>>> dev
           schema:
             $ref: '#/definitions/ErrorModel'
         '500':
