@@ -16,18 +16,15 @@ import lombok.Setter;
 /**
  * Represents the ChallengeData model 
  * 
+ * Version 1.1 - Topcoder - Populate Marathon Match Related Data Into Challenge Model In Elasticsearch v1.0
+ * - It extends from IdentifiableData
+ * 
+ * 
  * @author TCCoder
- * @version 1.0
+ * @version 1.1 
  *
  */
-public class ChallengeData {
-    /**
-     * The id field
-     */
-    @Getter
-    @Setter
-    private Long id;
-    
+public class ChallengeData extends IdentifiableData {
     /**
      * The numRegistrants field
      */

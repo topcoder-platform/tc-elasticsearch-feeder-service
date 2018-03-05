@@ -1,9 +1,9 @@
 swagger: '2.0'
 info:
   version: 1.0.0
-  title: ap-challenge-feeder-microservice
+  title: elasticsearch-feeder-service
   description: >
-    Services that push the challenge data to the elasticsearch service
+    Services that push the challenge and marathon match data to the elasticsearch service
   license:
     name: MIT
     url: 'http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT'
@@ -69,7 +69,61 @@ paths:
           description: Errors occur in the server side
           schema:
             $ref: '#/definitions/ErrorModel'
+            
+  /elastic/mmatches/challenges:
+    put:
+      operationId: pushMarathonMatchDataIntoChallenge
+      security:
+        - bearer: []
+      description: Push marathon match data to the challenge model in elasticsearch
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: the marathon match feeder param
+          schema:
+            $ref: '#/definitions/MmFeederParamBody'
+      responses:
+        '200':
+          description: return null
+          schema:
+            $ref: '#/definitions/NullResponse'
+        '400':
+          description: Invalid input, such as null round id, duplicate round id, or non-positive round id etc
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '401':
+          description: Authentication credentials required
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '403':
+          description: Only admin can perform the operation
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '404':
+          description: If the round id or any related data can not be found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Errors occur in the server side
+          schema:
+            $ref: '#/definitions/ErrorModel'
 definitions:
+  MmFeederParamBody:
+    type: object
+    properties:
+      param:
+        type: object
+        properties:
+          index: 
+            type: string
+          type: 
+            type: string
+          roundIds: 
+            type: array
+            items:
+              type: number
+              format: int64
   ResponseMetadata:
     title: Metadata object for a response
     type: object

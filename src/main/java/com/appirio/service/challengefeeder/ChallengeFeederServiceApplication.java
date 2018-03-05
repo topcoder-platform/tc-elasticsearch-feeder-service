@@ -7,9 +7,8 @@ import com.appirio.service.BaseApplication;
 
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.service.resourcefactory.ChallengeFeederFactory;
+import com.appirio.service.resourcefactory.MmFeederResourceFactory;
 import com.appirio.service.supply.resources.SupplyDatasourceFactory;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
@@ -17,18 +16,15 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.searchbox.client.JestClient;
 
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.math.BigInteger;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
-
 /**
  * The entry point for challenge feeder micro service
  * 
+ * Version 1.1 - Topcoder - Populate Marathon Match Related Data Into Challenge Model In Elasticsearch v1.0
+ * - register the MmFeederResource
+ * 
  *
  * @author TCSCODER
- * @version 1.0
+ * @version 1.1 
  */
 public class ChallengeFeederServiceApplication extends BaseApplication<ChallengeFeederServiceConfiguration> {
     /**
@@ -91,6 +87,7 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
 
         // Register resources here
         env.jersey().register(new ChallengeFeederFactory(jestClient).getResourceInstance());
+        env.jersey().register(new MmFeederResourceFactory(jestClient).getResourceInstance());
 
         logger.info("Services registered");
     }

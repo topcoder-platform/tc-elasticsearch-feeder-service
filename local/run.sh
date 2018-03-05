@@ -5,4 +5,4 @@ export TC_JWT_KEY="secret"
 # export AWS_ACCESS_KEY=your key
 # export AWS_SECRET_KEY=your secret
 
-java -jar ../target/elasticsearch-feeder-service-*.jar server ../src/main/resources/challenge-feeder-service.yaml
+java -jar ../target/elasticsearch-feeder-service-*.jar server ../src/main/resources/elasticsearch-feeder-service.yaml
