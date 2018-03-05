@@ -7,7 +7,7 @@
           "options": {
             "awslogs-group": "/ecs/tc-elasticsearch-feeder-service",
             "awslogs-region": "us-east-1",
-            "awslogs-stream-prefix": "ecs"
+            "awslogs-stream-prefix": "ecs_dev"
           }
         },     
         "portMappings": [
