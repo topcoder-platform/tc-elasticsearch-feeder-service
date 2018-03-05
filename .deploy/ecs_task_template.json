@@ -59,6 +59,10 @@
           {
             "name": "REDISSON_LOAD_CHANGED_CHALLENGES_JOB_SINGLE_SERVER_ADDRESS",
             "value": "%s"
+          },
+          {
+            "name": "LOG_LEVEL",
+            "value": "%s"
           }          
         ],      
         "memoryReservation": 512,      
