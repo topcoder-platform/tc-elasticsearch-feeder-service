@@ -1,0 +1,78 @@
+{
+    "executionRoleArn": "arn:aws:iam::811668436784:role/ecsTaskExecutionRole",
+    "containerDefinitions": [
+      { 
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "/ecs/tc-elasticsearch-feeder-service",
+            "awslogs-region": "us-east-1",
+            "awslogs-stream-prefix": "ecs"
+          }
+        },     
+        "portMappings": [
+          {
+            "hostPort": 8080,
+            "protocol": "tcp",
+            "containerPort": 8080
+          },
+          {
+            "hostPort": 8081,
+            "protocol": "tcp",
+            "containerPort": 8081
+          }
+        ],      
+        "cpu": 1,
+        "environment": [
+          {
+            "name": "AUTH_DOMAIN",
+            "value": "%s"
+          },
+          {
+            "name": "AWS_SIGNING_ENABLED",
+            "value": "%s"
+          },
+          {
+            "name": "CHALLENGES_INDEX_NAME",
+            "value": "%s"
+          },
+          {
+            "name": "ELASTIC_SEARCH_URL",
+            "value": "%s"
+          },
+          {
+            "name": "OLTP_PW",
+            "value": "%s"
+          },
+          {
+            "name": "OLTP_URL",
+            "value": "%s"
+          },
+          {
+            "name": "OLTP_USER",
+            "value": "%s"
+          },
+          {
+            "name": "TC_JWT_KEY",
+            "value": "%s"
+          },
+          {
+            "name": "REDISSON_LOAD_CHANGED_CHALLENGES_JOB_SINGLE_SERVER_ADDRESS",
+            "value": "%s"
+          }          
+        ],      
+        "memoryReservation": 512,      
+        "image": "%s",      
+        "essential": true,      
+        "name": "tc-elasticsearch-feeder-service"
+      }
+    ],
+    "memory": "4096",
+    "taskRoleArn": "arn:aws:iam::811668436784:role/ecsTaskExecutionRole",  
+    "family": "tc-elasticsearch-feeder-service",  
+    "requiresCompatibilities": [
+      "FARGATE"
+    ],
+    "networkMode": "awsvpc",
+    "cpu": "2048"
+  }

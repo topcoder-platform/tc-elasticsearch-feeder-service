@@ -4,7 +4,7 @@ machine:
 
 dependencies:
   pre:
-    - pip install awsebcli
+    - pip install awscli --upgrade
 
 test:
   override:
@@ -12,12 +12,10 @@ test:
 
 deployment:
   development:
-    branch: ["dev", "circleci"]
-    commands:
-      - .deploy/dockerhub_push.sh DEV $CIRCLE_BUILD_NUM
-      - .deploy/ebs_deploy.sh elasticsearch-feeder-service DEV $CIRCLE_BUILD_NUM
+    branch: ["dev"]
+    commands:      
+      - .deploy/ecs_deploy.sh DEV
   production:
     branch: master
     commands:
-      - .deploy/dockerhub_push.sh PROD $CIRCLE_BUILD_NUM
-      - .deploy/ebs_deploy.sh elasticsearch-feeder-service PROD $CIRCLE_BUILD_NUM
+      - .deploy/ecs_deploy.sh PROD

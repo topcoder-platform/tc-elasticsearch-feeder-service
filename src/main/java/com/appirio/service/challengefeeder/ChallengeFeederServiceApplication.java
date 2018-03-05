@@ -5,9 +5,12 @@ package com.appirio.service.challengefeeder;
 
 import com.appirio.service.BaseApplication;
 
+import com.appirio.service.challengefeeder.resources.HealthCheckResource;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.service.resourcefactory.ChallengeFeederFactory;
 import com.appirio.service.resourcefactory.MmFeederResourceFactory;
+import com.appirio.service.resourcefactory.MarathonMatchFeederFactory;
+import com.appirio.service.resourcefactory.SRMFeederFactory;
 import com.appirio.service.supply.resources.SupplyDatasourceFactory;
 
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
@@ -18,13 +21,20 @@ import io.searchbox.client.JestClient;
 
 /**
  * The entry point for challenge feeder micro service
- * 
+ * <p>
  * Version 1.1 - Topcoder - Populate Marathon Match Related Data Into Challenge Model In Elasticsearch v1.0
  * - register the MmFeederResource
- * 
+ * </p>
+ *
+ * <p>
+ * Changes in v1.2 (Topcoder - Add Endpoints To Populating Marathon Matches And SRMs Into Elasticsearch v1.0):
+ * <ul>
+ * <li>Added resources for Marathon Matches and SRMs.</li>
+ * </ul>
+ * </p>
  *
  * @author TCSCODER
- * @version 1.1 
+ * @version 1.2
  */
 public class ChallengeFeederServiceApplication extends BaseApplication<ChallengeFeederServiceConfiguration> {
     /**
@@ -37,7 +47,7 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
 
     /**
      * Log service specific configuration values.
-     * 
+     *
      * @param config the configuration
      */
     @Override
@@ -76,7 +86,7 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
 
     /**
      * Gives the subclasses an opportunity to register resources
-     * 
+     *
      * @param config the configuration
      * @param env the environment
      */
@@ -88,13 +98,16 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         // Register resources here
         env.jersey().register(new ChallengeFeederFactory(jestClient).getResourceInstance());
         env.jersey().register(new MmFeederResourceFactory(jestClient).getResourceInstance());
+        env.jersey().register(new HealthCheckResource());
+        env.jersey().register(new MarathonMatchFeederFactory(jestClient).getResourceInstance());
+        env.jersey().register(new SRMFeederFactory(jestClient).getResourceInstance());
 
         logger.info("Services registered");
     }
 
     /**
      * Gives the subclasses an opportunity to prepare to run
-     * 
+     *
      * @param config the configuration
      * @param env the environment
      */
@@ -103,7 +116,7 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         // configure the database
         configDatabases(config, config.getDatabases(), env);
     }
-    
+
     /**
      * Initialize method
      *
