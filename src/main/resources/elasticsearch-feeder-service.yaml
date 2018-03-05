@@ -99,6 +99,8 @@ logging:
       target: stdout
       threshold: ALL
       timeZone: UTC
+      filterFactories:
+        - type: URI
 
     - type: file
       currentLogFilename: /var/log/ap-challenge-feeder.log
@@ -107,6 +109,8 @@ logging:
       archivedLogFilenamePattern: /var/log/ap-challenge-feeder-%d.log
       archivedFileCount: 5
       timeZone: UTC
+      filterFactories:
+        - type: URI
       logFormat:  "%-5level [%d{yyyy-dd-mm HH:mm:ss.SSS}] [%thread] %logger - %msg%n"
 
 authScheme: v3
