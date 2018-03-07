@@ -5,20 +5,28 @@ package com.appirio.service.challengefeeder.dao;
 
 
 import com.appirio.service.challengefeeder.api.*;
+import com.appirio.service.challengefeeder.dto.DatabaseTimestamp;
 import com.appirio.supply.dataaccess.ApiQueryInput;
 import com.appirio.supply.dataaccess.DatasourceName;
 import com.appirio.supply.dataaccess.SqlQueryFile;
+import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.skife.jdbi.v2.sqlobject.Bind;
 
 /**
  * DAO to interact with challenge data
  *
+ * Version 1.1 - Topcoder - Create CronJob For Populating Changed Challenges To Elasticsearch v1.0
+ * - add the methods to get the changed challenge ids and current timestamp
+ * 
  * 
  * @author TCCODER
- * @version 1.0
+ * @version 1.1 
  */
 @DatasourceName("oltp")
 public interface ChallengeFeederDAO {
@@ -147,4 +155,22 @@ public interface ChallengeFeederDAO {
      */
     @SqlQueryFile("sql/challenge-feeder/get_file_types.sql")
     List<FileTypeData> getFileTypes(@ApiQueryInput QueryParameter queryParameter);
+    
+    /**
+     * Get changed challenge ids
+     *
+     * @param lastRunTimestamp the lastRunTimestamp to use
+     * @return the List<TCID> result
+     */
+    @SqlQueryFile("sql/challenge-feeder/job/get_changed_challenge_ids.sql")
+    List<TCID> getChangedChallengeIds(@Bind("lastRunTimestamp") Date lastRunTimestamp);
+    
+    /**
+     * Get timestamp 
+     *
+     * @param queryParameter the queryParameter to use
+     * @return the result
+     */
+    @SqlQueryFile("sql/challenge-feeder/job/get_timestamp.sql")
+    DatabaseTimestamp getTimestamp();
 }
