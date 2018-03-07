@@ -20,6 +20,7 @@ import com.appirio.service.challengefeeder.dao.ChallengeFeederDAO;
 import com.appirio.service.challengefeeder.dto.ChallengeFeederParam;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.supply.SupplyException;
+import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.FieldSelector;
 import com.appirio.tech.core.api.v3.request.FilterParameter;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
@@ -37,16 +38,20 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * ChallengeFeederManager is used to handle the challenge feeder.
- * 
+ *
  * Version 1.1 - Topcoder - Populate Marathon Match Related Data Into Challenge Model In Elasticsearch v1.0
  * - challenged to call util classes for common shared methods such as assoicate methods
- * 
+ *
+ * Version 1.2 - Topcoder - Create CronJob For Populating Changed Challenges To Elasticsearch v1.0
+ * - add getTimestamp method to get the current timestamp from the database
+ * - add pushChallengeFeeder method to call without admin permission check
  * 
  * @author TCSCODER
- * @version 1.1 
+ * @version 1.2
  */
 public class ChallengeFeederManager {
 
@@ -88,6 +93,17 @@ public class ChallengeFeederManager {
     public void pushChallengeFeeder(AuthUser authUser, ChallengeFeederParam param) throws SupplyException {
         logger.info("Enter of pushChallengeFeeder");
         Helper.checkAdmin(authUser);
+        this.pushChallengeFeeder(param);
+    }
+    
+    /**
+     * Push challenge feeder
+     *
+     * @param authUser the authUser to use
+     * @param param the challenge feeders param to use
+     * @throws SupplyException if any error occurs
+     */
+    public void pushChallengeFeeder(ChallengeFeederParam param) throws SupplyException {
         if (param.getType() == null || param.getType().trim().length() == 0) {
             param.setType("challenges");
         }
@@ -195,6 +211,282 @@ public class ChallengeFeederManager {
             SupplyException se = new SupplyException("Internal server error occurs", ioe);
             se.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             throw se;
+        }
+    }
+    
+    /**
+     * Get timestamp from the persistence
+     *
+     * @throws SupplyException if any error occurs
+     * @return the Date result
+     */
+    public Date getTimestamp() throws SupplyException {
+        return this.challengeFeederDAO.getTimestamp().getDate();
+    }
+
+    /**
+     * Get changed challenge ids
+     *
+     * @param lastRunTimestamp the lastRunTimestamp to use
+     * @return the List<TCID> result
+     */
+    public List<TCID> getChangedChallengeIds(Date lastRunTimestamp) {
+        if (lastRunTimestamp == null) {
+            throw new IllegalArgumentException("The lastRunTimestamp should be non-null.");
+        }
+        return this.challengeFeederDAO.getChangedChallengeIds(lastRunTimestamp);
+    }
+    
+    /**
+     * Associate all terms of use
+     *
+     * @param challenges the challenges to use
+     * @param termsOfUse the termsOfUse to use
+     */
+    private void associateAllTermsOfUse(List<ChallengeData> challenges, List<TermsOfUseData> termsOfUse) {
+        for (TermsOfUseData item : termsOfUse) {
+            for (ChallengeData challenge : challenges) {
+                if (challenge.getId().equals(item.getChallengeId())) {
+                    if (challenge.getTerms() == null) {
+                        challenge.setTerms(new ArrayList<TermsOfUseData>());
+                    }
+                    challenge.getTerms().add(item);
+                    break;
+                }
+            }
+        }
+        for (TermsOfUseData item : termsOfUse) {
+            item.setChallengeId(null);
+        }
+    }
+
+    /**
+     * Associate all fileTypes
+     *
+     * @param challenges the challenges to use
+     * @param fileTypes the fileTypes to use
+     */
+    private void associateAllFileTypes(List<ChallengeData> challenges, List<FileTypeData> fileTypes) {
+        for (FileTypeData item : fileTypes) {
+            for (ChallengeData challenge : challenges) {
+                if (challenge.getId().equals(item.getChallengeId())) {
+                    if (challenge.getFileTypes() == null) {
+                        challenge.setFileTypes(new ArrayList<FileTypeData>());
+                    }
+                    challenge.getFileTypes().add(item);
+                    break;
+                }
+            }
+        }
+        for (FileTypeData item : fileTypes) {
+            item.setChallengeId(null);
+        }
+    }
+
+    /**
+     * Associate all winners
+     *
+     * @param challenges the challenges to use
+     * @param winners the winners to use
+     */
+    private void associateAllWinners(List<ChallengeData> challenges, List<WinnerData> winners) {
+        for (WinnerData item : winners) {
+            for (ChallengeData challenge : challenges) {
+                if (challenge.getId().equals(item.getChallengeId())) {
+                    if (challenge.getWinners() == null) {
+                        challenge.setWinners(new ArrayList<WinnerData>());
+                    }
+                    challenge.getWinners().add(item);
+                    break;
+                }
+            }
+        }
+        for (WinnerData item : winners) {
+            item.setChallengeId(null);
+        }
+    }
+
+    /**
+     * Associate all submissions
+     *
+     * @param challenges the challenges to use
+     * @param submissions the submissions to use
+     */
+    private void associateAllSubmissions(List<ChallengeData> challenges, List<SubmissionData> submissions) {
+        for (SubmissionData item : submissions) {
+            for (ChallengeData challenge : challenges) {
+                if (challenge.getId().equals(item.getChallengeId())) {
+                    if (challenge.getSubmissions() == null) {
+                        challenge.setSubmissions(new ArrayList<SubmissionData>());
+                    }
+                    challenge.getSubmissions().add(item);
+                    break;
+                }
+            }
+        }
+        for (SubmissionData item : submissions) {
+            item.setChallengeId(null);
+        }
+    }
+
+    /**
+     * Associate all reviews
+     *
+     * @param challenges the challenges to use
+     * @param reviews the reviews to use
+     */
+    private void associateAllReviews(List<ChallengeData> challenges, List<ReviewData> reviews) {
+        for (ReviewData item : reviews) {
+            for (ChallengeData challenge : challenges) {
+                if (challenge.getId().equals(item.getChallengeId())) {
+                    if (challenge.getReviews() == null) {
+                        challenge.setReviews(new ArrayList<ReviewData>());
+                    }
+                    challenge.getReviews().add(item);
+                    break;
+                }
+            }
+        }
+        for (ReviewData item : reviews) {
+            item.setChallengeId(null);
+        }
+    }
+
+    /**
+     * Associate all properties
+     *
+     * @param challenges the challenges to use
+     * @param properties the properties to use
+     */
+    private void associateAllProperties(List<ChallengeData> challenges, List<PropertyData> properties) {
+        for (PropertyData item : properties) {
+            for (ChallengeData challenge : challenges) {
+                if (challenge.getId().equals(item.getChallengeId())) {
+                    if (challenge.getProperties() == null) {
+                        challenge.setProperties(new ArrayList<PropertyData>());
+                    }
+                    challenge.getProperties().add(item);
+                    break;
+                }
+            }
+        }
+        for (PropertyData item : properties) {
+            item.setChallengeId(null);
+        }
+    }
+
+    /**
+     * Associate all checkpointPrizes
+     *
+     * @param challenges the challenges to use
+     * @param checkpointPrizes the checkpointPrizes to use
+     */
+    private void associateAllCheckpointPrizes(List<ChallengeData> challenges, List<CheckpointPrizeData> checkpointPrizes) {
+        for (CheckpointPrizeData item : checkpointPrizes) {
+            for (ChallengeData challenge : challenges) {
+                if (challenge.getId().equals(item.getChallengeId())) {
+                    if (challenge.getCheckpointPrizes() == null) {
+                        challenge.setCheckpointPrizes(new ArrayList<CheckpointPrizeData>());
+                    }
+                    challenge.getCheckpointPrizes().add(item);
+                    break;
+                }
+            }
+        }
+        for (CheckpointPrizeData item : checkpointPrizes) {
+            item.setChallengeId(null);
+        }
+    }
+
+    /**
+     * Associate all prizes
+     *
+     * @param challenges the challenges to use
+     * @param prizes the prizes to use
+     */
+    private void associateAllPrizes(List<ChallengeData> challenges, List<PrizeData> prizes) {
+        for (PrizeData item : prizes) {
+            for (ChallengeData challenge : challenges) {
+                if (challenge.getId().equals(item.getChallengeId())) {
+                    if (challenge.getPrizes() == null) {
+                        challenge.setPrizes(new ArrayList<PrizeData>());
+                    }
+                    challenge.getPrizes().add(item);
+                    break;
+                }
+            }
+        }
+        for (PrizeData item : prizes) {
+            item.setChallengeId(null);
+        }
+    }
+
+    /**
+     * Associate all events
+     *
+     * @param challenges the challenges to use
+     * @param events the events to use
+     */
+    private void associateAllEvents(List<ChallengeData> challenges, List<EventData> events) {
+        for (EventData item : events) {
+            for (ChallengeData challenge : challenges) {
+                if (challenge.getId().equals(item.getChallengeId())) {
+                    if (challenge.getEvents() == null) {
+                        challenge.setEvents(new ArrayList<EventData>());
+                    }
+                    challenge.getEvents().add(item);
+                    break;
+                }
+            }
+        }
+        for (EventData item : events) {
+            item.setChallengeId(null);
+        }
+    }
+
+    /**
+     * Associate all phases
+     *
+     * @param challenges the challenges to use
+     * @param allPhases the allPhases to use
+     */
+    private void associateAllPhases(List<ChallengeData> challenges, List<PhaseData> allPhases) {
+        for (PhaseData aPhase : allPhases) {
+            for (ChallengeData challenge : challenges) {
+                if (challenge.getId().equals(aPhase.getChallengeId())) {
+                    if (challenge.getPhases() == null) {
+                        challenge.setPhases(new ArrayList<PhaseData>());
+                    }
+                    challenge.getPhases().add(aPhase);
+                    break;
+                }
+            }
+        }
+        for (PhaseData aPhase : allPhases) {
+            aPhase.setChallengeId(null);
+        }
+    }
+
+    /**
+     * Associate all resources
+     *
+     * @param challenges the challenges to use
+     * @param resources the resources to use
+     */
+    private void associateAllResources(List<ChallengeData> challenges, List<ResourceData> resources) {
+        for (ResourceData item : resources) {
+            for (ChallengeData challenge : challenges) {
+                if (challenge.getId().equals(item.getChallengeId())) {
+                    if (challenge.getResources() == null) {
+                        challenge.setResources(new ArrayList<ResourceData>());
+                    }
+                    challenge.getResources().add(item);
+                    break;
+                }
+            }
+        }
+        for (ResourceData item : resources) {
+            item.setChallengeId(null);
         }
     }
 }

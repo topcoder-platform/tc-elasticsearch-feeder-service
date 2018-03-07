@@ -4,7 +4,8 @@
 package com.appirio.service.challengefeeder;
 
 import com.appirio.service.BaseApplication;
-
+import com.appirio.service.challengefeeder.job.LoadChangedChallengesJob;
+import com.appirio.service.challengefeeder.job.StartupJobForLoadChallengeChallenges;
 import com.appirio.service.challengefeeder.resources.HealthCheckResource;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.service.resourcefactory.ChallengeFeederFactory;
@@ -13,6 +14,8 @@ import com.appirio.service.resourcefactory.MarathonMatchFeederFactory;
 import com.appirio.service.resourcefactory.SRMFeederFactory;
 import com.appirio.service.supply.resources.SupplyDatasourceFactory;
 
+import de.spinscale.dropwizard.jobs.JobsBundle;
+import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.setup.Bootstrap;
@@ -27,14 +30,19 @@ import io.searchbox.client.JestClient;
  * </p>
  *
  * <p>
- * Changes in v1.2 (Topcoder - Add Endpoints To Populating Marathon Matches And SRMs Into Elasticsearch v1.0):
+ * Version 1.2 - Topcoder - Create CronJob For Populating Changed Challenges To Elasticsearch v1.0
+ * - initialize the cron job bundle
+ * </p>
+ *
+ * <p>
+ * Changes in v1.3 (Topcoder - Add Endpoints To Populating Marathon Matches And SRMs Into Elasticsearch v1.0):
  * <ul>
  * <li>Added resources for Marathon Matches and SRMs.</li>
  * </ul>
  * </p>
  *
  * @author TCSCODER
- * @version 1.2
+ * @version 1.3
  */
 public class ChallengeFeederServiceApplication extends BaseApplication<ChallengeFeederServiceConfiguration> {
     /**
@@ -69,7 +77,20 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         logger.info("\t\tAWS signing enabled : " + config.getJestClientConfiguration().isAwsSigningEnabled());
         logger.info("\t\tAWS region : " + config.getJestClientConfiguration().getAwsRegion());
         logger.info("\t\tAWS service : " + config.getJestClientConfiguration().getAwsService());
+        
+        logger.info("\tRedissonConfiguration ");
+        logger.info("\t\tChallenges index: " + config.getRedissonConfiguration().getChallengesIndex());
+        logger.info("\t\tChallenges type: " + config.getRedissonConfiguration().getChallengesType());
+        logger.info("\t\tSingle server address: " + config.getRedissonConfiguration().getSingleServerAddress());
+        logger.info("\t\tLast run timestamp prefix: " + config.getRedissonConfiguration().getLastRunTimestampPrefix());
+        logger.info("\t\tCluster enabled: " + config.getRedissonConfiguration().isClusterEnabled());
+        logger.info("\t\tLocker key name: " + config.getRedissonConfiguration().getLockerKeyName());
+        logger.info("\t\tUse linux native epoll: " + config.getRedissonConfiguration().isUseLinuxNativeEpoll());
+        logger.info("\t\tLock watchdog timeout: " + config.getRedissonConfiguration().getLockWatchdogTimeout());
+        logger.info("\t\tNode adresses: " + config.getRedissonConfiguration().getNodeAdresses());
 
+        logger.info("\tJobs ");
+        logger.info("\t\tJobs: " + config.getJobs());
         logger.info("\r\n");
     }
 
@@ -101,8 +122,9 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         env.jersey().register(new HealthCheckResource());
         env.jersey().register(new MarathonMatchFeederFactory(jestClient).getResourceInstance());
         env.jersey().register(new SRMFeederFactory(jestClient).getResourceInstance());
-
         logger.info("Services registered");
+        LoadChangedChallengesJob.GLOBAL_CONFIGURATION = config;
+        
     }
 
     /**
@@ -127,5 +149,6 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         // Enable variable substitution with environment variables
         bootstrap.setConfigurationSourceProvider(
                 new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
+        bootstrap.addBundle((ConfiguredBundle) new JobsBundle(new StartupJobForLoadChallengeChallenges(), new LoadChangedChallengesJob()));
     }
 }

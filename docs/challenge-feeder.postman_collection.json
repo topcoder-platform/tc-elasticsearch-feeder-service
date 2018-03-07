@@ -1,7 +1,7 @@
 {
 	"info": {
 		"name": "challenge-feeder",
-		"_postman_id": "c3c2fdc1-c613-b7a6-b2e4-37368387102f",
+		"_postman_id": "7a569420-73c9-1b1f-f3e8-72c29f04867d",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -16,6 +16,19 @@
 					"raw": ""
 				},
 				"url": "http://cockpit.cloud.topcoder.com:9200/challenges/challenges/30005522"
+			},
+			"response": []
+		},
+		{
+			"name": "View all challenges via ElasticSearch",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://cockpit.cloud.topcoder.com:9200/challenges/challenges/_search"
 			},
 			"response": []
 		},
