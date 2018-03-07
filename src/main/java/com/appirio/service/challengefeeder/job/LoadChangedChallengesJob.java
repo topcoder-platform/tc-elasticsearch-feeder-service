@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import com.appirio.supply.SupplyException;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.redisson.Redisson;
@@ -77,7 +78,6 @@ public class LoadChangedChallengesJob extends Job {
      * Create LoadChangedChallengesJob
      *
      * @param challengeFeederManager the challengeFeederManager to use
-     * @param redisClient the redisClient to use
      * @param config the config to use
      */
     public LoadChangedChallengesJob(ChallengeFeederManager challengeFeederManager, ChallengeFeederServiceConfiguration config) {
@@ -158,7 +158,12 @@ public class LoadChangedChallengesJob extends Job {
                 param.setIndex(this.config.getRedissonConfiguration().getChallengesIndex());
                 param.setType(this.config.getRedissonConfiguration().getChallengesType());
                 param.setChallengeIds(sub);
-                this.challengeFeederManager.pushChallengeFeeder(param);
+                try {
+                    this.challengeFeederManager.pushChallengeFeeder(param);
+                } catch (SupplyException e) {
+                    logger.error("Fail to push challenge", e);
+                }
+
                 from = to;
             }
 

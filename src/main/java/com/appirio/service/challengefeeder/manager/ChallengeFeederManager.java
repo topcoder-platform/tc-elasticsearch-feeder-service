@@ -122,7 +122,7 @@ public class ChallengeFeederManager {
         queryParameter.setFilter(filter);
         List<ChallengeData> challenges = this.challengeFeederDAO.getChallenges(queryParameter);
         
-        List<Long> idsNotFound = new ArrayList<Long>();
+        List<Long> idsNotFound = new ArrayList<>();
         for (Long id : param.getChallengeIds()) {
             boolean hit = false;
             for (ChallengeData data : challenges) {
@@ -136,7 +136,7 @@ public class ChallengeFeederManager {
             }
         }
         if (!idsNotFound.isEmpty()) {
-            throw new SupplyException("The challenge ids not found: " + idsNotFound, HttpServletResponse.SC_NOT_FOUND);
+            logger.warn("These challenge ids can not be found:" + idsNotFound);
         }
         
         logger.info("Total hits:" + challenges.size());
@@ -180,7 +180,7 @@ public class ChallengeFeederManager {
             for (Map<String, Object> item : groupIds) {
                 if (item.get("challengeId").toString().equals(data.getId().toString())) {
                     if (data.getGroupIds() == null) {
-                        data.setGroupIds(new ArrayList<Long>());
+                        data.setGroupIds(new ArrayList<>());
                     }
                     if (item.get("groupId") != null) {
                         data.getGroupIds().add(Long.parseLong(item.get("groupId").toString()));
@@ -194,10 +194,10 @@ public class ChallengeFeederManager {
             for (Map<String, Object> item : userIds) {
                 if (item.get("challengeId").toString().equals(data.getId().toString())) {
                     if (data.getUserIds() == null) {
-                        data.setUserIds(new ArrayList<Long>());
+                        data.setUserIds(new ArrayList<>());
                     }
                     if (data.getHasUserSubmittedForReview() == null) {
-                        data.setHasUserSubmittedForReview(new ArrayList<String>());
+                        data.setHasUserSubmittedForReview(new ArrayList<>());
                     }
                     data.getUserIds().add(Long.parseLong(item.get("userId").toString()));
                     data.getHasUserSubmittedForReview().add(item.get("hasUserSubmittedForReview").toString());
