@@ -47,21 +47,34 @@ jestClientConfiguration:
  
  
 redissonConfiguration:
-  forceInitialLoad: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_FORCE_INITIAL_LOAD:-false}"
-  challengesIndex: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_CHALLENGE_INDEX:-challenges}"
-  challengesType: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_CHALLENGE_TYPE:-challenges}"
-  batchUpdateSize: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_BATCH_UPDATE_SIZE:-100}"
-  lastRunTimestampPrefix: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LAST_RUN_TIMESTAMP_PREFIX:-loadChangedChallengesJobLastRunTimestamp}"
-  lockerKeyName: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LOCK_KEY:-loadChangedChallengesJobLockKey}"
-  useLinuxNativeEpoll: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_USE_LINUX_NATIVE_EPOLL:-false}"
-  lockWatchdogTimeout: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LOCK_WATCHDOG_TIMEOUT:-30000}"
-  singleServerAddress: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_SINGLE_SERVER_ADDRESS:-redis://cockpit.cloud.topcoder.com:6379}"
-  clusterEnabled: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_CLUSTER_ENABLED:-false}"
+  forceInitialLoad: "${REDISSON_JOB_FORCE_INITIAL_LOAD:-false}"
+  challengesIndex: "${REDISSON_JOB_INDEX:-challenges}"
+  mmIndex: "${REDISSON_JOB_INDEX:-mmatches}"
+  srmsIndex: "${REDISSON_JOB_INDEX:-srms}"
+  challengesType: "${REDISSON_JOB_TYPE:-challenges}"
+  mmType: "${REDISSON_JOB_TYPE:-mmatches}"
+  srmsType: "${REDISSON_JOB_TYPE:-srms}"
+  batchUpdateSize: "${REDISSON_JOB_BATCH_UPDATE_SIZE:-100}"
+  loadChangedChallengesJobLastRunTimestampPrefix: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LAST_RUN_TIMESTAMP_PREFIX:-loadChangedChallengesJobLastRunTimestamp}"
+  marathonMatchesJobLastRunTimestampPrefix: "${REDISSON_MM_JOB_LAST_RUN_TIMESTAMP_PREFIX:-marathonMatchesJobLastRunTimestamp}"
+  singleRoundMatchesJobLastRunTimestampPrefix: "${REDISSON_SRM_JOB_LAST_RUN_TIMESTAMP_PREFIX:-singleRoundMatchesJobLastRunTimestamp}"
+  loadChangedChallengesJobLockerKeyName: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LOCK_KEY:-loadChangedChallengesJobLockKey}"
+  marathonMatchesJobLockerKeyName: "${REDISSON_MM_JOB_LOCK_KEY:-marathonMatchesJobLockerKey}"
+  singleRoundMatchesJobLockerKeyName: "${REDISSON_SRM_JOB_LOCK_KEY:-singleRoundMatchesJobLockerKey}"
+  useLinuxNativeEpoll: "${REDISSON_JOB_USE_LINUX_NATIVE_EPOLL:-false}"
+  lockWatchdogTimeout: "${REDISSON_JOB_LOCK_WATCHDOG_TIMEOUT:-30000}"
+  singleServerAddress: "${REDISSON_JOB_SINGLE_SERVER_ADDRESS:-redis://cockpit.cloud.topcoder.com:6379}"
+  clusterEnabled: "${REDISSON_JOB_CLUSTER_ENABLED:-false}"
   nodeAdresses:
-    - "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_NODE1:-redis://localhost:7001}"
+    - "${REDISSON_JOB_NODE1:-redis://localhost:7001}"
+  # number of last x days for the jobs
+  marathonMatchesDaysToSubtract: -180
+  singleRoundMatchesDaysToSubtract: -60
 
 jobs:
   com.appirio.service.challengefeeder.job.LoadChangedChallengesJob: "${LOAD_CHANGED_CHALLENGES_JOB_INTERVAL:-30s}"
+  com.appirio.service.challengefeeder.job.MarathonMatchesJob: "${LOAD_MARATHON_MATCHES_JOB_INTERVAL:-30s}"
+  com.appirio.service.challengefeeder.job.SingleRoundMatchesJob: "${LOAD_SINGLE_ROUND_MATCHES_JOB_INTERVAL:-30s}"
   
 # use the simple server factory if you only want to run on a single port
 #server:

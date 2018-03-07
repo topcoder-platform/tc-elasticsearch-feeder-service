@@ -4,6 +4,7 @@
 package com.appirio.service.challengefeeder.job;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -18,63 +19,49 @@ import org.redisson.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.appirio.service.challengefeeder.ChallengeFeederServiceConfiguration;
-import com.appirio.service.challengefeeder.dao.ChallengeFeederDAO;
-import com.appirio.service.challengefeeder.dto.ChallengeFeederParam;
-import com.appirio.service.challengefeeder.manager.ChallengeFeederManager;
+import com.appirio.service.challengefeeder.dao.SRMFeederDAO;
+import com.appirio.service.challengefeeder.dto.DataScienceFeederParam;
+import com.appirio.service.challengefeeder.manager.SRMFeederManager;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.supply.DAOFactory;
 import com.appirio.tech.core.api.v3.TCID;
 
 import de.spinscale.dropwizard.jobs.annotations.DelayStart;
 import de.spinscale.dropwizard.jobs.annotations.Every;
+import lombok.NoArgsConstructor;
 
 /**
- * LoadChangedChallengesJob is used to load the changed challenges.
+ * SingleRoundMatchesJob is used to populate single round matches matches to elasticsearch.
  * 
- * It's added in Topcoder - Create CronJob For Populating Changed Challenges To Elasticsearch v1.0
+ * It was added in Topcoder - Create CronJob For Populating Marathon Matches and SRMs To Elasticsearch v1.0
  * 
  * @author TCCoder
  * @version 1.0
  *
  */
-@DelayStart("15s")
-@Every("${com.appirio.service.challengefeeder.job.LoadChangedChallengesJob}")
-public class LoadChangedChallengesJob extends BaseJob {
+@DelayStart("25s")
+@Every("${com.appirio.service.challengefeeder.job.SingleRoundMatchesJob}")
+@NoArgsConstructor
+public class SingleRoundMatchesJob extends BaseJob {
+    
+    /**
+     * The single round match feeder manager instance.
+     */
+    private SRMFeederManager manager;
 
     /**
      * Logger used to log events
      */
-    private static final Logger logger = LoggerFactory.getLogger(LoadChangedChallengesJob.class);
+    private static final Logger logger = LoggerFactory.getLogger(SingleRoundMatchesJob.class);
+
+    public SingleRoundMatchesJob(SRMFeederManager manager) {
+        this.manager = manager;
+    }
 
     /**
-     * The challengeFeederManager field
-     */
-    private ChallengeFeederManager challengeFeederManager;
-
-    /**
-     * Create LoadChangedChallengesJob
+     * Do job. Load the single round matches to elasticsearch service.
      *
-     * @param challengeFeederManager the challengeFeederManager to use
-     * @param config the config to use
-     */
-    public LoadChangedChallengesJob(ChallengeFeederManager challengeFeederManager, ChallengeFeederServiceConfiguration config) {
-        super(config);
-        this.challengeFeederManager = challengeFeederManager;
-    }
-    
-    /**
-     * Create LoadChangedChallengesJob
-     *
-     */
-    public LoadChangedChallengesJob() {
-        super();
-    }
-    
-    /**
-     * Do job. This methods load the challenges to elastic services.
-     *
-     * @param context the context to use
+     * @param context the job context to use
      * @throws JobExecutionException if any error occurs
      */
     @Override
@@ -82,8 +69,8 @@ public class LoadChangedChallengesJob extends BaseJob {
         RLock lock = null;
         RedissonClient redisson = null;
         try {
-            if (this.challengeFeederManager == null) {
-                this.challengeFeederManager = new ChallengeFeederManager(JestClientUtils.get(GLOBAL_CONFIGURATION.getJestClientConfiguration()), DAOFactory.getInstance().createDAO(ChallengeFeederDAO.class));
+            if (this.manager == null) {
+                this.manager = new SRMFeederManager(JestClientUtils.get(GLOBAL_CONFIGURATION.getJestClientConfiguration()), DAOFactory.getInstance().createDAO(SRMFeederDAO.class));
             }
             if (this.config == null) {
                 this.config = GLOBAL_CONFIGURATION;
@@ -95,53 +82,60 @@ public class LoadChangedChallengesJob extends BaseJob {
                 for (String addr : this.config.getRedissonConfiguration().getNodeAdresses()) {
                     redissonConfig.useClusterServers().addNodeAddress(addr);
                 }
-               
             } else {
                 redissonConfig.useSingleServer().setAddress(this.config.getRedissonConfiguration().getSingleServerAddress());
             }
-            
+
             logger.info("Try to get the lock");
             redisson = Redisson.create(redissonConfig);
-            lock = redisson.getLock(config.getRedissonConfiguration().getLoadChangedChallengesJobLockerKeyName());
+            lock = redisson.getLock(config.getRedissonConfiguration().getSingleRoundMatchesJobLockerKeyName());
             lock.lock();
             logger.info("Get the lock successfully");
             
-            RMapCache<String, String> mapCache = redisson.getMapCache(config.getRedissonConfiguration().getLoadChangedChallengesJobLastRunTimestampPrefix());
-            String timestamp = mapCache.get(config.getRedissonConfiguration().getLoadChangedChallengesJobLastRunTimestampPrefix());
+            RMapCache<String, String> mapCache = redisson.getMapCache(config.getRedissonConfiguration().getSingleRoundMatchesJobLastRunTimestampPrefix());
+            String timestamp = mapCache.get(config.getRedissonConfiguration().getSingleRoundMatchesJobLastRunTimestampPrefix());
             
             Date lastRunTimestamp = new Date(INITIAL_TIMESTAMP);
             if (timestamp != null) {
                 lastRunTimestamp = DATE_FORMAT.parse(timestamp);
             }
+
+            logger.info("The last run timestamp is:" + lastRunTimestamp.getTime());
+
+            Date currentTimestamp = this.manager.getTimestamp();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentTimestamp);
+            calendar.add(Calendar.DAY_OF_MONTH, this.config.getRedissonConfiguration().getSingleRoundMatchesDaysToSubtract());
+            Date dateParam = calendar.getTime();
             
-            logger.info("The last run timestamp is:" + timestamp);
-            
-            String currentTime = DATE_FORMAT.format(this.challengeFeederManager.getTimestamp());
-            List<TCID> totalIds = this.challengeFeederManager.getChangedChallengeIds(new java.sql.Date(lastRunTimestamp.getTime()));
-            
+            logger.info("The initial timestamp is:" + dateParam);
+
+            List<TCID> totalIds = this.manager.getMatchesWithRegistrationPhaseStartedIds(new java.sql.Date(dateParam.getTime()), lastRunTimestamp.getTime());
+
             List<Long> ids = new ArrayList<Long>();
             for (int i = 0; i < totalIds.size(); ++i) {
                 ids.add(Long.parseLong(totalIds.get(i).getId()));
             }
-            logger.info("The count of the challenge ids to load:" + ids.size());
-            logger.info("The challenge ids to load:" + ids);
-            
+            logger.info("The count of the SRM ids to load:" + ids.size());
+            logger.info("The SRM ids to load:" + ids);
+
             int batchSize = this.config.getRedissonConfiguration().getBatchUpdateSize();
             int to = 0;
             int from = 0;
             while (to < ids.size()) {
                 to += (to + batchSize) > ids.size() ? (ids.size() - to) : batchSize;
                 List<Long> sub = ids.subList(from, to);
-                ChallengeFeederParam param = new ChallengeFeederParam();
-                param.setIndex(this.config.getRedissonConfiguration().getChallengesIndex());
-                param.setType(this.config.getRedissonConfiguration().getChallengesType());
-                param.setChallengeIds(sub);
-                this.challengeFeederManager.pushChallengeFeeder(param);
+                DataScienceFeederParam param = new DataScienceFeederParam();
+
+                param.setIndex(this.config.getRedissonConfiguration().getSrmsIndex());
+                param.setType(this.config.getRedissonConfiguration().getSrmsType());
+                param.setRoundIds(sub);
+                this.manager.pushSRMFeeder(param);
                 from = to;
             }
 
-            
-            mapCache.put(config.getRedissonConfiguration().getLoadChangedChallengesJobLastRunTimestampPrefix(), currentTime);
+            // mark last execution as current timestamp
+            mapCache.put(config.getRedissonConfiguration().getSingleRoundMatchesJobLastRunTimestampPrefix(), DATE_FORMAT.format(currentTimestamp));
             
             lock.unlock();
         } catch (Exception exp) {
