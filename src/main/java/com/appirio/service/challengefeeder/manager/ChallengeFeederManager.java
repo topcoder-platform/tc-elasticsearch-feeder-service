@@ -18,6 +18,7 @@ import com.appirio.service.challengefeeder.api.TermsOfUseData;
 import com.appirio.service.challengefeeder.api.WinnerData;
 import com.appirio.service.challengefeeder.dao.ChallengeFeederDAO;
 import com.appirio.service.challengefeeder.dto.ChallengeFeederParam;
+import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.supply.SupplyException;
 import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.FieldSelector;
@@ -26,10 +27,6 @@ import com.appirio.tech.core.api.v3.request.QueryParameter;
 import com.appirio.tech.core.auth.AuthUser;
 
 import io.searchbox.client.JestClient;
-import io.searchbox.core.Bulk;
-import io.searchbox.core.Bulk.Builder;
-import io.searchbox.core.Delete;
-import io.searchbox.core.Index;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,13 +42,16 @@ import java.util.Date;
 
 /**
  * ChallengeFeederManager is used to handle the challenge feeder.
- * 
- * Version 1.1 - Topcoder - Create CronJob For Populating Changed Challenges To Elasticsearch v1.0
+ *
+ * Version 1.1 - Topcoder - Populate Marathon Match Related Data Into Challenge Model In Elasticsearch v1.0
+ * - challenged to call util classes for common shared methods such as assoicate methods
+ *
+ * Version 1.2 - Topcoder - Create CronJob For Populating Changed Challenges To Elasticsearch v1.0
  * - add getTimestamp method to get the current timestamp from the database
  * - add pushChallengeFeeder method to call without admin permission check
  * 
  * @author TCSCODER
- * @version 1.1 
+ * @version 1.2
  */
 public class ChallengeFeederManager {
 
@@ -117,17 +117,7 @@ public class ChallengeFeederManager {
             throw new SupplyException("Null challenge id is not allowed", HttpServletResponse.SC_BAD_REQUEST);
         }
 
-        StringBuilder challengeIdsAsStringList = new StringBuilder();
-        for (int i = 0; i < param.getChallengeIds().size(); ++i) {
-
-            if (i < param.getChallengeIds().size() - 1) {
-                challengeIdsAsStringList.append(param.getChallengeIds().get(i) + ", ");
-            } else {
-                challengeIdsAsStringList.append(param.getChallengeIds().get(i));
-            }
-
-        }
-        FilterParameter filter = new FilterParameter("challengeIds=in(" + challengeIdsAsStringList + ")");
+        FilterParameter filter = new FilterParameter("challengeIds=in(" + ChallengeFeederUtil.listAsString(param.getChallengeIds()) + ")");
         QueryParameter queryParameter = new QueryParameter(new FieldSelector());
         queryParameter.setFilter(filter);
         List<ChallengeData> challenges = this.challengeFeederDAO.getChallenges(queryParameter);
@@ -153,37 +143,37 @@ public class ChallengeFeederManager {
 
         // associate all the data
         List<PhaseData> phases = this.challengeFeederDAO.getPhases(queryParameter);
-        this.associateAllPhases(challenges, phases);
+        ChallengeFeederUtil.associateAllPhases(challenges, phases);
 
         List<ResourceData> resources = this.challengeFeederDAO.getResources(queryParameter);
-        this.associateAllResources(challenges, resources);
+        ChallengeFeederUtil.associateAllResources(challenges, resources);
 
         List<PrizeData> prizes = this.challengeFeederDAO.getPrizes(queryParameter);
-        this.associateAllPrizes(challenges, prizes);
+        ChallengeFeederUtil.associateAllPrizes(challenges, prizes);
 
         List<CheckpointPrizeData> checkpointPrizes = this.challengeFeederDAO.getCheckpointPrizes(queryParameter);
-        this.associateAllCheckpointPrizes(challenges, checkpointPrizes);
+        ChallengeFeederUtil.associateAllCheckpointPrizes(challenges, checkpointPrizes);
 
         List<PropertyData> properties = this.challengeFeederDAO.getProperties(queryParameter);
-        this.associateAllProperties(challenges, properties);
+        ChallengeFeederUtil.associateAllProperties(challenges, properties);
 
         List<ReviewData> reviews = this.challengeFeederDAO.getReviews(queryParameter);
-        this.associateAllReviews(challenges, reviews);
+        ChallengeFeederUtil.associateAllReviews(challenges, reviews);
 
         List<SubmissionData> submissions = this.challengeFeederDAO.getSubmissions(queryParameter);
-        this.associateAllSubmissions(challenges, submissions);
+        ChallengeFeederUtil.associateAllSubmissions(challenges, submissions);
 
         List<WinnerData> winners = this.challengeFeederDAO.getWinners(queryParameter);
-        this.associateAllWinners(challenges, winners);
+        ChallengeFeederUtil.associateAllWinners(challenges, winners);
 
         List<FileTypeData> fileTypes = this.challengeFeederDAO.getFileTypes(queryParameter);
-        this.associateAllFileTypes(challenges, fileTypes);
+        ChallengeFeederUtil.associateAllFileTypes(challenges, fileTypes);
 
         List<TermsOfUseData> termsOfUse = this.challengeFeederDAO.getTerms(queryParameter);
-        this.associateAllTermsOfUse(challenges, termsOfUse);
+        ChallengeFeederUtil.associateAllTermsOfUse(challenges, termsOfUse);
         
         List<EventData> events = this.challengeFeederDAO.getEvents(queryParameter);
-        this.associateAllEvents(challenges, events);
+        ChallengeFeederUtil.associateAllEvents(challenges, events);
 
         List<Map<String, Object>> groupIds = this.challengeFeederDAO.getGroupIds(queryParameter);
         for (ChallengeData data : challenges) {
@@ -215,15 +205,8 @@ public class ChallengeFeederManager {
             }
         }
 
-        // first delete the index and then create it
-        Builder builder = new Bulk.Builder();
-        for (ChallengeData data : challenges) {
-            builder.addAction(new Delete.Builder(data.getId().toString()).index(param.getIndex()).type(param.getType()).build());
-            builder.addAction(new Index.Builder(data).index(param.getIndex()).type(param.getType()).id(data.getId().toString()).build());
-        }
-        Bulk bulk = builder.build();
         try {
-            this.jestClient.execute(bulk);
+            JestClientUtils.pushFeeders(jestClient, param, challenges);
         } catch (IOException ioe) {
             SupplyException se = new SupplyException("Internal server error occurs", ioe);
             se.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
