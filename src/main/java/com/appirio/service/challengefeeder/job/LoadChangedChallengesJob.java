@@ -123,7 +123,6 @@ public class LoadChangedChallengesJob extends Job {
             logger.info("Try to get the lock");
             redisson = Redisson.create(redissonConfig);
             lock = redisson.getLock(config.getRedissonConfiguration().getLockerKeyName());
-
             if (lock.tryLock()) {
                 logger.info("Get the lock successfully");
                 try {
@@ -139,6 +138,7 @@ public class LoadChangedChallengesJob extends Job {
                     logger.info("The last run timestamp is:" + timestamp);
 
                     String currentTime = DATE_FORMAT.format(this.challengeFeederManager.getTimestamp());
+
                     List<TCID> totalIds = this.challengeFeederManager.getChangedChallengeIds(new java.sql.Date(lastRunTimestamp.getTime()));
 
                     List<Long> ids = new ArrayList<>();
@@ -152,6 +152,12 @@ public class LoadChangedChallengesJob extends Job {
                     int to = 0;
                     int from = 0;
                     while (to < ids.size()) {
+                        // repeat to tryLock for this thread
+                        if (!lock.tryLock()) {
+                            logger.error("Fail to maintain the lock");
+
+                            return;
+                        }
                         to += (to + batchSize) > ids.size() ? (ids.size() - to) : batchSize;
                         List<Long> sub = ids.subList(from, to);
                         ChallengeFeederParam param = new ChallengeFeederParam();
@@ -167,8 +173,10 @@ public class LoadChangedChallengesJob extends Job {
                         from = to;
                     }
 
+                    logger.info("update last run timestamp is:" + timestamp);
                     mapCache.put(config.getRedissonConfiguration().getLastRunTimestampPrefix(), currentTime);
                 } finally {
+                    logger.info("release the lock");
                     lock.unlock();
                 }
             } else {
