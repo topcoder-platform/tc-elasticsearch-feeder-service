@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 import com.appirio.supply.SupplyException;
 import org.quartz.JobExecutionContext;
@@ -154,12 +153,6 @@ public class LoadChangedChallengesJob extends Job {
                     int to = 0;
                     int from = 0;
                     while (to < ids.size()) {
-                        // reset the expires
-                        if (lock.remainTimeToLive() < 30000) {
-                            logger.info("reset the lock expiration");
-                            lock.expire(redissonConfig.getLockWatchdogTimeout(), TimeUnit.MILLISECONDS);
-                        }
-
                         to += (to + batchSize) > ids.size() ? (ids.size() - to) : batchSize;
                         List<Long> sub = ids.subList(from, to);
                         ChallengeFeederParam param = new ChallengeFeederParam();
