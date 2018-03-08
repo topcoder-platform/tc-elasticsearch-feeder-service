@@ -72,8 +72,8 @@
       }
     ],
     "memory": "4096",
-    "taskRoleArn": "arn:aws:iam::811668436784:role/ecsTaskExecutionRole",  
-    "family": "tc-elasticsearch-feeder-service",  
+    "taskRoleArn": "arn:aws:iam::%s:role/ecsTaskExecutionRole",  
+    "family": "%s",  
     "requiresCompatibilities": [
       "FARGATE"
     ],
