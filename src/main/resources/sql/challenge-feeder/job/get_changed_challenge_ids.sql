@@ -37,4 +37,4 @@ FROM (
 	     prize
 	  WHERE modify_date < sysdate AND modify_date > :lastRunTimestamp
   ) cc
-  INNER JOIN project p ON cc.project_id = p.project_id by p.project_id desc
+  INNER JOIN project p ON cc.project_id = p.project_id order by p.project_id desc
