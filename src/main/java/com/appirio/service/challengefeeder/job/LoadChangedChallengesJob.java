@@ -171,6 +171,7 @@ public class LoadChangedChallengesJob extends Job {
                     logger.info("update last run timestamp is:" + timestamp);
                     mapCache.put(config.getRedissonConfiguration().getLastRunTimestampPrefix(), currentTime);
                 } finally {
+                    logger.info("release the lock");
                     lock.unlock();
                 }
             } else {

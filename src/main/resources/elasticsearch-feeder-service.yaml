@@ -61,7 +61,7 @@ redissonConfiguration:
     - "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_NODE1:-redis://localhost:7001}"
 
 jobs:
-  com.appirio.service.challengefeeder.job.LoadChangedChallengesJob: "${LOAD_CHANGED_CHALLENGES_JOB_INTERVAL:-2m}"
+  com.appirio.service.challengefeeder.job.LoadChangedChallengesJob: "${LOAD_CHANGED_CHALLENGES_JOB_INTERVAL:-2min}"
   
 # use the simple server factory if you only want to run on a single port
 #server:
