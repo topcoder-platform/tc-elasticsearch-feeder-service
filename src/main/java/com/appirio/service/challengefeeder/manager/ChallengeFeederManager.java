@@ -139,7 +139,7 @@ public class ChallengeFeederManager {
             logger.warn("These challenge ids can not be found:" + idsNotFound);
         }
         
-        logger.info("Total hits:" + challenges.size());
+        logger.info("aggregating challenge data for " + param.getChallengeIds());
 
         // associate all the data
         List<PhaseData> phases = this.challengeFeederDAO.getPhases(queryParameter);
@@ -204,6 +204,8 @@ public class ChallengeFeederManager {
                 }
             }
         }
+
+        logger.info("pushing challenge data to elasticsearch for " + param.getChallengeIds());
 
         try {
             JestClientUtils.pushFeeders(jestClient, param, challenges);

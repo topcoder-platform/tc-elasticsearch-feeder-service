@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 import com.appirio.supply.SupplyException;
 import org.quartz.JobExecutionContext;
@@ -124,60 +123,60 @@ public class LoadChangedChallengesJob extends Job {
             logger.info("Try to get the lock");
             redisson = Redisson.create(redissonConfig);
             lock = redisson.getLock(config.getRedissonConfiguration().getLockerKeyName());
-            lock.lock();
-            logger.info("Get the lock successfully");
-            
-            RMapCache<String, String> mapCache = redisson.getMapCache(config.getRedissonConfiguration().getLastRunTimestampPrefix());
-            
-            String timestamp = mapCache.get(config.getRedissonConfiguration().getLastRunTimestampPrefix());
-            
-            Date lastRunTimestamp = new Date(1L);
-            if (timestamp != null) {
-                lastRunTimestamp = DATE_FORMAT.parse(timestamp);
-            }
-            
-            logger.info("The last run timestamp is:" + timestamp);
-            
-            String currentTime = DATE_FORMAT.format(this.challengeFeederManager.getTimestamp());
-            List<TCID> totalIds = this.challengeFeederManager.getChangedChallengeIds(new java.sql.Date(lastRunTimestamp.getTime()));
-            
-            List<Long> ids = new ArrayList<Long>();
-            for (int i = 0; i < totalIds.size(); ++i) {
-                ids.add(Long.parseLong(totalIds.get(i).getId()));
-            }
-            logger.info("The count of the challenge ids to load:" + ids.size());
-            logger.info("The challenge ids to load:" + ids);
-            
-            int batchSize = this.config.getRedissonConfiguration().getBatchUpdateSize();
-            int to = 0;
-            int from = 0;
-            while (to < ids.size()) {
-                to += (to + batchSize) > ids.size() ? (ids.size() - to) : batchSize;
-                List<Long> sub = ids.subList(from, to);
-                ChallengeFeederParam param = new ChallengeFeederParam();
-                param.setIndex(this.config.getRedissonConfiguration().getChallengesIndex());
-                param.setType(this.config.getRedissonConfiguration().getChallengesType());
-                param.setChallengeIds(sub);
+
+            if (lock.tryLock()) {
+                logger.info("Get the lock successfully");
                 try {
-                    this.challengeFeederManager.pushChallengeFeeder(param);
-                } catch (SupplyException e) {
-                    logger.error("Fail to push challenge", e);
+                    RMapCache<String, String> mapCache = redisson.getMapCache(config.getRedissonConfiguration().getLastRunTimestampPrefix());
+
+                    String timestamp = mapCache.get(config.getRedissonConfiguration().getLastRunTimestampPrefix());
+
+                    Date lastRunTimestamp = new Date(1L);
+                    if (timestamp != null) {
+                        lastRunTimestamp = DATE_FORMAT.parse(timestamp);
+                    }
+
+                    logger.info("The last run timestamp is:" + timestamp);
+
+                    String currentTime = DATE_FORMAT.format(this.challengeFeederManager.getTimestamp());
+                    List<TCID> totalIds = this.challengeFeederManager.getChangedChallengeIds(new java.sql.Date(lastRunTimestamp.getTime()));
+
+                    List<Long> ids = new ArrayList<>();
+                    for (int i = 0; i < totalIds.size(); ++i) {
+                        ids.add(Long.parseLong(totalIds.get(i).getId()));
+                    }
+                    logger.info("The count of the challenge ids to load:" + ids.size());
+                    logger.info("The challenge ids to load:" + ids);
+
+                    int batchSize = this.config.getRedissonConfiguration().getBatchUpdateSize();
+                    int to = 0;
+                    int from = 0;
+                    while (to < ids.size()) {
+                        to += (to + batchSize) > ids.size() ? (ids.size() - to) : batchSize;
+                        List<Long> sub = ids.subList(from, to);
+                        ChallengeFeederParam param = new ChallengeFeederParam();
+                        param.setIndex(this.config.getRedissonConfiguration().getChallengesIndex());
+                        param.setType(this.config.getRedissonConfiguration().getChallengesType());
+                        param.setChallengeIds(sub);
+                        try {
+                            this.challengeFeederManager.pushChallengeFeeder(param);
+                        } catch (SupplyException e) {
+                            logger.error("Fail to push challenge", e);
+                        }
+
+                        from = to;
+                    }
+
+                    mapCache.put(config.getRedissonConfiguration().getLastRunTimestampPrefix(), currentTime);
+                } finally {
+                    lock.unlock();
                 }
-
-                from = to;
+            } else {
+                logger.warn("the previous job is still running");
             }
-
-            
-            mapCache.put(config.getRedissonConfiguration().getLastRunTimestampPrefix(), currentTime);
-            
-            lock.unlock();
         } catch (Exception exp) {
             throw new JobExecutionException("Error occurs when executing the job", exp);
         } finally {
-            if (lock != null) {
-                lock.expire(100, TimeUnit.MILLISECONDS);
-                
-            }
             if (redisson != null) {
                 redisson.shutdown();
             }

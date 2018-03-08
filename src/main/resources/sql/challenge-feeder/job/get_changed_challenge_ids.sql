@@ -1,39 +1,40 @@
 SELECT 
-DISTINCT (project_id) as id 
+DISTINCT p.project_id as id
 FROM (
 	SELECT DISTINCT
 	   (project_id) 
 	  FROM
-	     project 
+	     project
 	  WHERE modify_date < sysdate AND modify_date > :lastRunTimestamp
 	  UNION
 	  SELECT DISTINCT
 	    (project_id) 
 	  FROM
-	     project_info 
+	     project_info
 	  WHERE modify_date < sysdate AND modify_date > :lastRunTimestamp
 	  UNION
 	  SELECT DISTINCT
 	  (project_id) 
 	  FROM
-	     project_phase 
+	     project_phase
 	  WHERE modify_date < sysdate AND modify_date > :lastRunTimestamp
 	  UNION
 	  SELECT DISTINCT
 	    (project_id) 
 	  FROM
-	     upload 
+	     upload
 	  WHERE modify_date < sysdate AND modify_date > :lastRunTimestamp
 	  UNION
 	  SELECT DISTINCT
 	   (project_id) 
 	  FROM
-	     resource 
+	     resource
 	  WHERE modify_date < sysdate AND modify_date > :lastRunTimestamp
 	  UNION
 	  SELECT DISTINCT
 	   (project_id) 
 	  FROM
-	     prize 
+	     prize
 	  WHERE modify_date < sysdate AND modify_date > :lastRunTimestamp
-  ) where project_id is not null order by project_id desc
+  ) cc
+  INNER JOIN project p ON cc.project_id == p.project_id  by p.project_id desc
