@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import com.appirio.supply.SupplyException;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.redisson.Redisson;
@@ -166,7 +165,7 @@ public class LoadChangedChallengesJob extends Job {
                         param.setChallengeIds(sub);
                         try {
                             this.challengeFeederManager.pushChallengeFeeder(param);
-                        } catch (SupplyException e) {
+                        } catch (Exception e) {
                             logger.error("Fail to push challenge", e);
                         }
 
