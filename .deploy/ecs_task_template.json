@@ -1,13 +1,13 @@
 {
-    "executionRoleArn": "arn:aws:iam::811668436784:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::%s:role/ecsTaskExecutionRole",
     "containerDefinitions": [
       { 
         "logConfiguration": {
           "logDriver": "awslogs",
           "options": {
-            "awslogs-group": "/ecs/tc-elasticsearch-feeder-service",
-            "awslogs-region": "us-east-1",
-            "awslogs-stream-prefix": "ecs_dev"
+            "awslogs-group": "/ecs/%s",
+            "awslogs-region": "%s",
+            "awslogs-stream-prefix": "ecs"
           }
         },     
         "portMappings": [
