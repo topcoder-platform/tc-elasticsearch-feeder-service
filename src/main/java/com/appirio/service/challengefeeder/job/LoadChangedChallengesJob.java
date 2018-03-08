@@ -139,6 +139,10 @@ public class LoadChangedChallengesJob extends Job {
                     logger.info("The last run timestamp is:" + timestamp);
 
                     String currentTime = DATE_FORMAT.format(this.challengeFeederManager.getTimestamp());
+
+                    logger.info("update last run timestamp is:" + timestamp);
+                    mapCache.put(config.getRedissonConfiguration().getLastRunTimestampPrefix(), currentTime);
+
                     List<TCID> totalIds = this.challengeFeederManager.getChangedChallengeIds(new java.sql.Date(lastRunTimestamp.getTime()));
 
                     List<Long> ids = new ArrayList<>();
@@ -166,8 +170,6 @@ public class LoadChangedChallengesJob extends Job {
 
                         from = to;
                     }
-
-                    mapCache.put(config.getRedissonConfiguration().getLastRunTimestampPrefix(), currentTime);
                 } finally {
                     lock.unlock();
                 }
