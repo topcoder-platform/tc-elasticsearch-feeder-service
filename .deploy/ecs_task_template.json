@@ -68,7 +68,7 @@
         "memoryReservation": 512,      
         "image": "%s",      
         "essential": true,      
-        "name": "tc-elasticsearch-feeder-service"
+        "name": "%s"
       }
     ],
     "memory": "4096",
