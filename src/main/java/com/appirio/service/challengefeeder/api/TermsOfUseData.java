@@ -57,7 +57,7 @@ public class TermsOfUseData {
      */
     @Getter
     @Setter
-    private Long templateId;
+    private String templateId;
 
     /**
      * The url field

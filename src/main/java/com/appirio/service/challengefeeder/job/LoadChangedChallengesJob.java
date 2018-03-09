@@ -3,10 +3,12 @@
  */
 package com.appirio.service.challengefeeder.job;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.TimeZone;
 
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -26,6 +28,7 @@ import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.supply.DAOFactory;
 import com.appirio.tech.core.api.v3.TCID;
 
+import de.spinscale.dropwizard.jobs.Job;
 import de.spinscale.dropwizard.jobs.annotations.DelayStart;
 import de.spinscale.dropwizard.jobs.annotations.Every;
 
@@ -40,18 +43,35 @@ import de.spinscale.dropwizard.jobs.annotations.Every;
  */
 @DelayStart("15s")
 @Every("${com.appirio.service.challengefeeder.job.LoadChangedChallengesJob}")
-public class LoadChangedChallengesJob extends BaseJob {
-
+public class LoadChangedChallengesJob extends Job {
+    /**
+     * The GLOBAL_CONFIGURATION field
+     */
+    public static ChallengeFeederServiceConfiguration GLOBAL_CONFIGURATION;
+    
     /**
      * Logger used to log events
      */
     private static final Logger logger = LoggerFactory.getLogger(LoadChangedChallengesJob.class);
+    
+    /**
+     * The DATE_FORMAT field
+     */
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    static {
+        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
 
     /**
      * The challengeFeederManager field
      */
     private ChallengeFeederManager challengeFeederManager;
-
+    
+    /**
+     * The config field
+     */
+    private ChallengeFeederServiceConfiguration config;
+    
     /**
      * Create LoadChangedChallengesJob
      *
@@ -59,8 +79,8 @@ public class LoadChangedChallengesJob extends BaseJob {
      * @param config the config to use
      */
     public LoadChangedChallengesJob(ChallengeFeederManager challengeFeederManager, ChallengeFeederServiceConfiguration config) {
-        super(config);
         this.challengeFeederManager = challengeFeederManager;
+        this.config = config;
     }
     
     /**
@@ -68,7 +88,6 @@ public class LoadChangedChallengesJob extends BaseJob {
      *
      */
     public LoadChangedChallengesJob() {
-        super();
     }
     
     /**
@@ -102,59 +121,67 @@ public class LoadChangedChallengesJob extends BaseJob {
             
             logger.info("Try to get the lock");
             redisson = Redisson.create(redissonConfig);
-            lock = redisson.getLock(config.getRedissonConfiguration().getLoadChangedChallengesJobLockerKeyName());
-            lock.lock();
-            logger.info("Get the lock successfully");
-            
-            RMapCache<String, String> mapCache = redisson.getMapCache(config.getRedissonConfiguration().getLoadChangedChallengesJobLastRunTimestampPrefix());
-            String timestamp = mapCache.get(config.getRedissonConfiguration().getLoadChangedChallengesJobLastRunTimestampPrefix());
-            
-            Date lastRunTimestamp = new Date(INITIAL_TIMESTAMP);
-            if (timestamp != null) {
-                lastRunTimestamp = DATE_FORMAT.parse(timestamp);
-            }
-            
-            logger.info("The last run timestamp is:" + timestamp);
-            
-            String currentTime = DATE_FORMAT.format(this.challengeFeederManager.getTimestamp());
-            List<TCID> totalIds = this.challengeFeederManager.getChangedChallengeIds(new java.sql.Date(lastRunTimestamp.getTime()));
-            
-            List<Long> ids = new ArrayList<Long>();
-            for (int i = 0; i < totalIds.size(); ++i) {
-                ids.add(Long.parseLong(totalIds.get(i).getId()));
-            }
-            logger.info("The count of the challenge ids to load:" + ids.size());
-            logger.info("The challenge ids to load:" + ids);
-            
-            int batchSize = this.config.getRedissonConfiguration().getBatchUpdateSize();
-            int to = 0;
-            int from = 0;
-            while (to < ids.size()) {
-                to += (to + batchSize) > ids.size() ? (ids.size() - to) : batchSize;
-                List<Long> sub = ids.subList(from, to);
-                ChallengeFeederParam param = new ChallengeFeederParam();
-                param.setIndex(this.config.getRedissonConfiguration().getChallengesIndex());
-                param.setType(this.config.getRedissonConfiguration().getChallengesType());
-                param.setChallengeIds(sub);
-                this.challengeFeederManager.pushChallengeFeeder(param);
-                from = to;
-            }
+            lock = redisson.getLock(config.getRedissonConfiguration().getLockerKeyName());
+            if (lock.tryLock()) {
+                logger.info("Get the lock successfully");
+                try {
+                    RMapCache<String, String> mapCache = redisson.getMapCache(config.getRedissonConfiguration().getLastRunTimestampPrefix());
 
-            
-            mapCache.put(config.getRedissonConfiguration().getLoadChangedChallengesJobLastRunTimestampPrefix(), currentTime);
-            
-            lock.unlock();
-        } catch (Exception exp) {
-            throw new JobExecutionException("Error occurs when executing the job", exp);
-        } finally {
-            if (lock != null) {
-                lock.expire(100, TimeUnit.MILLISECONDS);
-                
+                    String timestamp = mapCache.get(config.getRedissonConfiguration().getLastRunTimestampPrefix());
+
+                    Date lastRunTimestamp = new Date(1L);
+                    if (timestamp != null) {
+                        lastRunTimestamp = DATE_FORMAT.parse(timestamp);
+                    }
+
+                    logger.info("The last run timestamp is:" + timestamp);
+
+                    String currentTime = DATE_FORMAT.format(this.challengeFeederManager.getTimestamp());
+
+                    List<TCID> totalIds = this.challengeFeederManager.getChangedChallengeIds(new java.sql.Date(lastRunTimestamp.getTime()));
+
+                    List<Long> ids = new ArrayList<>();
+                    for (int i = 0; i < totalIds.size(); ++i) {
+                        ids.add(Long.parseLong(totalIds.get(i).getId()));
+                    }
+                    logger.info("The count of the challenge ids to load:" + ids.size());
+                    logger.info("The challenge ids to load:" + ids);
+
+                    int batchSize = this.config.getRedissonConfiguration().getBatchUpdateSize();
+                    int to = 0;
+                    int from = 0;
+                    while (to < ids.size()) {
+                        to += (to + batchSize) > ids.size() ? (ids.size() - to) : batchSize;
+                        List<Long> sub = ids.subList(from, to);
+                        ChallengeFeederParam param = new ChallengeFeederParam();
+                        param.setIndex(this.config.getRedissonConfiguration().getChallengesIndex());
+                        param.setType(this.config.getRedissonConfiguration().getChallengesType());
+                        param.setChallengeIds(sub);
+                        try {
+                            this.challengeFeederManager.pushChallengeFeeder(param);
+                        } catch (Exception e) {
+                            // ignore all exception
+                            e.printStackTrace();
+                        }
+
+                        from = to;
+                    }
+
+                    logger.info("update last run timestamp is:" + currentTime);
+                    mapCache.put(config.getRedissonConfiguration().getLastRunTimestampPrefix(), currentTime);
+                } finally {
+                    logger.info("release the lock");
+                    lock.unlock();
+                }
+            } else {
+                logger.warn("the previous job is still running");
             }
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        } finally {
             if (redisson != null) {
                 redisson.shutdown();
             }
         }
     }
-
 }

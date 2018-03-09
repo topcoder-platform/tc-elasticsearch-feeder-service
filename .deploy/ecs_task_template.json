@@ -1,12 +1,12 @@
 {
-    "executionRoleArn": "arn:aws:iam::811668436784:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::%s:role/ecsTaskExecutionRole",
     "containerDefinitions": [
       { 
         "logConfiguration": {
           "logDriver": "awslogs",
           "options": {
-            "awslogs-group": "/ecs/tc-elasticsearch-feeder-service",
-            "awslogs-region": "us-east-1",
+            "awslogs-group": "/ecs/%s",
+            "awslogs-region": "%s",
             "awslogs-stream-prefix": "ecs"
           }
         },     
@@ -55,17 +55,25 @@
           {
             "name": "TC_JWT_KEY",
             "value": "%s"
-          }
+          },
+          {
+            "name": "REDISSON_LOAD_CHANGED_CHALLENGES_JOB_SINGLE_SERVER_ADDRESS",
+            "value": "%s"
+          },
+          {
+            "name": "LOG_LEVEL",
+            "value": "%s"
+          }          
         ],      
         "memoryReservation": 512,      
         "image": "%s",      
         "essential": true,      
-        "name": "tc-elasticsearch-feeder-service"
+        "name": "%s"
       }
     ],
     "memory": "4096",
-    "taskRoleArn": "arn:aws:iam::811668436784:role/ecsTaskExecutionRole",  
-    "family": "tc-elasticsearch-feeder-service",  
+    "taskRoleArn": "arn:aws:iam::%s:role/ecsTaskExecutionRole",  
+    "family": "%s",  
     "requiresCompatibilities": [
       "FARGATE"
     ],

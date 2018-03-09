@@ -6,6 +6,10 @@ package com.appirio.service.challengefeeder.util;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
+import io.searchbox.core.Bulk;
+import io.searchbox.core.Delete;
+import io.searchbox.core.Index;
+import io.searchbox.core.Bulk.Builder;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -15,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -28,7 +33,9 @@ import vc.inreach.aws.request.AWSSigner;
 import vc.inreach.aws.request.AWSSigningRequestInterceptor;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.appirio.service.challengefeeder.api.IdentifiableData;
 import com.appirio.service.challengefeeder.config.JestClientConfiguration;
+import com.appirio.service.challengefeeder.dto.FeederParam;
 import com.google.common.base.Supplier;
 
 import com.google.gson.Gson;
@@ -45,10 +52,13 @@ import com.google.gson.JsonSerializer;
 
 /**
  * The jest client utils.
- *
+ * 
+ * Version 1.1 - Topcoder - Populate Marathon Match Related Data Into Challenge Model In Elasticsearch v1.0
+ * - add pushFeeders method which can be reused to push challenge, marathon and single round matches feeders.
+ * 
  * 
  * @author TCSCODER
- * @version 1.0
+ * @version 1.1 
  */
 public class JestClientUtils {
 
@@ -57,6 +67,26 @@ public class JestClientUtils {
      */
     private static final Gson GSON_INSTANCE = new GsonBuilder().registerTypeAdapter(Map.class, new MapDeserializer())
             .registerTypeAdapter(Date.class, new DateSerializer()).registerTypeAdapter(List.class, new ListDeserializer()).create();
+    
+    /**
+     * Push feeders
+     *
+     * @param jestClient the jestClient to use
+     * @param param the param to use
+     * @param feeders the feeders to use
+     * @throws IOException if any io error occurs
+     */
+    public static void pushFeeders(JestClient jestClient, FeederParam param, List<? extends IdentifiableData> feeders) throws IOException {
+        // first delete the index and then create it
+        Builder builder = new Bulk.Builder();
+        for (IdentifiableData data : feeders) {
+            builder.addAction(new Delete.Builder(data.getId().toString()).index(param.getIndex()).type(param.getType()).build());
+            builder.addAction(new Index.Builder(data).index(param.getIndex()).type(param.getType()).id(data.getId().toString()).build());
+        }
+        Bulk bulk = builder.build();
+
+        jestClient.execute(bulk);
+    }
 
     /**
      * Create JestClient instance

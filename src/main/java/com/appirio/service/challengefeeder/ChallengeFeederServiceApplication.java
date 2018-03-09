@@ -12,6 +12,7 @@ import com.appirio.service.challengefeeder.job.StartupJob;
 import com.appirio.service.challengefeeder.resources.HealthCheckResource;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.service.resourcefactory.ChallengeFeederFactory;
+import com.appirio.service.resourcefactory.MmFeederResourceFactory;
 import com.appirio.service.resourcefactory.MarathonMatchFeederFactory;
 import com.appirio.service.resourcefactory.SRMFeederFactory;
 import com.appirio.service.supply.resources.SupplyDatasourceFactory;
@@ -27,11 +28,17 @@ import io.searchbox.client.JestClient;
 /**
  * The entry point for challenge feeder micro service
  * <p>
- * Version 1.1 - Topcoder - Create CronJob For Populating Changed Challenges To Elasticsearch v1.0
+ * Version 1.1 - Topcoder - Populate Marathon Match Related Data Into Challenge Model In Elasticsearch v1.0
+ * - register the MmFeederResource
+ * </p>
+ *
+ * <p>
+ * Version 1.2 - Topcoder - Create CronJob For Populating Changed Challenges To Elasticsearch v1.0
  * - initialize the cron job bundle
  * </p>
+ *
  * <p>
- * Changes in v1.2 (Topcoder - Add Endpoints To Populating Marathon Matches And SRMs Into Elasticsearch v1.0):
+ * Changes in v1.3 (Topcoder - Add Endpoints To Populating Marathon Matches And SRMs Into Elasticsearch v1.0):
  * <ul>
  * <li>Added resources for Marathon Matches and SRMs.</li>
  * </ul>
@@ -125,6 +132,7 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
 
         // Register resources here
         env.jersey().register(new ChallengeFeederFactory(jestClient).getResourceInstance());
+        env.jersey().register(new MmFeederResourceFactory(jestClient).getResourceInstance());
         env.jersey().register(new HealthCheckResource());
         env.jersey().register(new MarathonMatchFeederFactory(jestClient).getResourceInstance());
         env.jersey().register(new SRMFeederFactory(jestClient).getResourceInstance());
