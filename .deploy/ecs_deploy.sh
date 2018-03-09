@@ -46,7 +46,7 @@ cp $WORKSPACE/src/main/resources/elasticsearch-feeder-service.yaml elasticsearch
 cp $WORKSPACE/.deploy/ecs_task_template.json ecs_task_template.json
 
 echo "Logging into docker"
-echo "############################"
+echo "############################ "
 docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWD
 
 #Converting environment varibale as lower case for build purpose
@@ -85,7 +85,7 @@ push_ecr_image() {
 make_task_def(){
   echo "Creating ECS task definition..."  
   task_template=`cat ecs_task_template.json`
-  task_def=$(printf "$task_template" "$AUTH_DOMAIN" $AWS_SIGNING_ENABLED $CHALLENGES_INDEX_NAME $ELASTIC_SEARCH_URL $OLTP_PW "$OLTP_URL" $OLTP_USER $TC_JWT_KEY $REDISSON_LOAD_CHANGED_CHALLENGES_JOB_SINGLE_SERVER_ADDRESS $LOG_LEVEL $TAG)  
+  task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $AWS_ECS_SERVICE $AWS_REGION "$AUTH_DOMAIN" $AWS_SIGNING_ENABLED $CHALLENGES_INDEX_NAME $ELASTIC_SEARCH_URL $OLTP_PW "$OLTP_URL" $OLTP_USER $TC_JWT_KEY $REDISSON_LOAD_CHANGED_CHALLENGES_JOB_SINGLE_SERVER_ADDRESS $LOG_LEVEL $TAG $AWS_ECS_SERVICE $AWS_ACCOUNT_ID $AWS_ECS_SERVICE)  
   echo $task_def > task_def.json
   echo "ECS task definition is created : "
   echo $task_def
