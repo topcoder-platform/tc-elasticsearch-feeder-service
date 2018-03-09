@@ -1,708 +1,476 @@
 {
-	"id": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-	"name": "mm-srm-feeder",
-	"description": "",
-	"order": [],
-	"folders": [
+	"variables": [],
+	"info": {
+		"name": "mm-srm-feeder",
+		"_postman_id": "46884e9b-44e0-8855-7c43-c8bc566c82c2",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
 		{
 			"name": "marathon-match-feeder",
 			"description": "",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"order": [
-				"d4bba4d1-c6fd-9612-8f93-222ad47c27df",
-				"90cc97a5-c355-ddb7-5445-590b5ffd967f",
-				"ab7118a8-bea4-bca4-c862-efe761578b59",
-				"da68eeb5-68ab-96c4-b9ef-5fd883f01127",
-				"22723b3a-1891-c5c0-4ed6-40f84c37e3aa",
-				"013b939e-daed-b0a4-b722-ad8f237c6814",
-				"23a53c2e-1e4d-35ff-fa0b-1b30de44f884",
-				"05b74459-7580-2157-bf9d-71b16395b89c",
-				"72379746-1a9b-f2ca-02cf-d02fdec13838"
-			],
-			"owner": "443977",
-			"folders_order": [],
-			"id": "768bd8f9-aeaa-a1e3-0335-2048df7a90cd"
+			"item": [
+				{
+					"name": "View marathon match via ElasticSearch",
+					"request": {
+						"url": "http://cockpit.cloud.topcoder.com:9200/mmatches/mmatches/13673",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "List all MMs via ElasticSearch",
+					"request": {
+						"url": "http://cockpit.cloud.topcoder.com:9200/mmatches/mmatches/_search",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Push marathon matches",
+					"request": {
+						"url": "{{url}}/v3/elastic/mmatches",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"param\": {\r\n    \"index\": \"mmatches\",\r\n    \"type\": \"mmatches\",\r\n    \"roundIds\": [13673, 13675]\r\n  }\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Push marathon matches not admin",
+					"request": {
+						"url": "{{url}}/v3/elastic/mmatches",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJ1c2VyIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1OCIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.QPY2GG6MB1I-q-ux3HEJu4L12Ej032cvyNY-ApMGq9Y",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"param\": {\r\n    \"index\": \"mmatches\",\r\n    \"type\": \"mmatches\",\r\n    \"roundIds\": [13673, 13675]\r\n  }\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Push marathon matches invalid body",
+					"request": {
+						"url": "{{url}}/v3/elastic/mmatches",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Push marathon matches missing index",
+					"request": {
+						"url": "{{url}}/v3/elastic/mmatches",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"param\": {\r\n    \"type\": \"mmatches\",\r\n    \"roundIds\": [13673]\r\n  }\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Push marathon matches empty index name",
+					"request": {
+						"url": "{{url}}/v3/elastic/mmatches",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"param\": {\r\n    \"index\" : \"    \",\r\n    \"type\": \"mmatches\",\r\n    \"roundIds\": [13673]\r\n  }\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Push marathon matches round id not found",
+					"request": {
+						"url": "{{url}}/v3/elastic/mmatches",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"param\": {\r\n    \"index\": \"mmatches\",\r\n    \"type\": \"mmatches\",\r\n    \"roundIds\": [99999999]\r\n  }\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Push marathon matches round ids empty",
+					"request": {
+						"url": "{{url}}/v3/elastic/mmatches",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"param\": {\r\n    \"index\": \"mmatches\",\r\n    \"type\": \"mmatches\",\r\n    \"roundIds\": []\r\n  }\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Push marathon matches round ids containing null id",
+					"request": {
+						"url": "{{url}}/v3/elastic/mmatches",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"param\": {\r\n    \"index\": \"mmatches\",\r\n    \"type\": \"mmatches\",\r\n    \"roundIds\": [13673, null, 13675]\r\n  }\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "srm-feeder",
 			"description": "",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"order": [
-				"6042ba0e-e6f3-30c2-1411-3cd17ae2f172",
-				"ebf16681-d8db-da55-b429-fbf99d24cb2b",
-				"979e6910-83bf-688f-be0c-318a3667e813",
-				"a15a2a5d-1b28-c66f-440c-5328d4bb31df",
-				"f8444378-566b-7ca7-e514-27f6b9d6b983",
-				"0c8437b2-ba7d-f01a-1dd9-086cb9f25317",
-				"c806ff3a-55a6-eb0a-aa77-bae9433dea63",
-				"23dcbe29-0013-9d49-985f-5481cca0e978",
-				"e10a88c4-41f8-73c0-5b32-5ca06ebe227a"
-			],
-			"owner": "443977",
-			"folders_order": [],
-			"id": "6f7f82cd-8789-67c5-7e96-5d6e6a912130"
-		}
-	],
-	"folders_order": [
-		"768bd8f9-aeaa-a1e3-0335-2048df7a90cd",
-		"6f7f82cd-8789-67c5-7e96-5d6e6a912130"
-	],
-	"timestamp": 1516898487782,
-	"owner": "443977",
-	"public": false,
-	"events": [],
-	"variables": [],
-	"auth": null,
-	"requests": [
-		{
-			"id": "013b939e-daed-b0a4-b722-ad8f237c6814",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA\n",
-			"headerData": [
+			"item": [
 				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
+					"name": "View SRM via ElasticSearch",
+					"request": {
+						"url": "http://cockpit.cloud.topcoder.com:9200/srms/srms/13672",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
 				},
 				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/v3/elastic/mmatches",
-			"folder": "768bd8f9-aeaa-a1e3-0335-2048df7a90cd",
-			"queryParams": [],
-			"events": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "PUT",
-			"data": [],
-			"dataMode": "raw",
-			"version": 2,
-			"auth": null,
-			"time": 1516911481337,
-			"name": "Push marathon matches empty index name",
-			"description": "",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"responses": [],
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": "{\r\n  \"param\": {\r\n    \"index\" : \"    \",\r\n    \"type\": \"mmatches\",\r\n    \"roundIds\": [13673]\r\n  }\r\n}"
-		},
-		{
-			"id": "05b74459-7580-2157-bf9d-71b16395b89c",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
+					"name": "List all SRMs via ElasticSearch",
+					"request": {
+						"url": "http://cockpit.cloud.topcoder.com:9200/srms/srms/_search",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
 				},
 				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/v3/elastic/mmatches",
-			"queryParams": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"events": null,
-			"auth": null,
-			"method": "PUT",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"data": [],
-			"dataMode": "raw",
-			"name": "Push marathon matches round ids empty",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1516911011862,
-			"version": 2,
-			"responses": [],
-			"folder": "768bd8f9-aeaa-a1e3-0335-2048df7a90cd",
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": "{\r\n  \"param\": {\r\n    \"index\": \"mmatches\",\r\n    \"type\": \"mmatches\",\r\n    \"roundIds\": []\r\n  }\r\n}"
-		},
-		{
-			"id": "0c8437b2-ba7d-f01a-1dd9-086cb9f25317",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
+					"name": "Push SRMs",
+					"request": {
+						"url": "{{url}}/v3/elastic/srms",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"param\": {\r\n    \"index\": \"srms\",\r\n    \"type\": \"srms\",\r\n    \"roundIds\": [13672, 13676]\r\n  }\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
 				},
 				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/v3/elastic/srms",
-			"queryParams": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"events": null,
-			"auth": null,
-			"method": "PUT",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"data": [],
-			"dataMode": "raw",
-			"name": "Push SRMs empty index name",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1516911513902,
-			"version": 2,
-			"responses": [],
-			"folder": "6f7f82cd-8789-67c5-7e96-5d6e6a912130",
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": "{\r\n  \"param\": {\r\n    \"index\" : \"    \",\r\n    \"type\": \"srms\",\r\n    \"roundIds\": [13676]\r\n  }\r\n}"
-		},
-		{
-			"id": "22723b3a-1891-c5c0-4ed6-40f84c37e3aa",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
+					"name": "Push SRMs not admin",
+					"request": {
+						"url": "{{url}}/v3/elastic/srms",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJ1c2VyIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1OCIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.QPY2GG6MB1I-q-ux3HEJu4L12Ej032cvyNY-ApMGq9Y",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"param\": {\r\n    \"index\": \"srms\",\r\n    \"type\": \"srms\",\r\n    \"roundIds\": [13672, 13676]\r\n  }\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
 				},
 				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/v3/elastic/mmatches",
-			"folder": "768bd8f9-aeaa-a1e3-0335-2048df7a90cd",
-			"queryParams": [],
-			"events": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "PUT",
-			"data": [],
-			"dataMode": "raw",
-			"version": 2,
-			"auth": null,
-			"time": 1516910908264,
-			"name": "Push marathon matches missing index",
-			"description": "",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"responses": [],
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": "{\r\n  \"param\": {\r\n    \"type\": \"mmatches\",\r\n    \"roundIds\": [13673]\r\n  }\r\n}"
-		},
-		{
-			"id": "23a53c2e-1e4d-35ff-fa0b-1b30de44f884",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
+					"name": "Push SRMs invalid body",
+					"request": {
+						"url": "{{url}}/v3/elastic/srms",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \r\n}"
+						},
+						"description": ""
+					},
+					"response": []
 				},
 				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/v3/elastic/mmatches",
-			"folder": "768bd8f9-aeaa-a1e3-0335-2048df7a90cd",
-			"queryParams": [],
-			"events": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "PUT",
-			"data": [],
-			"dataMode": "raw",
-			"auth": null,
-			"time": 1516910949412,
-			"name": "Push marathon matches round id not found",
-			"description": "",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"responses": [],
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": "{\r\n  \"param\": {\r\n    \"index\": \"mmatches\",\r\n    \"type\": \"mmatches\",\r\n    \"roundIds\": [99999999]\r\n  }\r\n}"
-		},
-		{
-			"id": "23dcbe29-0013-9d49-985f-5481cca0e978",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
+					"name": "Push SRMs missing index",
+					"request": {
+						"url": "{{url}}/v3/elastic/srms",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"param\": {\r\n    \"type\": \"srms\",\r\n    \"roundIds\": [13672]\r\n  }\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
 				},
 				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/v3/elastic/srms",
-			"queryParams": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"events": null,
-			"auth": null,
-			"method": "PUT",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"data": [],
-			"dataMode": "raw",
-			"name": "Push SRMs round ids empty",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1516911580853,
-			"version": 2,
-			"responses": [],
-			"folder": "6f7f82cd-8789-67c5-7e96-5d6e6a912130",
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": "{\r\n  \"param\": {\r\n    \"index\": \"srms\",\r\n    \"type\": \"srms\",\r\n    \"roundIds\": []\r\n  }\r\n}"
-		},
-		{
-			"id": "6042ba0e-e6f3-30c2-1411-3cd17ae2f172",
-			"headers": "",
-			"headerData": [],
-			"url": "http://cockpit.cloud.topcoder.com:9200/srms/srms/13672",
-			"folder": "6f7f82cd-8789-67c5-7e96-5d6e6a912130",
-			"queryParams": [],
-			"events": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": "params",
-			"version": 2,
-			"auth": null,
-			"time": 1516991820725,
-			"name": "View SRM via ElasticSearch",
-			"description": "",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"responses": [],
-			"currentHelper": null,
-			"helperAttributes": null
-		},
-		{
-			"id": "72379746-1a9b-f2ca-02cf-d02fdec13838",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
+					"name": "Push SRMs empty index name",
+					"request": {
+						"url": "{{url}}/v3/elastic/srms",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"param\": {\r\n    \"index\" : \"    \",\r\n    \"type\": \"srms\",\r\n    \"roundIds\": [13676]\r\n  }\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
 				},
 				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/v3/elastic/mmatches",
-			"queryParams": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"events": null,
-			"auth": null,
-			"method": "PUT",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"data": [],
-			"dataMode": "raw",
-			"name": "Push marathon matches round ids containing null id",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1516911064628,
-			"version": 2,
-			"responses": [],
-			"folder": "768bd8f9-aeaa-a1e3-0335-2048df7a90cd",
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": "{\r\n  \"param\": {\r\n    \"index\": \"mmatches\",\r\n    \"type\": \"mmatches\",\r\n    \"roundIds\": [13673, null, 13675]\r\n  }\r\n}"
-		},
-		{
-			"id": "90cc97a5-c355-ddb7-5445-590b5ffd967f",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
+					"name": "Push SRMs round id not found",
+					"request": {
+						"url": "{{url}}/v3/elastic/srms",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"param\": {\r\n    \"index\": \"srms\",\r\n    \"type\": \"srms\",\r\n    \"roundIds\": [99999999]\r\n  }\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
 				},
 				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/v3/elastic/mmatches",
-			"folder": "768bd8f9-aeaa-a1e3-0335-2048df7a90cd",
-			"queryParams": [],
-			"events": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "PUT",
-			"data": [],
-			"dataMode": "raw",
-			"auth": null,
-			"time": 1516898556655,
-			"name": "Push marathon matches",
-			"description": "",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"responses": [],
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": "{\r\n  \"param\": {\r\n    \"index\": \"mmatches\",\r\n    \"type\": \"mmatches\",\r\n    \"roundIds\": [13673, 13675]\r\n  }\r\n}"
-		},
-		{
-			"id": "979e6910-83bf-688f-be0c-318a3667e813",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJ1c2VyIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1OCIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.QPY2GG6MB1I-q-ux3HEJu4L12Ej032cvyNY-ApMGq9Y\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
+					"name": "Push SRMs round ids empty",
+					"request": {
+						"url": "{{url}}/v3/elastic/srms",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"param\": {\r\n    \"index\": \"srms\",\r\n    \"type\": \"srms\",\r\n    \"roundIds\": []\r\n  }\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
 				},
 				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJ1c2VyIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1OCIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.QPY2GG6MB1I-q-ux3HEJu4L12Ej032cvyNY-ApMGq9Y",
-					"description": "",
-					"enabled": true
+					"name": "Push SRMs round ids containing null id",
+					"request": {
+						"url": "{{url}}/v3/elastic/srms",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"param\": {\r\n    \"index\": \"srms\",\r\n    \"type\": \"srms\",\r\n    \"roundIds\": [13672, null, 13676]\r\n  }\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
 				}
-			],
-			"url": "http://localhost:8080/v3/elastic/srms",
-			"queryParams": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"events": null,
-			"auth": null,
-			"method": "PUT",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"data": [],
-			"dataMode": "raw",
-			"name": "Push SRMs not admin",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1516911383885,
-			"version": 2,
-			"responses": [],
-			"folder": "6f7f82cd-8789-67c5-7e96-5d6e6a912130",
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": "{\r\n  \"param\": {\r\n    \"index\": \"srms\",\r\n    \"type\": \"srms\",\r\n    \"roundIds\": [13672, 13676]\r\n  }\r\n}"
-		},
-		{
-			"id": "a15a2a5d-1b28-c66f-440c-5328d4bb31df",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/v3/elastic/srms",
-			"queryParams": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"events": null,
-			"auth": null,
-			"method": "PUT",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"data": [],
-			"dataMode": "raw",
-			"name": "Push SRMs invalid body",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1516911407245,
-			"version": 2,
-			"responses": [],
-			"folder": "6f7f82cd-8789-67c5-7e96-5d6e6a912130",
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": "{\r\n  \r\n}"
-		},
-		{
-			"id": "ab7118a8-bea4-bca4-c862-efe761578b59",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJ1c2VyIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1OCIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.QPY2GG6MB1I-q-ux3HEJu4L12Ej032cvyNY-ApMGq9Y\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJ1c2VyIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1OCIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.QPY2GG6MB1I-q-ux3HEJu4L12Ej032cvyNY-ApMGq9Y",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/v3/elastic/mmatches",
-			"queryParams": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"events": null,
-			"auth": null,
-			"method": "PUT",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"data": [],
-			"dataMode": "raw",
-			"name": "Push marathon matches not admin",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1516910779296,
-			"version": 2,
-			"responses": [],
-			"folder": "768bd8f9-aeaa-a1e3-0335-2048df7a90cd",
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": "{\r\n  \"param\": {\r\n    \"index\": \"mmatches\",\r\n    \"type\": \"mmatches\",\r\n    \"roundIds\": [13673, 13675]\r\n  }\r\n}"
-		},
-		{
-			"id": "c806ff3a-55a6-eb0a-aa77-bae9433dea63",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/v3/elastic/srms",
-			"queryParams": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"events": null,
-			"auth": null,
-			"method": "PUT",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"data": [],
-			"dataMode": "raw",
-			"name": "Push SRMs round id not found",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1516911552692,
-			"version": 2,
-			"responses": [],
-			"folder": "6f7f82cd-8789-67c5-7e96-5d6e6a912130",
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": "{\r\n  \"param\": {\r\n    \"index\": \"srms\",\r\n    \"type\": \"srms\",\r\n    \"roundIds\": [99999999]\r\n  }\r\n}"
-		},
-		{
-			"id": "d4bba4d1-c6fd-9612-8f93-222ad47c27df",
-			"headers": "",
-			"headerData": [],
-			"url": "http://cockpit.cloud.topcoder.com:9200/mmatches/mmatches/13673",
-			"queryParams": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"events": [],
-			"auth": null,
-			"method": "GET",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"data": [],
-			"dataMode": "raw",
-			"name": "View marathon match via ElasticSearch",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1516898511022,
-			"version": 2,
-			"responses": [],
-			"folder": "768bd8f9-aeaa-a1e3-0335-2048df7a90cd",
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": ""
-		},
-		{
-			"id": "da68eeb5-68ab-96c4-b9ef-5fd883f01127",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/v3/elastic/mmatches",
-			"queryParams": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"events": null,
-			"auth": null,
-			"method": "PUT",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"data": [],
-			"dataMode": "raw",
-			"name": "Push marathon matches invalid body",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1516910835559,
-			"version": 2,
-			"responses": [],
-			"folder": "768bd8f9-aeaa-a1e3-0335-2048df7a90cd",
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": "{\r\n  \r\n}"
-		},
-		{
-			"id": "e10a88c4-41f8-73c0-5b32-5ca06ebe227a",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/v3/elastic/srms",
-			"queryParams": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"events": null,
-			"auth": null,
-			"method": "PUT",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"data": [],
-			"dataMode": "raw",
-			"name": "Push SRMs round ids containing null id",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1516911610708,
-			"version": 2,
-			"responses": [],
-			"folder": "6f7f82cd-8789-67c5-7e96-5d6e6a912130",
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": "{\r\n  \"param\": {\r\n    \"index\": \"srms\",\r\n    \"type\": \"srms\",\r\n    \"roundIds\": [13672, null, 13676]\r\n  }\r\n}"
-		},
-		{
-			"id": "ebf16681-d8db-da55-b429-fbf99d24cb2b",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/v3/elastic/srms",
-			"queryParams": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"events": null,
-			"auth": null,
-			"method": "PUT",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"data": [],
-			"dataMode": "raw",
-			"name": "Push SRMs",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1516898588102,
-			"version": 2,
-			"responses": [],
-			"folder": "6f7f82cd-8789-67c5-7e96-5d6e6a912130",
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": "{\r\n  \"param\": {\r\n    \"index\": \"srms\",\r\n    \"type\": \"srms\",\r\n    \"roundIds\": [13672, 13676]\r\n  }\r\n}"
-		},
-		{
-			"id": "f8444378-566b-7ca7-e514-27f6b9d6b983",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/v3/elastic/srms",
-			"queryParams": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"events": null,
-			"auth": null,
-			"method": "PUT",
-			"collectionId": "dec1ca41-1062-25fd-4e4e-9fe501ba4f32",
-			"data": [],
-			"dataMode": "raw",
-			"name": "Push SRMs missing index",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1516911433717,
-			"version": 2,
-			"responses": [],
-			"folder": "6f7f82cd-8789-67c5-7e96-5d6e6a912130",
-			"currentHelper": null,
-			"helperAttributes": null,
-			"rawModeData": "{\r\n  \"param\": {\r\n    \"type\": \"srms\",\r\n    \"roundIds\": [13672]\r\n  }\r\n}"
+			]
 		}
 	]
 }

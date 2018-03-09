@@ -1,11 +1,14 @@
 /*
- * Copyright (C) 2017 TopCoder Inc., All Rights Reserved.
+ * Copyright (C) 2018 TopCoder Inc., All Rights Reserved.
  */
 package com.appirio.service.challengefeeder;
 
 import com.appirio.service.BaseApplication;
+import com.appirio.service.challengefeeder.job.BaseJob;
 import com.appirio.service.challengefeeder.job.LoadChangedChallengesJob;
-import com.appirio.service.challengefeeder.job.StartupJobForLoadChallengeChallenges;
+import com.appirio.service.challengefeeder.job.MarathonMatchesJob;
+import com.appirio.service.challengefeeder.job.SingleRoundMatchesJob;
+import com.appirio.service.challengefeeder.job.StartupJob;
 import com.appirio.service.challengefeeder.resources.HealthCheckResource;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.service.resourcefactory.ChallengeFeederFactory;
@@ -38,6 +41,13 @@ import io.searchbox.client.JestClient;
  * Changes in v1.3 (Topcoder - Add Endpoints To Populating Marathon Matches And SRMs Into Elasticsearch v1.0):
  * <ul>
  * <li>Added resources for Marathon Matches and SRMs.</li>
+ * </ul>
+ * </p>
+ * <p>
+ * Changes in v1.3 (Topcoder - Create CronJob For Populating Marathon Matches and SRMs To Elasticsearch v1.0):
+ * <ul>
+ * <li>Added job for MarathonMatchesJob.</li>
+ * <li>Added job for SingleRoundMatchesJob.</li>
  * </ul>
  * </p>
  *
@@ -82,9 +92,13 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         logger.info("\t\tChallenges index: " + config.getRedissonConfiguration().getChallengesIndex());
         logger.info("\t\tChallenges type: " + config.getRedissonConfiguration().getChallengesType());
         logger.info("\t\tSingle server address: " + config.getRedissonConfiguration().getSingleServerAddress());
-        logger.info("\t\tLast run timestamp prefix: " + config.getRedissonConfiguration().getLastRunTimestampPrefix());
+        logger.info("\t\tLast run timestamp prefix for job LoadChangedChallengesJob: " + config.getRedissonConfiguration().getLoadChangedChallengesJobLastRunTimestampPrefix());
+        logger.info("\t\tLast run timestamp prefix for job MarathonMatchesJob: " + config.getRedissonConfiguration().getMarathonMatchesJobLastRunTimestampPrefix());
+        logger.info("\t\tLast run timestamp prefix for job SingleRoundMatchesJob: " + config.getRedissonConfiguration().getSingleRoundMatchesJobLastRunTimestampPrefix());
         logger.info("\t\tCluster enabled: " + config.getRedissonConfiguration().isClusterEnabled());
-        logger.info("\t\tLocker key name: " + config.getRedissonConfiguration().getLockerKeyName());
+        logger.info("\t\tLoadChangedChallengesJob Locker key name: " + config.getRedissonConfiguration().getLoadChangedChallengesJobLockerKeyName());
+        logger.info("\t\tMarathonMatchesJob Locker key name: " + config.getRedissonConfiguration().getMarathonMatchesJobLockerKeyName());
+        logger.info("\t\tSingleRoundMatchesJob Locker key name: " + config.getRedissonConfiguration().getSingleRoundMatchesJobLockerKeyName());
         logger.info("\t\tUse linux native epoll: " + config.getRedissonConfiguration().isUseLinuxNativeEpoll());
         logger.info("\t\tLock watchdog timeout: " + config.getRedissonConfiguration().getLockWatchdogTimeout());
         logger.info("\t\tNode adresses: " + config.getRedissonConfiguration().getNodeAdresses());
@@ -123,8 +137,7 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         env.jersey().register(new MarathonMatchFeederFactory(jestClient).getResourceInstance());
         env.jersey().register(new SRMFeederFactory(jestClient).getResourceInstance());
         logger.info("Services registered");
-        LoadChangedChallengesJob.GLOBAL_CONFIGURATION = config;
-        
+        BaseJob.GLOBAL_CONFIGURATION = config;
     }
 
     /**
@@ -144,11 +157,13 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
      *
      * @param bootstrap the bootstrap to use
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void initialize(Bootstrap<ChallengeFeederServiceConfiguration> bootstrap) {
         // Enable variable substitution with environment variables
         bootstrap.setConfigurationSourceProvider(
                 new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
-        bootstrap.addBundle((ConfiguredBundle) new JobsBundle(new StartupJobForLoadChallengeChallenges(), new LoadChangedChallengesJob()));
+        bootstrap.addBundle((ConfiguredBundle) new JobsBundle(new StartupJob(), new LoadChangedChallengesJob(),
+                new MarathonMatchesJob(), new SingleRoundMatchesJob()));
     }
 }

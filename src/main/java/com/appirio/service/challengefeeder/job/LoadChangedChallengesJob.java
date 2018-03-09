@@ -184,5 +184,4 @@ public class LoadChangedChallengesJob extends Job {
             }
         }
     }
-
 }

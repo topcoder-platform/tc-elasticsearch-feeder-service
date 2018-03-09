@@ -1,7 +1,8 @@
 {
+	"variables": [],
 	"info": {
 		"name": "challenge-feeder",
-		"_postman_id": "7a569420-73c9-1b1f-f3e8-72c29f04867d",
+		"_postman_id": "aca4b38a-d2e8-5a61-0773-ff1553eb6418",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -9,32 +10,35 @@
 		{
 			"name": "View challenge via ElasticSearch",
 			"request": {
+				"url": "http://cockpit.cloud.topcoder.com:9200/challenges/challenges/30005522",
 				"method": "GET",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
-				"url": "http://cockpit.cloud.topcoder.com:9200/challenges/challenges/30005522"
+				"description": ""
 			},
 			"response": []
 		},
 		{
 			"name": "View all challenges via ElasticSearch",
 			"request": {
+				"url": "http://cockpit.cloud.topcoder.com:9200/challenges/challenges/_search",
 				"method": "GET",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
-				"url": "http://cockpit.cloud.topcoder.com:9200/challenges/challenges/_search"
+				"description": ""
 			},
 			"response": []
 		},
 		{
 			"name": "Push challenges",
 			"request": {
+				"url": "{{url}}/v3/elastic/challenges",
 				"method": "PUT",
 				"header": [
 					{
@@ -50,13 +54,14 @@
 					"mode": "raw",
 					"raw": "{\r\n  \"param\": {\r\n    \"index\": \"challenges\",\r\n    \"type\": \"challenges\",\r\n    \"challengeIds\": [30005520, 30005523, 30005522]\r\n  }\r\n}"
 				},
-				"url": "http://localhost:8080/v3/elastic/challenges"
+				"description": ""
 			},
 			"response": []
 		},
 		{
 			"name": "Push challenges not admin",
 			"request": {
+				"url": "{{url}}/v3/elastic/challenges",
 				"method": "PUT",
 				"header": [
 					{
@@ -72,13 +77,14 @@
 					"mode": "raw",
 					"raw": "{\r\n  \"param\": {\r\n    \"index\": \"challenges\",\r\n    \"type\": \"challenges\",\r\n    \"challengeIds\": [30005520, 30005523, 30005522]\r\n  }\r\n}"
 				},
-				"url": "http://localhost:8080/v3/elastic/challenges"
+				"description": ""
 			},
 			"response": []
 		},
 		{
 			"name": "Push challenges invalid body",
 			"request": {
+				"url": "{{url}}/v3/elastic/challenges",
 				"method": "PUT",
 				"header": [
 					{
@@ -94,13 +100,14 @@
 					"mode": "raw",
 					"raw": "{\r\n  \r\n}"
 				},
-				"url": "http://localhost:8080/v3/elastic/challenges"
+				"description": ""
 			},
 			"response": []
 		},
 		{
 			"name": "Push challenges missing index",
 			"request": {
+				"url": "{{url}}/v3/elastic/challenges",
 				"method": "PUT",
 				"header": [
 					{
@@ -116,13 +123,14 @@
 					"mode": "raw",
 					"raw": "{\r\n  \"param\": {\r\n    \"type\": \"challenges\",\r\n    \"challengeIds\": [30005520]\r\n  }\r\n}"
 				},
-				"url": "http://localhost:8080/v3/elastic/challenges"
+				"description": ""
 			},
 			"response": []
 		},
 		{
 			"name": "Push challenges empty index name",
 			"request": {
+				"url": "{{url}}/v3/elastic/challenges",
 				"method": "PUT",
 				"header": [
 					{
@@ -138,13 +146,14 @@
 					"mode": "raw",
 					"raw": "{\r\n  \"param\": {\r\n  \t\"index\" : \"    \",\r\n    \"type\": \"challenges\",\r\n    \"challengeIds\": [30005520]\r\n  }\r\n}"
 				},
-				"url": "http://localhost:8080/v3/elastic/challenges"
+				"description": ""
 			},
 			"response": []
 		},
 		{
 			"name": "Push challenges challenge id not found",
 			"request": {
+				"url": "{{url}}/v3/elastic/challenges",
 				"method": "PUT",
 				"header": [
 					{
@@ -160,13 +169,14 @@
 					"mode": "raw",
 					"raw": "{\r\n  \"param\": {\r\n    \"index\": \"challenges\",\r\n    \"type\": \"challenges\",\r\n    \"challengeIds\": [99999999]\r\n  }\r\n}"
 				},
-				"url": "http://localhost:8080/v3/elastic/challenges"
+				"description": ""
 			},
 			"response": []
 		},
 		{
 			"name": "Push challenges challenge ids empty",
 			"request": {
+				"url": "{{url}}/v3/elastic/challenges",
 				"method": "PUT",
 				"header": [
 					{
@@ -182,13 +192,14 @@
 					"mode": "raw",
 					"raw": "{\r\n  \"param\": {\r\n    \"index\": \"challenges\",\r\n    \"type\": \"challenges\",\r\n    \"challengeIds\": []\r\n  }\r\n}"
 				},
-				"url": "http://localhost:8080/v3/elastic/challenges"
+				"description": ""
 			},
 			"response": []
 		},
 		{
 			"name": "Push challenges challenge ids containing null id",
 			"request": {
+				"url": "{{url}}/v3/elastic/challenges",
 				"method": "PUT",
 				"header": [
 					{
@@ -204,7 +215,7 @@
 					"mode": "raw",
 					"raw": "{\r\n  \"param\": {\r\n    \"index\": \"challenges\",\r\n    \"type\": \"challenges\",\r\n    \"challengeIds\": [30005520, null, 30005521]\r\n  }\r\n}"
 				},
-				"url": "http://localhost:8080/v3/elastic/challenges"
+				"description": ""
 			},
 			"response": []
 		}

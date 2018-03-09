@@ -3,28 +3,23 @@
  */
 package com.appirio.service.challengefeeder.manager;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.appirio.service.challengefeeder.Helper;
 import com.appirio.service.challengefeeder.api.SRMData;
 import com.appirio.service.challengefeeder.dao.SRMFeederDAO;
 import com.appirio.service.challengefeeder.dto.DataScienceFeederParam;
 import com.appirio.supply.SupplyException;
+import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
 import com.appirio.tech.core.auth.AuthUser;
 
 import io.searchbox.client.JestClient;
-import io.searchbox.core.Bulk;
-import io.searchbox.core.Bulk.Builder;
-import io.searchbox.core.Delete;
-import io.searchbox.core.Index;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -33,8 +28,15 @@ import javax.servlet.http.HttpServletResponse;
  * Added in Topcoder - Add Endpoints To Populating Marathon Matches And SRMs Into Elasticsearch v1.0
  * </p>
  *
+ * <p>
+ * Version 1.1 - Create CronJob For Populating Marathon Matches and SRMs To Elasticsearch v1.0
+ * - Added getTimestamp method to get the current timestamp from the database
+ * - Added pushSRMFeeder method to call without admin permission check
+ * - Added getMatchesWithRegistrationPhaseStartedIds.
+ * </p>
+ *
  * @author TCSCODER
- * @version 1.0
+ * @version 1.1
  */
 public class SRMFeederManager {
 
@@ -65,7 +67,7 @@ public class SRMFeederManager {
         this.jestClient = jestClient;
         this.srmFeederDAO = srmFeederDAO;
     }
-
+    
     /**
      * Push SRM feeder
      *
@@ -76,10 +78,8 @@ public class SRMFeederManager {
      * @throws SupplyException
      *             if any error occurs
      */
-    public void pushSRMFeeder(AuthUser authUser, DataScienceFeederParam param) throws SupplyException {
-        logger.info("Enter of pushSRMFeeder");
-        Helper.checkAdmin(authUser);
-        DataScienceHelper.checkDataScienceFeederParam(param, "srms");
+    public void pushSRMFeeder(DataScienceFeederParam param) throws SupplyException {
+        logger.info("Enter of pushSRMFeeder(DataScienceFeederParam)");
 
         List<Long> roundIds = param.getRoundIds();
         // build query string to filter on round ids
@@ -100,5 +100,46 @@ public class SRMFeederManager {
 
         // push SRM data to ElasticSearch
         DataScienceHelper.pushDataScience(jestClient, param, srms);
+    }
+
+    /**
+     * Push SRM feeder
+     *
+     * @param authUser
+     *            the authUser to use
+     * @param param
+     *            the data science feeders param to use
+     * @throws SupplyException
+     *             if any error occurs
+     */
+    public void pushSRMFeeder(AuthUser authUser, DataScienceFeederParam param) throws SupplyException {
+        logger.info("Enter of pushSRMFeeder(AuthUser, DataScienceFeederParam)");
+        Helper.checkAdmin(authUser);
+        DataScienceHelper.checkDataScienceFeederParam(param, "srms");
+        pushSRMFeeder(param);
+    }
+
+    /**
+     * Get current timestamp from the database.
+     *
+     * @throws SupplyException if any error occurs
+     * @return the timestamp result
+     */
+    public Date getTimestamp() throws SupplyException {
+        return this.srmFeederDAO.getTimestamp().getDate();
+    }
+
+    /**
+     * Get the single round matches whose registration phase started after the specified date and after the last run timestamp.
+     * 
+     * @param date The date param.
+     * @param lastRun The last run timestamp.
+     * @return The list of TCID.
+     */
+    public List<TCID> getMatchesWithRegistrationPhaseStartedIds(java.sql.Date date, long lastRun) {
+        if (date == null) {
+            throw new IllegalArgumentException("The date param should be non-null.");
+        }
+        return this.srmFeederDAO.getMatchesWithRegistrationPhaseStartedIds(date, lastRun);
     }
 }
