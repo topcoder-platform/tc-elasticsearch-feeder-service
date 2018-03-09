@@ -166,7 +166,8 @@ public class LoadChangedChallengesJob extends Job {
                         try {
                             this.challengeFeederManager.pushChallengeFeeder(param);
                         } catch (Exception e) {
-                            logger.error("Fail to push challenge", e);
+                            // ignore all exception
+                            e.printStackTrace();
                         }
 
                         from = to;
@@ -182,7 +183,7 @@ public class LoadChangedChallengesJob extends Job {
                 logger.warn("the previous job is still running");
             }
         } catch (Exception exp) {
-            throw new JobExecutionException("Error occurs when executing the job", exp);
+            exp.printStackTrace();
         } finally {
             if (redisson != null) {
                 redisson.shutdown();

@@ -99,7 +99,6 @@ public class ChallengeFeederManager {
     /**
      * Push challenge feeder
      *
-     * @param authUser the authUser to use
      * @param param the challenge feeders param to use
      * @throws SupplyException if any error occurs
      */
