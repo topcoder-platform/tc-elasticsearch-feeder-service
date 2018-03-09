@@ -151,12 +151,6 @@ public class LoadChangedChallengesJob extends Job {
                     int to = 0;
                     int from = 0;
                     while (to < ids.size()) {
-                        // repeat to tryLock for this thread
-                        if (!lock.tryLock()) {
-                            logger.error("Fail to maintain the lock");
-
-                            return;
-                        }
                         to += (to + batchSize) > ids.size() ? (ids.size() - to) : batchSize;
                         List<Long> sub = ids.subList(from, to);
                         ChallengeFeederParam param = new ChallengeFeederParam();
@@ -173,7 +167,7 @@ public class LoadChangedChallengesJob extends Job {
                         from = to;
                     }
 
-                    logger.info("update last run timestamp is:" + timestamp);
+                    logger.info("update last run timestamp is:" + currentTime);
                     mapCache.put(config.getRedissonConfiguration().getLastRunTimestampPrefix(), currentTime);
                 } finally {
                     logger.info("release the lock");
