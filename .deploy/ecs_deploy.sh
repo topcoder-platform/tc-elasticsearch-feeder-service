@@ -40,7 +40,7 @@ WORKSPACE=$PWD
 cd $DEPLOY_DIR/docker
 
 
-echo "Copying deployment files to docker folder"
+echo "Copying deployment  files to docker folder"
 cp $WORKSPACE/target/elasticsearch-feeder-service*.jar elasticsearch-feeder-service.jar
 cp $WORKSPACE/src/main/resources/elasticsearch-feeder-service.yaml elasticsearch-feeder-service.yaml
 cp $WORKSPACE/.deploy/ecs_task_template.json ecs_task_template.json
