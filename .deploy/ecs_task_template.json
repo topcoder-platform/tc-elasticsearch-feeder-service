@@ -57,7 +57,7 @@
             "value": "%s"
           },
           {
-            "name": "REDISSON_LOAD_CHANGED_CHALLENGES_JOB_SINGLE_SERVER_ADDRESS",
+            "name": "REDISSON_JOB_SINGLE_SERVER_ADDRESS",
             "value": "%s"
           },
           {
