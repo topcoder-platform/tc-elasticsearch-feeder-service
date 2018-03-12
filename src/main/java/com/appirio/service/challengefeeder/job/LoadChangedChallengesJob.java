@@ -121,20 +121,20 @@ public class LoadChangedChallengesJob extends Job {
             
             logger.info("Try to get the lock");
             redisson = Redisson.create(redissonConfig);
-            lock = redisson.getLock(config.getRedissonConfiguration().getLockerKeyName());
+            lock = redisson.getLock(config.getRedissonConfiguration().getLoadChangedChallengesJobLockerKeyName());
             if (lock.tryLock()) {
-                logger.info("Get the lock successfully");
+                logger.info("Get the lock for challenges job successfully");
                 try {
-                    RMapCache<String, String> mapCache = redisson.getMapCache(config.getRedissonConfiguration().getLastRunTimestampPrefix());
+                    RMapCache<String, String> mapCache = redisson.getMapCache(config.getRedissonConfiguration().getLoadChangedChallengesJobLastRunTimestampPrefix());
 
-                    String timestamp = mapCache.get(config.getRedissonConfiguration().getLastRunTimestampPrefix());
+                    String timestamp = mapCache.get(config.getRedissonConfiguration().getLoadChangedChallengesJobLastRunTimestampPrefix());
 
                     Date lastRunTimestamp = new Date(1L);
                     if (timestamp != null) {
                         lastRunTimestamp = DATE_FORMAT.parse(timestamp);
                     }
 
-                    logger.info("The last run timestamp is:" + timestamp);
+                    logger.info("The last run timestamp for challenges job is:" + timestamp);
 
                     String currentTime = DATE_FORMAT.format(this.challengeFeederManager.getTimestamp());
 
@@ -167,14 +167,14 @@ public class LoadChangedChallengesJob extends Job {
                         from = to;
                     }
 
-                    logger.info("update last run timestamp is:" + currentTime);
-                    mapCache.put(config.getRedissonConfiguration().getLastRunTimestampPrefix(), currentTime);
+                    logger.info("update last run timestamp for challenges job is:" + currentTime);
+                    mapCache.put(config.getRedissonConfiguration().getLoadChangedChallengesJobLastRunTimestampPrefix(), currentTime);
                 } finally {
-                    logger.info("release the lock");
+                    logger.info("release the lock for challenges job");
                     lock.unlock();
                 }
             } else {
-                logger.warn("the previous job is still running");
+                logger.warn("the previous challenges job is still running");
             }
         } catch (Exception exp) {
             exp.printStackTrace();
@@ -184,5 +184,4 @@ public class LoadChangedChallengesJob extends Job {
             }
         }
     }
-
 }
