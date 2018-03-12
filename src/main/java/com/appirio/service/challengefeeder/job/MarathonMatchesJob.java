@@ -94,65 +94,70 @@ public class MarathonMatchesJob extends BaseJob {
                 redissonConfig.useSingleServer().setAddress(this.config.getRedissonConfiguration().getSingleServerAddress());
             }
 
-            logger.info("Try to get the lock");
+            logger.info("Try to get the lock for marathon matches job");
             redisson = Redisson.create(redissonConfig);
             lock = redisson.getLock(config.getRedissonConfiguration().getMarathonMatchesJobLockerKeyName());
-            lock.lock();
-            logger.info("Get the lock successfully");
-            
-            RMapCache<String, String> mapCache = redisson.getMapCache(config.getRedissonConfiguration().getMarathonMatchesJobLastRunTimestampPrefix());
-            String timestamp = mapCache.get(config.getRedissonConfiguration().getMarathonMatchesJobLastRunTimestampPrefix());
-            
-            Date lastRunTimestamp = new Date(INITIAL_TIMESTAMP);
-            if (timestamp != null) {
-                lastRunTimestamp = DATE_FORMAT.parse(timestamp);
+            if (lock.tryLock()) {
+                logger.info("Get the lock for marathon matches job successfully");
+                try {
+                    RMapCache<String, String> mapCache = redisson.getMapCache(config.getRedissonConfiguration().getMarathonMatchesJobLastRunTimestampPrefix());
+                    String timestamp = mapCache.get(config.getRedissonConfiguration().getMarathonMatchesJobLastRunTimestampPrefix());
+
+                    Date lastRunTimestamp = new Date(INITIAL_TIMESTAMP);
+                    if (timestamp != null) {
+                        lastRunTimestamp = DATE_FORMAT.parse(timestamp);
+                    }
+
+                    logger.info("The last run timestamp for marathon matches job is:" + lastRunTimestamp.getTime());
+
+                    Date currentTimestamp = this.manager.getTimestamp();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(currentTimestamp);
+                    calendar.add(Calendar.DAY_OF_MONTH, this.config.getRedissonConfiguration().getMarathonMatchesDaysToSubtract());
+                    Date dateParam = calendar.getTime();
+
+                    logger.info("The initial timestamp for marathon matches job is:" + dateParam);
+
+                    List<TCID> totalIds = this.manager.getMatchesWithRegistrationPhaseStartedIds(new java.sql.Date(dateParam.getTime()), lastRunTimestamp.getTime());
+
+                    List<Long> ids = new ArrayList<>();
+                    for (int i = 0; i < totalIds.size(); ++i) {
+                        ids.add(Long.parseLong(totalIds.get(i).getId()));
+                    }
+
+                    logger.info("The count of the MM ids to load:" + ids.size());
+                    logger.info("The MM ids to load:" + ids);
+
+                    int batchSize = this.config.getRedissonConfiguration().getBatchUpdateSize();
+                    int to = 0;
+                    int from = 0;
+                    while (to < ids.size()) {
+                        to += (to + batchSize) > ids.size() ? (ids.size() - to) : batchSize;
+                        List<Long> sub = ids.subList(from, to);
+                        DataScienceFeederParam param = new DataScienceFeederParam();
+                        param.setIndex(this.config.getRedissonConfiguration().getMmIndex());
+                        param.setType(this.config.getRedissonConfiguration().getMmType());
+                        param.setRoundIds(sub);
+                        try {
+                             this.manager.pushMarathonMatchFeeder(param);
+                        } catch(Exception e) {
+                            e.printStackTrace();
+                        }
+                        from = to;
+                    }
+
+                    // mark last execution as current timestamp
+                    mapCache.put(config.getRedissonConfiguration().getMarathonMatchesJobLastRunTimestampPrefix(), DATE_FORMAT.format(currentTimestamp));
+                } finally {
+                    logger.info("release the lock for marathon matches job");
+                    lock.unlock();
+                }
+            } else {
+                    logger.warn("the previous job for marathon matches job is still running");
             }
-            
-            logger.info("The last run timestamp is:" + lastRunTimestamp.getTime());
-
-            Date currentTimestamp = this.manager.getTimestamp();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(currentTimestamp);
-            calendar.add(Calendar.DAY_OF_MONTH, this.config.getRedissonConfiguration().getMarathonMatchesDaysToSubtract());
-            Date dateParam = calendar.getTime();
-            
-            logger.info("The initial timestamp is:" + dateParam);
-            
-            List<TCID> totalIds = this.manager.getMatchesWithRegistrationPhaseStartedIds(new java.sql.Date(dateParam.getTime()), lastRunTimestamp.getTime());
-
-            List<Long> ids = new ArrayList<Long>();
-            for (int i = 0; i < totalIds.size(); ++i) {
-                ids.add(Long.parseLong(totalIds.get(i).getId()));
-            }
-
-            logger.info("The count of the MM ids to load:" + ids.size());
-            logger.info("The MM ids to load:" + ids);
-
-            int batchSize = this.config.getRedissonConfiguration().getBatchUpdateSize();
-            int to = 0;
-            int from = 0;
-            while (to < ids.size()) {
-                to += (to + batchSize) > ids.size() ? (ids.size() - to) : batchSize;
-                List<Long> sub = ids.subList(from, to);
-                DataScienceFeederParam param = new DataScienceFeederParam();
-                param.setIndex(this.config.getRedissonConfiguration().getMmIndex());
-                param.setType(this.config.getRedissonConfiguration().getMmType());
-                param.setRoundIds(sub);
-                this.manager.pushMarathonMatchFeeder(param);
-                from = to;
-            }
-
-            // mark last execution as current timestamp
-            mapCache.put(config.getRedissonConfiguration().getMarathonMatchesJobLastRunTimestampPrefix(), DATE_FORMAT.format(currentTimestamp));
-            
-            lock.unlock();
-        } catch (Exception exp) {
-            throw new JobExecutionException("Error occurs when executing the job", exp);
+        } catch(Exception exp) {
+           exp.printStackTrace();
         } finally {
-            if (lock != null) {
-                lock.expire(100, TimeUnit.MILLISECONDS);
-                
-            }
             if (redisson != null) {
                 redisson.shutdown();
             }
