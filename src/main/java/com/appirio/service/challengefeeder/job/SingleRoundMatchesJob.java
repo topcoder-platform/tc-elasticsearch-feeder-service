@@ -54,6 +54,10 @@ public class SingleRoundMatchesJob extends BaseJob {
      */
     private static final Logger logger = LoggerFactory.getLogger(SingleRoundMatchesJob.class);
 
+    /**
+     * Create a SingleRoundMatchesJob.
+     * @param manager the srm feeder manager
+     */
     public SingleRoundMatchesJob(SRMFeederManager manager) {
         this.manager = manager;
     }
@@ -66,7 +70,7 @@ public class SingleRoundMatchesJob extends BaseJob {
      */
     @Override
     public void doJob(JobExecutionContext context) throws JobExecutionException {
-        RLock lock = null;
+        RLock lock;
         RedissonClient redisson = null;
         try {
             if (this.manager == null) {
@@ -77,9 +81,8 @@ public class SingleRoundMatchesJob extends BaseJob {
             }
             Config redissonConfig = new Config();
             redissonConfig.setLockWatchdogTimeout(this.config.getRedissonConfiguration().getLockWatchdogTimeout());
-            redissonConfig.setUseLinuxNativeEpoll(this.config.getRedissonConfiguration().isUseLinuxNativeEpoll());
             if (this.config.getRedissonConfiguration().isClusterEnabled()) {
-                for (String addr : this.config.getRedissonConfiguration().getNodeAdresses()) {
+                for (String addr : this.config.getRedissonConfiguration().getNodeAddresses()) {
                     redissonConfig.useClusterServers().addNodeAddress(addr);
                 }
             } else {
@@ -140,6 +143,7 @@ public class SingleRoundMatchesJob extends BaseJob {
                     }
 
                     // mark last execution as current timestamp
+                    logger.info("update last run timestamp for challenges job is:" + currentTimestamp);
                     mapCache.put(config.getRedissonConfiguration().getSingleRoundMatchesJobLastRunTimestampPrefix(), DATE_FORMAT.format(currentTimestamp));
                 } finally {
                     logger.info("release the lock for single algorithm matches job");

@@ -162,15 +162,6 @@ public class RedissonConfiguration {
     private String singleRoundMatchesJobLockerKeyName;
     
     /**
-     * Represents the use linux native epoll attribute.
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private boolean useLinuxNativeEpoll;
-    
-    /**
      * Represents the lock watchdog timeout attribute.
      */
     @JsonProperty
@@ -179,12 +170,12 @@ public class RedissonConfiguration {
     private long lockWatchdogTimeout;
     
     /**
-     * Represents the adresses attribute.
+     * Represents the addresses attribute.
      */
     @JsonProperty
     @Getter
     @Setter
-    private List<String> nodeAdresses;
+    private List<String> nodeAddresses;
     
     /**
      * Represents the single server adresses attribute.

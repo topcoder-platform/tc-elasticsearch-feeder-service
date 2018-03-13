@@ -59,9 +59,8 @@ public class StartupJob extends BaseJob {
             ChallengeFeederServiceConfiguration config = GLOBAL_CONFIGURATION;
             Config redissonConfig = new Config();
             redissonConfig.setLockWatchdogTimeout(config.getRedissonConfiguration().getLockWatchdogTimeout());
-            redissonConfig.setUseLinuxNativeEpoll(config.getRedissonConfiguration().isUseLinuxNativeEpoll());
             if (config.getRedissonConfiguration().isClusterEnabled()) {
-                for (String addr : config.getRedissonConfiguration().getNodeAdresses()) {
+                for (String addr : config.getRedissonConfiguration().getNodeAddresses()) {
                     redissonConfig.useClusterServers().addNodeAddress(addr);
                 }
                

@@ -43,34 +43,16 @@ import de.spinscale.dropwizard.jobs.annotations.Every;
  */
 @DelayStart("15s")
 @Every("${com.appirio.service.challengefeeder.job.LoadChangedChallengesJob}")
-public class LoadChangedChallengesJob extends Job {
-    /**
-     * The GLOBAL_CONFIGURATION field
-     */
-    public static ChallengeFeederServiceConfiguration GLOBAL_CONFIGURATION;
-    
+public class LoadChangedChallengesJob extends BaseJob {
     /**
      * Logger used to log events
      */
     private static final Logger logger = LoggerFactory.getLogger(LoadChangedChallengesJob.class);
-    
-    /**
-     * The DATE_FORMAT field
-     */
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-    static {
-        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
-    }
 
     /**
      * The challengeFeederManager field
      */
     private ChallengeFeederManager challengeFeederManager;
-    
-    /**
-     * The config field
-     */
-    private ChallengeFeederServiceConfiguration config;
     
     /**
      * Create LoadChangedChallengesJob
@@ -98,7 +80,7 @@ public class LoadChangedChallengesJob extends Job {
      */
     @Override
     public void doJob(JobExecutionContext context) throws JobExecutionException {
-        RLock lock = null;
+        RLock lock;
         RedissonClient redisson = null;
         try {
             if (this.challengeFeederManager == null) {
@@ -109,9 +91,8 @@ public class LoadChangedChallengesJob extends Job {
             }
             Config redissonConfig = new Config();
             redissonConfig.setLockWatchdogTimeout(this.config.getRedissonConfiguration().getLockWatchdogTimeout());
-            redissonConfig.setUseLinuxNativeEpoll(this.config.getRedissonConfiguration().isUseLinuxNativeEpoll());
             if (this.config.getRedissonConfiguration().isClusterEnabled()) {
-                for (String addr : this.config.getRedissonConfiguration().getNodeAdresses()) {
+                for (String addr : this.config.getRedissonConfiguration().getNodeAddresses()) {
                     redissonConfig.useClusterServers().addNodeAddress(addr);
                 }
                

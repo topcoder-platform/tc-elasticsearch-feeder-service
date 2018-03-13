@@ -65,7 +65,7 @@ redissonConfiguration:
   lockWatchdogTimeout: "${REDISSON_JOB_LOCK_WATCHDOG_TIMEOUT:-30000}"
   singleServerAddress: "${REDISSON_JOB_SINGLE_SERVER_ADDRESS:-redis://cockpit.cloud.topcoder.com:6379}"
   clusterEnabled: "${REDISSON_JOB_CLUSTER_ENABLED:-false}"
-  nodeAdresses:
+  nodeAddresses:
     - "${REDISSON_JOB_NODE1:-redis://localhost:7001}"
   # number of last x days for the jobs
   marathonMatchesDaysToSubtract: -180

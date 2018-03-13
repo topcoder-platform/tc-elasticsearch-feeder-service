@@ -85,9 +85,8 @@ public class MarathonMatchesJob extends BaseJob {
             }
             Config redissonConfig = new Config();
             redissonConfig.setLockWatchdogTimeout(this.config.getRedissonConfiguration().getLockWatchdogTimeout());
-            redissonConfig.setUseLinuxNativeEpoll(this.config.getRedissonConfiguration().isUseLinuxNativeEpoll());
             if (this.config.getRedissonConfiguration().isClusterEnabled()) {
-                for (String addr : this.config.getRedissonConfiguration().getNodeAdresses()) {
+                for (String addr : this.config.getRedissonConfiguration().getNodeAddresses()) {
                     redissonConfig.useClusterServers().addNodeAddress(addr);
                 }
             } else {
@@ -108,7 +107,7 @@ public class MarathonMatchesJob extends BaseJob {
                         lastRunTimestamp = DATE_FORMAT.parse(timestamp);
                     }
 
-                    logger.info("The last run timestamp for marathon matches job is:" + lastRunTimestamp.getTime());
+                    logger.info("The last run timestamp for marathon matches job is:" + lastRunTimestamp);
 
                     Date currentTimestamp = this.manager.getTimestamp();
                     Calendar calendar = Calendar.getInstance();
@@ -147,6 +146,7 @@ public class MarathonMatchesJob extends BaseJob {
                     }
 
                     // mark last execution as current timestamp
+                    logger.info("update last run timestamp for challenges job is:" + currentTimestamp);
                     mapCache.put(config.getRedissonConfiguration().getMarathonMatchesJobLastRunTimestampPrefix(), DATE_FORMAT.format(currentTimestamp));
                 } finally {
                     logger.info("release the lock for marathon matches job");

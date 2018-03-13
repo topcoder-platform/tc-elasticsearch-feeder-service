@@ -99,9 +99,8 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         logger.info("\t\tLoadChangedChallengesJob Locker key name: " + config.getRedissonConfiguration().getLoadChangedChallengesJobLockerKeyName());
         logger.info("\t\tMarathonMatchesJob Locker key name: " + config.getRedissonConfiguration().getMarathonMatchesJobLockerKeyName());
         logger.info("\t\tSingleRoundMatchesJob Locker key name: " + config.getRedissonConfiguration().getSingleRoundMatchesJobLockerKeyName());
-        logger.info("\t\tUse linux native epoll: " + config.getRedissonConfiguration().isUseLinuxNativeEpoll());
         logger.info("\t\tLock watchdog timeout: " + config.getRedissonConfiguration().getLockWatchdogTimeout());
-        logger.info("\t\tNode adresses: " + config.getRedissonConfiguration().getNodeAdresses());
+        logger.info("\t\tNode addresses: " + config.getRedissonConfiguration().getNodeAddresses());
 
         logger.info("\tJobs ");
         logger.info("\t\tJobs: " + config.getJobs());
@@ -163,7 +162,7 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         // Enable variable substitution with environment variables
         bootstrap.setConfigurationSourceProvider(
                 new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
-        bootstrap.addBundle((ConfiguredBundle) new JobsBundle(new StartupJob(), new LoadChangedChallengesJob(),
+        bootstrap.addBundle(new JobsBundle(new StartupJob(), new LoadChangedChallengesJob(),
                 new MarathonMatchesJob(), new SingleRoundMatchesJob()));
     }
 }
