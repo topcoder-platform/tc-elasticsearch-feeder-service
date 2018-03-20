@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.appirio.service.challengefeeder.helper.CustomDateDeserializer;
+import com.appirio.supply.constants.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -185,7 +186,6 @@ public class ChallengeData extends IdentifiableData {
      * The subTrack field
      */
     @Getter
-    @Setter
     private String subTrack;
 
     /**
@@ -423,4 +423,13 @@ public class ChallengeData extends IdentifiableData {
     @Getter
     @Setter
     private List<WinnerData> winners;
+
+    /**
+     * Setter for {@link #subTrack}
+     * @param subTrack
+     */
+    public void setSubTrack(String subTrack) {
+        SubTrack subTrackE = SubTrack.getEnumFromDescription(subTrack);
+        this.subTrack = subTrackE.getSubTrackName();
+    }
 }
