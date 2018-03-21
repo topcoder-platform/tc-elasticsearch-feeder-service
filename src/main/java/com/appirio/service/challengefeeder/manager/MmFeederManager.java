@@ -15,6 +15,7 @@ import com.appirio.service.challengefeeder.dao.MmFeederDAO;
 import com.appirio.service.challengefeeder.dto.MmFeederParam;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.supply.SupplyException;
+import com.appirio.supply.constants.SubTrack;
 import com.appirio.tech.core.api.v3.request.FieldSelector;
 import com.appirio.tech.core.api.v3.request.FilterParameter;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
@@ -115,6 +116,14 @@ public class MmFeederManager {
         List<ResourceData> resources = this.mmFeederDAO.getResources(queryParameter);
         // set the user ids before associating the resources as the associate method will set the challenge id to null
         for (ChallengeData data : mms) {
+            //find mm legacy challenge
+            if (data.getMmChallengeId() == null) {
+                data.setIsLegacy(Boolean.TRUE);
+                data.setSubTrackFromEnum(SubTrack.MARATHON_MATCH);
+            } else {
+                data.setIsLegacy(Boolean.FALSE);
+            }
+
             for (ResourceData resourceData : resources) {
                 if (data.getId().longValue() == resourceData.getChallengeId().longValue()) {
                     if (data.getUserIds() == null) {
