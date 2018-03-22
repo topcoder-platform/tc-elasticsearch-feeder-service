@@ -46,7 +46,7 @@ cp $WORKSPACE/src/main/resources/elasticsearch-feeder-service.yaml elasticsearch
 cp $WORKSPACE/.deploy/ecs_task_template.json ecs_task_template.json
 
 echo "Logging into docker"
-echo "############################ "
+echo "############################"
 docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWD
 
 #Converting environment varibale as lower case for build purpose
