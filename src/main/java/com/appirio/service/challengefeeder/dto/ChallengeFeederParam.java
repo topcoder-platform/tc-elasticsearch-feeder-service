@@ -11,23 +11,13 @@ import lombok.Setter;
 /**
  * Represents the ChallengeFeederParam model
  * 
+ * Version 1.1 - Topcoder - Populate Marathon Match Related Data Into Challenge Model In Elasticsearch v1.0
+ * - It's changed to extend from FeederParam
+ * 
  * @author TCCoder
- * @version 1.0
+ * @version 1.1 
  */
-public class ChallengeFeederParam {
-    /**
-     * Represents the index attribute.
-     */
-    @Getter
-    @Setter
-    private String index;
-
-    /**
-     * Represents the type attribute.
-     */
-    @Getter
-    @Setter
-    private String type;
+public class ChallengeFeederParam extends FeederParam{
 
     /**
      * Represents the challenge ids attribute.
@@ -35,6 +25,5 @@ public class ChallengeFeederParam {
     @Getter
     @Setter
     private List<Long> challengeIds;
-
 }
 

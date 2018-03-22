@@ -1,0 +1,145 @@
+authRealm: tcjwt
+authDomain: "${AUTH_DOMAIN:-topcoder-dev.com}"
+
+useResponseFilter: false
+
+# Database settings.
+databases:
+
+  - datasourceName: oltp
+
+    # the name of your JDBC driver
+    driverClass: com.informix.jdbc.IfxDriver
+
+    # the username
+    user: "${OLTP_USER:-informix}"
+
+    password: "${OLTP_PW:-1nf0rm1x}"
+
+    url: "${OLTP_URL:-jdbc:informix-sqli://cockpit.cloud.topcoder.com:2021/tcs_catalog:INFORMIXSERVER=informixoltp_tcp;IFX_LOCK_MODE_WAIT=5;OPTCOMPIND=0;STMT_CACHE=1;}"
+
+    # the password
+    # NOTE: password is set as a java system property: i.e., -Ddw.database.password=<password>
+
+    validationQuery: select 1 from systables
+
+    minSize: 1
+    maxSize: 5
+    initialSize: 1
+  
+jestClientConfiguration:
+  # the elastic search URL
+  elasticSearchUrl: "${ELASTIC_SEARCH_URL:-http://cockpit.cloud.topcoder.com:9200}"
+  # the index name for challenges
+  challengesIndexName: "${CHALLENGES_INDEX_NAME:-challenges}"
+  # the max total connections
+  maxTotalConnections: 10
+  # connection timeout in milli-seconds
+  connTimeout: 60000
+  # read timeout in milli-seconds
+  readTimeout: 60000
+  # AWS signing enabled or not
+  awsSigningEnabled: "${AWS_SIGNING_ENABLED:-false}"
+  # AWS region
+  awsRegion: "${AWS_REGION:-us-east-1}"
+  # AWS service
+  awsService: "${AWS_SERVICE:-es}"
+ 
+ 
+redissonConfiguration:
+  forceInitialLoad: "${REDISSON_JOB_FORCE_INITIAL_LOAD:-false}"
+  challengesIndex: "${REDISSON_JOB_CHALLENGES_INDEX:-challenges}"
+  mmIndex: "${REDISSON_JOB_MMACHES_INDEX:-mmatches}"
+  srmsIndex: "${REDISSON_JOB_SRMS_INDEX:-srms}"
+  challengesType: "${REDISSON_JOB_CHALLENGES_TYPE:-challenges}"
+  mmType: "${REDISSON_JOB_MMATCHES_TYPE:-mmatches}"
+  srmsType: "${REDISSON_JOB_SRMS_TYPE:-srms}"
+  batchUpdateSize: "${REDISSON_JOB_BATCH_UPDATE_SIZE:-1}"
+  loadChangedChallengesJobLastRunTimestampPrefix: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LAST_RUN_TIMESTAMP_PREFIX:-loadChangedChallengesJobLastRunTimestamp}"
+  marathonMatchesJobLastRunTimestampPrefix: "${REDISSON_MM_JOB_LAST_RUN_TIMESTAMP_PREFIX:-marathonMatchesJobLastRunTimestamp}"
+  singleRoundMatchesJobLastRunTimestampPrefix: "${REDISSON_SRM_JOB_LAST_RUN_TIMESTAMP_PREFIX:-singleRoundMatchesJobLastRunTimestamp}"
+  loadChangedChallengesJobLockerKeyName: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LOCK_KEY:-loadChangedChallengesJobLockKey}"
+  marathonMatchesJobLockerKeyName: "${REDISSON_MM_JOB_LOCK_KEY:-marathonMatchesJobLockerKey}"
+  singleRoundMatchesJobLockerKeyName: "${REDISSON_SRM_JOB_LOCK_KEY:-singleRoundMatchesJobLockerKey}"  
+  lockWatchdogTimeout: "${REDISSON_JOB_LOCK_WATCHDOG_TIMEOUT:-30000}"
+  singleServerAddress: "${REDISSON_JOB_SINGLE_SERVER_ADDRESS:-redis://cockpit.cloud.topcoder.com:6379}"
+  clusterEnabled: "${REDISSON_JOB_CLUSTER_ENABLED:-false}"
+  nodeAddresses:
+    - "${REDISSON_JOB_NODE1:-redis://localhost:7001}"
+  # number of last x days for the jobs
+  marathonMatchesDaysToSubtract: -180
+  singleRoundMatchesDaysToSubtract: -60
+
+jobs:
+  com.appirio.service.challengefeeder.job.LoadChangedChallengesJob: "${LOAD_CHANGED_CHALLENGES_JOB_INTERVAL:-30s}"
+  com.appirio.service.challengefeeder.job.MarathonMatchesJob: "${LOAD_MARATHON_MATCHES_JOB_INTERVAL:-30s}"
+  com.appirio.service.challengefeeder.job.SingleRoundMatchesJob: "${LOAD_SINGLE_ROUND_MATCHES_JOB_INTERVAL:-30s}"
+  
+# use the simple server factory if you only want to run on a single port
+#server:
+#  type: simple
+#  connector:
+#    type: http
+#    port: 8080
+
+server:
+  rootPath: '/v3/*'
+#  softNofileLimit: 1000
+#  hardNofileLimit: 1000
+  applicationConnectors:
+    - type: http
+      port: 8080
+#    - type: https
+#      port: 8443
+#      keyStorePath: example.keystore
+#      keyStorePassword: example
+#      validateCerts: false
+# this requires the alpn-boot library on the JVM's boot classpath
+#    - type: spdy3
+#      port: 8445
+#      keyStorePath: example.keystore
+#      keyStorePassword: example
+#      validateCerts: false
+  adminConnectors:
+    - type: http
+      port: 8081
+#    - type: https
+#      port: 8444
+#      keyStorePath: example.keystore
+#      keyStorePassword: example
+#      validateCerts: false
+
+# Logging settings.
+logging:
+
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: INFO
+
+  # Logger-specific levels.
+  loggers:
+
+    # Sets the level for 'com.example.app' to DEBUG.
+    com.appirio: INFO
+    # io.searchbox: DEBUG
+    # org.apache.http: DEBUG
+
+
+  appenders:
+    - type: console
+      target: stdout
+      threshold: ALL
+      timeZone: UTC
+
+    - type: file
+      currentLogFilename: /var/log/ap-challenge-feeder.log
+      threshold: ALL
+      archive: true
+      archivedLogFilenamePattern: /var/log/ap-challenge-feeder-%d.log
+      archivedFileCount: 5
+      timeZone: UTC
+      logFormat:  "%-5level [%d{yyyy-dd-mm HH:mm:ss.SSS}] [%thread] %logger - %msg%n"
+
+authScheme: v3
+
+# Api version
+apiVersion: v3

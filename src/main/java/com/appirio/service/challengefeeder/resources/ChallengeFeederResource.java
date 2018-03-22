@@ -34,7 +34,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Path("elastic/challenges")
+@Path("esfeeder/challenges")
 public class ChallengeFeederResource {
 
     /**

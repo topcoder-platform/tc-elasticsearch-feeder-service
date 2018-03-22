@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.appirio.service.challengefeeder.helper.CustomDateDeserializer;
+import com.appirio.supply.constants.SubTrack;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -16,18 +17,15 @@ import lombok.Setter;
 /**
  * Represents the ChallengeData model 
  * 
+ * Version 1.1 - Topcoder - Populate Marathon Match Related Data Into Challenge Model In Elasticsearch v1.0
+ * - It extends from IdentifiableData
+ * 
+ * 
  * @author TCCoder
- * @version 1.0
+ * @version 1.1 
  *
  */
-public class ChallengeData {
-    /**
-     * The id field
-     */
-    @Getter
-    @Setter
-    private Long id;
-    
+public class ChallengeData extends IdentifiableData {
     /**
      * The numRegistrants field
      */
@@ -188,7 +186,6 @@ public class ChallengeData {
      * The subTrack field
      */
     @Getter
-    @Setter
     private String subTrack;
 
     /**
@@ -426,4 +423,36 @@ public class ChallengeData {
     @Getter
     @Setter
     private List<WinnerData> winners;
+
+
+    /**
+     * Legacy flag for MM challenge
+     */
+    @Getter
+    @Setter
+    private Boolean isLegacy;
+
+    /**
+     * Related challenge id for MM
+     */
+    @Getter
+    @Setter
+    private transient Long mmChallengeId;
+
+    /**
+     * Setter for {@link #subTrack}
+     * @param subTrack
+     */
+    public void setSubTrack(String subTrack) {
+        SubTrack subTrackE = SubTrack.getEnumFromDescription(subTrack);
+        this.subTrack = subTrackE.getSubTrackName();
+    }
+
+    /**
+     * Set subTrack from SubTrack Enum
+     * @param subTrackE SubTrack item
+     */
+    public void setSubTrackFromEnum(SubTrack subTrackE) {
+        this.subTrack = subTrackE.toString();
+    }
 }

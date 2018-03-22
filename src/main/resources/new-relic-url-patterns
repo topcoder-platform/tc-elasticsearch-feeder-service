@@ -1,1 +1,4 @@
 PUT elastic/challenges\/
+PUT elastic/mmatches/challenges\/
+PUT elastic/mmatches\/
+PUT elastic/srms\/

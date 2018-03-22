@@ -1,0 +1,1 @@
+SELECT current as date FROM sysmaster\:sysshmvals; 
