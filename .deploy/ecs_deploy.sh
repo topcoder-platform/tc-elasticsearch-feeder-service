@@ -23,8 +23,8 @@ ELASTIC_SEARCH_URL=$(eval "echo \$${ENV}_ELASTIC_SEARCH_URL")
 TC_JWT_KEY=$(eval "echo \$${ENV}_TC_JWT_KEY")
 REDISSON_JOB_SINGLE_SERVER_ADDRESS=$(eval "echo \$${ENV}_REDISSON_JOB_SINGLE_SERVER_ADDRESS")
 LOG_LEVEL=$(eval "echo \$${ENV}_LOG_LEVEL")
+CHALLENGES_INDEX_NAME=$(eval "echo \$${ENV}_LOG_LEVEL")
 #APP_NAME
-
 OLTP_USER=$(eval "echo \$${ENV}_OLTP_USER")
 OLTP_PW=$(eval "echo \$${ENV}_OLTP_PW")
 OLTP_URL=$(eval "echo \$${ENV}_OLTP_URL")
