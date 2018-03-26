@@ -18,7 +18,7 @@ securityDefinitions:
     name: Authorization
     in: header
 paths:
-  /elastic/challenges:
+  /esfeeder/challenges:
     put:
       operationId: pushChallengeFeeders
       security:
@@ -70,7 +70,7 @@ paths:
           schema:
             $ref: '#/definitions/ErrorModel'
             
-  /elastic/mmatches/challenges:
+  /esfeeder/mmatches/challenges:
     put:
       operationId: pushMarathonMatchDataIntoChallenge
       security:
@@ -123,7 +123,7 @@ paths:
           schema:
             $ref: '#/definitions/ErrorModel'
 
-  /elastic/mmatches:
+  /esfeeder/mmatches:
     put:
       operationId: pushMarathonMatchFeeders
       security:
@@ -176,7 +176,7 @@ paths:
           schema:
             $ref: '#/definitions/ErrorModel'
 
-  /elastic/srms:
+  /esfeeder/srms:
     put:
       operationId: pushSRMFeeders
       security:
