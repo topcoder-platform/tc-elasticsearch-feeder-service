@@ -4,11 +4,7 @@
 package com.appirio.service.challengefeeder;
 
 import com.appirio.service.BaseApplication;
-import com.appirio.service.challengefeeder.job.BaseJob;
-import com.appirio.service.challengefeeder.job.LoadChangedChallengesJob;
-import com.appirio.service.challengefeeder.job.MarathonMatchesJob;
-import com.appirio.service.challengefeeder.job.SingleRoundMatchesJob;
-import com.appirio.service.challengefeeder.job.StartupJob;
+import com.appirio.service.challengefeeder.job.*;
 import com.appirio.service.challengefeeder.resources.HealthCheckResource;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.service.resourcefactory.ChallengeFeederFactory;
@@ -163,6 +159,6 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         bootstrap.setConfigurationSourceProvider(
                 new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
         bootstrap.addBundle(new JobsBundle(new StartupJob(), new LoadChangedChallengesJob(),
-                new MarathonMatchesJob(), new SingleRoundMatchesJob()));
+                new MarathonMatchesJob(), new SingleRoundMatchesJob(), new LegacyMMToChallengeJob()));
     }
 }

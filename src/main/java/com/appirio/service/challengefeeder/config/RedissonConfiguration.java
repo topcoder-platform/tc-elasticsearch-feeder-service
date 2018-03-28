@@ -116,7 +116,13 @@ public class RedissonConfiguration {
     @Getter
     @Setter
     private String marathonMatchesJobLastRunTimestampPrefix;
-    
+
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String legacyMMJobLastRunTimestampPrefix;
+
     /**
      * Represents the last run timestamp prefix attribute for job SingleRoundMatchesJob.
      */
@@ -151,7 +157,13 @@ public class RedissonConfiguration {
     @Getter
     @Setter
     private String marathonMatchesJobLockerKeyName;
-    
+
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String legacyMMJobLockerKeyName;
+
     /**
      * Represents the locker key name attribute for job SingleRoundMatchesJob.
      */

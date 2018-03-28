@@ -58,9 +58,11 @@ redissonConfiguration:
   loadChangedChallengesJobLastRunTimestampPrefix: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LAST_RUN_TIMESTAMP_PREFIX:-loadChangedChallengesJobLastRunTimestamp}"
   marathonMatchesJobLastRunTimestampPrefix: "${REDISSON_MM_JOB_LAST_RUN_TIMESTAMP_PREFIX:-marathonMatchesJobLastRunTimestamp}"
   singleRoundMatchesJobLastRunTimestampPrefix: "${REDISSON_SRM_JOB_LAST_RUN_TIMESTAMP_PREFIX:-singleRoundMatchesJobLastRunTimestamp}"
+  legacyMMJobLastRunTimestampPrefix: "${REDISSON_SRM_JOB_LAST_RUN_TIMESTAMP_PREFIX:-legacyMMJobLastRunTimestamp}"
   loadChangedChallengesJobLockerKeyName: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LOCK_KEY:-loadChangedChallengesJobLockKey}"
   marathonMatchesJobLockerKeyName: "${REDISSON_MM_JOB_LOCK_KEY:-marathonMatchesJobLockerKey}"
-  singleRoundMatchesJobLockerKeyName: "${REDISSON_SRM_JOB_LOCK_KEY:-singleRoundMatchesJobLockerKey}"  
+  singleRoundMatchesJobLockerKeyName: "${REDISSON_SRM_JOB_LOCK_KEY:-singleRoundMatchesJobLockerKey}"
+  legacyMMJobLockerKeyName: "${REDISSON_LEGACY_MM_JOB_LOCK_KEY:-legacyMMJobLockerKey}"
   lockWatchdogTimeout: "${REDISSON_JOB_LOCK_WATCHDOG_TIMEOUT:-30000}"
   singleServerAddress: "${REDISSON_JOB_SINGLE_SERVER_ADDRESS:-redis://cockpit.cloud.topcoder.com:6379}"
   clusterEnabled: "${REDISSON_JOB_CLUSTER_ENABLED:-false}"
@@ -74,7 +76,8 @@ jobs:
   com.appirio.service.challengefeeder.job.LoadChangedChallengesJob: "${LOAD_CHANGED_CHALLENGES_JOB_INTERVAL:-30s}"
   com.appirio.service.challengefeeder.job.MarathonMatchesJob: "${LOAD_MARATHON_MATCHES_JOB_INTERVAL:-30s}"
   com.appirio.service.challengefeeder.job.SingleRoundMatchesJob: "${LOAD_SINGLE_ROUND_MATCHES_JOB_INTERVAL:-30s}"
-  
+  com.appirio.service.challengefeeder.job.LegacyMMToChallengeJob: "${LOAD_LEGACY_MARATHON_MATCHES_JOB_INTERVAL:-30s}"
+
 # use the simple server factory if you only want to run on a single port
 #server:
 #  type: simple

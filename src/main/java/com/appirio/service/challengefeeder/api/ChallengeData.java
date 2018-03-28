@@ -433,11 +433,11 @@ public class ChallengeData extends IdentifiableData {
     private Boolean isLegacy;
 
     /**
-     * Related challenge id for MM
+     * Related for MM type
      */
     @Getter
     @Setter
-    private transient Long mmChallengeId;
+    private Boolean isBanner;
 
     /**
      * Setter for {@link #subTrack}

@@ -16,6 +16,7 @@ import com.appirio.service.challengefeeder.dto.MmFeederParam;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.supply.SupplyException;
 import com.appirio.supply.constants.SubTrack;
+import com.appirio.tech.core.api.v3.*;
 import com.appirio.tech.core.api.v3.request.FieldSelector;
 import com.appirio.tech.core.api.v3.request.FilterParameter;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
@@ -23,17 +24,16 @@ import com.appirio.tech.core.auth.AuthUser;
 
 import io.searchbox.client.JestClient;
 
+import org.apache.lucene.search.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.stream.*;
 
 /**
  * MmFeederManager is used to handle the marathon match feeders.
@@ -72,7 +72,7 @@ public class MmFeederManager {
         this.jestClient = jestClient;
         this.mmFeederDAO = mmFeederDAO;
     }
-    
+
     /**
      * Push marathon match data into challenge model in elasticsearch.
      *
@@ -83,13 +83,38 @@ public class MmFeederManager {
     public void pushMarathonMatchDataIntoChallenge(AuthUser authUser, MmFeederParam param) throws SupplyException {
         logger.info("Enter of pushMarathonMatchDataIntoChallenge");
         Helper.checkAdmin(authUser);
+        pushMarathonMatchDataIntoChallenge(param);
+    }
+
+    /**
+     * Push marathon match data into challenge model in elasticsearch.
+     *
+     * @param param the param to use
+     * @throws SupplyException if any error occurs
+     */
+    public void pushMarathonMatchDataIntoChallenge(MmFeederParam param) throws SupplyException {
+        logger.info("Enter of pushMarathonMatchDataIntoChallenge");
         checkMarathonFeederParam(param, "challenges");
-        
+
         FilterParameter filter = new FilterParameter("roundIds=in(" + ChallengeFeederUtil.listAsString(param.getRoundIds()) + ")");
         QueryParameter queryParameter = new QueryParameter(new FieldSelector());
         queryParameter.setFilter(filter);
         List<ChallengeData> mms = this.mmFeederDAO.getMarathonMatches(queryParameter);
-        
+
+        //set legacy mm subtrach to MARATHON_MATCH
+        mms = mms.stream().map(c -> {
+            if (c.getIsLegacy()) {
+                c.setSubTrackFromEnum(SubTrack.MARATHON_MATCH);
+                c.setIsBanner(false);
+            }
+            return c;
+        }).collect(Collectors.toList());
+
+        //filter isLegacy, if set up
+        if (param.getLegacy() != null) {
+            mms = mms.stream().filter(c -> c.getIsLegacy() == param.getLegacy()).collect(Collectors.toList());
+        }
+
         checkMissedIds(param, mms);
         
         // associate all the data
@@ -116,14 +141,6 @@ public class MmFeederManager {
         List<ResourceData> resources = this.mmFeederDAO.getResources(queryParameter);
         // set the user ids before associating the resources as the associate method will set the challenge id to null
         for (ChallengeData data : mms) {
-            //find mm legacy challenge
-            if (data.getMmChallengeId() == null) {
-                data.setIsLegacy(Boolean.TRUE);
-                data.setSubTrackFromEnum(SubTrack.MARATHON_MATCH);
-            } else {
-                data.setIsLegacy(Boolean.FALSE);
-            }
-
             for (ResourceData resourceData : resources) {
                 if (data.getId().longValue() == resourceData.getChallengeId().longValue()) {
                     if (data.getUserIds() == null) {
@@ -208,4 +225,24 @@ public class MmFeederManager {
         }
     }
 
+    /**
+     * Get current timestamp from the database.
+     *
+     * @throws SupplyException if any error occurs
+     * @return the timestamp result
+     */
+    public Date getTimestamp() throws SupplyException {
+        return this.mmFeederDAO.getTimestamp().getDate();
+    }
+
+    /**
+     * Get the marathon matches whose registration phase started after the specified date and after the last run timestamp.
+     *
+     * @param date The date param.
+     * @param lastRunTimestamp The last run timestamp.
+     * @return The list of TCID.
+     */
+    public List<TCID> getMatchesWithRegistrationPhaseStartedIds(java.sql.Date date, long lastRunTimestamp) {
+        return this.mmFeederDAO.getMatchesWithRegistrationPhaseStartedIds(date, lastRunTimestamp);
+    }
 }
