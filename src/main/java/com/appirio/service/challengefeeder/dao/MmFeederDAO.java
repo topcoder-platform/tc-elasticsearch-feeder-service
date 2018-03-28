@@ -3,7 +3,8 @@
  */
 package com.appirio.service.challengefeeder.dao;
 
-import java.util.List;
+import java.sql.Date;
+import java.util.*;
 
 import com.appirio.service.challengefeeder.api.ChallengeData;
 import com.appirio.service.challengefeeder.api.EventData;
@@ -12,10 +13,13 @@ import com.appirio.service.challengefeeder.api.PrizeData;
 import com.appirio.service.challengefeeder.api.ResourceData;
 import com.appirio.service.challengefeeder.api.SubmissionData;
 import com.appirio.service.challengefeeder.api.TermsOfUseData;
+import com.appirio.service.challengefeeder.dto.*;
 import com.appirio.supply.dataaccess.ApiQueryInput;
 import com.appirio.supply.dataaccess.DatasourceName;
 import com.appirio.supply.dataaccess.SqlQueryFile;
+import com.appirio.tech.core.api.v3.*;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
+import org.skife.jdbi.v2.sqlobject.*;
 
 /**
  * DAO to interact with marathon match data
@@ -89,4 +93,21 @@ public interface MmFeederDAO {
      */
     @SqlQueryFile("sql/mm-feeder-into-challenges/get_prizes.sql")
     List<PrizeData> getPrizes(@ApiQueryInput QueryParameter queryParameter);
+
+    /**
+     * Get timestamp
+     *
+     * @return the result
+     */
+    @SqlQueryFile("sql/challenge-feeder/job/get_timestamp.sql")
+    DatabaseTimestamp getTimestamp();
+
+    /**
+     * Get the marathon matches whose registration phase started after the specified date and after the last run timestamp.
+     * @param date
+     * @param lastRunTimestamp
+     * @return
+     */
+    @SqlQueryFile("sql/mmatches-feeder/job/get_mm_registration_phase_started.sql")
+    List<TCID> getMatchesWithRegistrationPhaseStartedIds(@Bind("initialDate") Date date, @Bind("lastRunTimestamp") Long lastRunTimestamp);
 }

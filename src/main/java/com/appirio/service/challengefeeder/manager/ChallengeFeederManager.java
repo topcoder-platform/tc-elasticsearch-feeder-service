@@ -20,6 +20,7 @@ import com.appirio.service.challengefeeder.dao.ChallengeFeederDAO;
 import com.appirio.service.challengefeeder.dto.ChallengeFeederParam;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.supply.SupplyException;
+import com.appirio.supply.constants.*;
 import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.FieldSelector;
 import com.appirio.tech.core.api.v3.request.FilterParameter;
@@ -176,6 +177,11 @@ public class ChallengeFeederManager {
 
         List<Map<String, Object>> groupIds = this.challengeFeederDAO.getGroupIds(queryParameter);
         for (ChallengeData data : challenges) {
+            if (SubTrack.MARATHON_MATCH.name().equals(data.getSubTrack()) ||
+                    SubTrack.DEVELOP_MARATHON_MATCH.name().equals(data.getSubTrack())) {
+                if (data.getIsBanner() == null) data.setIsBanner(Boolean.FALSE);
+                data.setIsLegacy(Boolean.FALSE);
+            }
             for (Map<String, Object> item : groupIds) {
                 if (item.get("challengeId").toString().equals(data.getId().toString())) {
                     if (data.getGroupIds() == null) {
