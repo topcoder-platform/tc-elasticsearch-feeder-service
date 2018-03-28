@@ -110,12 +110,12 @@ public class MmFeederManager {
             return c;
         }).collect(Collectors.toList());
 
+        checkMissedIds(param, mms);
+
         //filter isLegacy, if set up
         if (param.getLegacy() != null) {
             mms = mms.stream().filter(c -> c.getIsLegacy() == param.getLegacy()).collect(Collectors.toList());
         }
-
-        checkMissedIds(param, mms);
         
         // associate all the data
         List<PhaseData> phases = this.mmFeederDAO.getPhases(queryParameter);
