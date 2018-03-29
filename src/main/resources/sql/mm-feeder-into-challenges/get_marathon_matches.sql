@@ -14,7 +14,7 @@ CASE
      WHEN (r.status = 'A') THEN 'Active'
      WHEN (r.status = 'F') THEN 'Draft'
      WHEN (r.status = 'X') THEN 'Deleted'
-     WHEN (r.status = 'T') THEN 'Draft'
+     WHEN (r.status = 'T') THEN 'Active'
      ELSE 'Open'
  END as status,
 rs_reg.start_time as registrationStartDate,
