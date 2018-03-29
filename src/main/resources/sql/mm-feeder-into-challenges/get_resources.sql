@@ -1,7 +1,7 @@
 select 
 rr.round_id as challengeId,
 rr.coder_id as userId,
-to_char(rr.timestamp, '%Y-%m-%dT%H:%M:%S%F3Z') as registrationDate,
+rr.timestamp as registrationDate,
 user.handle as handle,
 'Submitter' as role,
 ar.rating
