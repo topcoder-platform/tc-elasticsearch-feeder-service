@@ -107,6 +107,7 @@ public class MmFeederManager {
                 c.setSubTrackFromEnum(SubTrack.MARATHON_MATCH);
                 c.setIsBanner(false);
             }
+            c.setIsTask(false);
             return c;
         }).collect(Collectors.toList());
 
