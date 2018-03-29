@@ -3,10 +3,15 @@
  */
 package com.appirio.service.challengefeeder.api;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.appirio.service.challengefeeder.helper.CustomDateDeserializer;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Date;
 
 /**
  * Represents the ResourceData model 
@@ -54,12 +59,13 @@ public class ResourceData {
 
     /**
      * The registrationDate field
-     * 
-     * Use String type for this value as it's retrieved as String from database
+     *
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
+    @JsonDeserialize(using = CustomDateDeserializer.class)
     @Getter
     @Setter
-    private String registrationDate;
+    private Date registrationDate;
 
     /**
      * The rating field
