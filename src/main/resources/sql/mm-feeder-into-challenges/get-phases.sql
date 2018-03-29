@@ -1,7 +1,12 @@
 select
 round_id as challengeId,
 rs.segment_id as phaseId,
-status as phaseStatus,
+CASE
+     WHEN (rs.status = 'P') THEN 'Closed'
+     WHEN (rs.status = 'A') THEN 'Open'
+     WHEN (rs.status = 'F') THEN 'Scheduled'
+     ELSE 'Scheduled'
+ END as phaseStatus,
 s.segment_desc as phaseType,
 start_time as fixedStartTime,
 start_time as scheduledStartTime,

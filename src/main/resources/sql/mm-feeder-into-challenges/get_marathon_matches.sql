@@ -9,7 +9,14 @@ tcdirect.name as directProjectName,
 comp.component_text as marathonMatchDetailRequirements,
 'system' as createdBy,
 r.forum_id as forumId,
-r.status as status,
+CASE
+     WHEN (r.status = 'P') THEN 'Completed'
+     WHEN (r.status = 'A') THEN 'Active'
+     WHEN (r.status = 'F') THEN 'Draft'
+     WHEN (r.status = 'X') THEN 'Deleted'
+     WHEN (r.status = 'T') THEN 'Draft'
+     ELSE 'Open'
+ END as status,
 rs_reg.start_time as registrationStartDate,
 rs_reg.end_time as registrationEndDate,
 rs_sub.end_time as submissionEndDate,
