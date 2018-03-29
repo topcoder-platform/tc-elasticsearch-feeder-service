@@ -1,7 +1,7 @@
 select 
 r.round_id as id,
 c.name || ' - ' || r.name as name,
-'DATA_SCIENCE' as track,
+'DATA SCIENCE' as track,
 'Marathon Match' as subTrack,
 'mmatches' as type,
 r.tc_direct_project_id as directProjectId,
