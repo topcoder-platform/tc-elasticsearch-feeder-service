@@ -173,4 +173,13 @@ public interface ChallengeFeederDAO {
      */
     @SqlQueryFile("sql/challenge-feeder/job/get_timestamp.sql")
     DatabaseTimestamp getTimestamp();
+
+    /**
+     * Get contest id and component id for mm challenge
+     *
+     * @param queryParameter
+     * @return
+     */
+    @SqlQueryFile("sql/challenge-feeder/get_mm_contest.sql")
+    List<Map<String, Object>> getMMContestComponent(@ApiQueryInput QueryParameter queryParameter);
 }
