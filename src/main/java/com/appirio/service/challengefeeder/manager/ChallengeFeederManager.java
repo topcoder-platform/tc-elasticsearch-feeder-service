@@ -20,6 +20,7 @@ import com.appirio.service.challengefeeder.dao.ChallengeFeederDAO;
 import com.appirio.service.challengefeeder.dto.ChallengeFeederParam;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.supply.SupplyException;
+import com.appirio.supply.constants.*;
 import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.FieldSelector;
 import com.appirio.tech.core.api.v3.request.FilterParameter;
@@ -32,13 +33,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.stream.*;
 
 /**
  * ChallengeFeederManager is used to handle the challenge feeder.
@@ -60,6 +59,10 @@ public class ChallengeFeederManager {
      */
     private static final Logger logger = LoggerFactory.getLogger(ChallengeFeederManager.class);
 
+    /**
+     * MM Round id project_info_type_id
+     */
+    private static final long MM_PROPERTY_ID = 56;
 
     /**
      * DAO to access challenge data from the transactional database.
@@ -175,7 +178,20 @@ public class ChallengeFeederManager {
         ChallengeFeederUtil.associateAllEvents(challenges, events);
 
         List<Map<String, Object>> groupIds = this.challengeFeederDAO.getGroupIds(queryParameter);
+
+        Map<Long,Long> mmRoundToIdMaps = new HashMap<>();
         for (ChallengeData data : challenges) {
+            if (SubTrack.MARATHON_MATCH.name().equals(data.getSubTrack()) ||
+                    SubTrack.DEVELOP_MARATHON_MATCH.name().equals(data.getSubTrack())) {
+                if (data.getIsBanner() == null) data.setIsBanner(Boolean.FALSE);
+                data.setIsLegacy(Boolean.FALSE);
+                for (PropertyData prop : data.getProperties()) {
+                    if (prop.getPropertyId() == MM_PROPERTY_ID && prop.getValue() != null) {
+                        mmRoundToIdMaps.put(Long.valueOf(prop.getValue()), data.getId());
+                        break;
+                    }
+                }
+            }
             for (Map<String, Object> item : groupIds) {
                 if (item.get("challengeId").toString().equals(data.getId().toString())) {
                     if (data.getGroupIds() == null) {
@@ -202,6 +218,21 @@ public class ChallengeFeederManager {
                     data.getHasUserSubmittedForReview().add(item.get("hasUserSubmittedForReview").toString());
                 }
             }
+        }
+
+        //find mm contest and component id
+        if (mmRoundToIdMaps.size() > 0) {
+            FilterParameter roundIdFilter = new FilterParameter("roundIds=in(" +
+                    String.join(", ", mmRoundToIdMaps.keySet().stream().map(r -> r.toString()).collect(Collectors.toList())) + ")");
+            queryParameter.setFilter(roundIdFilter);
+
+            List<Map<String, Object>> mmContestIds = this.challengeFeederDAO.getMMContestComponent(queryParameter);
+            mmContestIds.forEach(cm -> {
+                ChallengeData challenge = challenges.stream().filter(c -> c.getId() == mmRoundToIdMaps.get(Long.valueOf(cm.get("roundId").toString())))
+                        .findFirst().orElse(null);
+                challenge.setContestId(Long.valueOf(cm.get("contestId").toString()));
+                challenge.setComponentId(Long.valueOf(cm.get("componentId").toString()));
+            });
         }
 
         logger.info("pushing challenge data to elasticsearch for " + param.getChallengeIds());

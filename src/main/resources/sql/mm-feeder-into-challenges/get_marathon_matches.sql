@@ -1,22 +1,31 @@
 select 
 r.round_id as id,
+r.contest_id as contestId,
+comp.component_id as componentId,
 c.name || ' - ' || r.name as name,
-'DATA SCIENCE' as track, 
+'DATA SCIENCE' as track,
 'Marathon Match' as subTrack,
 'mmatches' as type,
 r.tc_direct_project_id as directProjectId,
 tcdirect.name as directProjectName,
 comp.component_text as marathonMatchDetailRequirements,
-r.creator_id as createdBy,
+'system' as createdBy,
 r.forum_id as forumId,
-r.status as status,
+CASE
+     WHEN (r.status = 'P') THEN 'Completed'
+     WHEN (r.status = 'A') THEN 'Active'
+     WHEN (r.status = 'F') THEN 'Draft'
+     WHEN (r.status = 'X') THEN 'Deleted'
+     WHEN (r.status = 'T') THEN 'Active'
+     ELSE 'Open'
+ END as status,
 rs_reg.start_time as registrationStartDate,
 rs_reg.end_time as registrationEndDate,
 rs_sub.end_time as submissionEndDate,
 (select count(coder_id) from informixoltp\:round_registration where round_id = r.round_id) as numRegistrants,
 (select sum(submission_number) from informixoltp\:long_component_state where round_id = r.round_id and status_id in(130, 131, 140, 150, 160)) as numSubmissions,
 (select sum(amount) from informixoltp\:round_prize rp where rp.round_id = r.round_id) as totalPrize,
-(select pi.project_id from project_info pi where pi.project_info_type_id = 56 and pi.value\:\:decimal = r.round_id) as mmChallengeId
+(select pi.project_id from project_info pi where pi.project_info_type_id = 56 and pi.value::decimal = r.round_id) is null as isLegacy
 from informixoltp\:round r
 left join informixoltp\:contest c on r.contest_id = c.contest_id
 left join corporate_oltp\:tc_direct_project AS tcdirect ON r.tc_direct_project_id = tcdirect.project_id

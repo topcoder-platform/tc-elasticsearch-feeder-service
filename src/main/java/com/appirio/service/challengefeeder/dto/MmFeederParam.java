@@ -24,4 +24,8 @@ public class MmFeederParam extends FeederParam {
     @Getter
     @Setter
     private List<Long> roundIds;
+
+    @Getter
+    @Setter
+    private Boolean legacy;
 }

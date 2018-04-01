@@ -26,6 +26,21 @@ import lombok.Setter;
  *
  */
 public class ChallengeData extends IdentifiableData {
+
+    /**
+     * MM contest_id
+     */
+    @Getter
+    @Setter
+    private Long contestId;
+
+    /**
+     * MM component id
+     */
+    @Getter
+    @Setter
+    private Long componentId;
+
     /**
      * The numRegistrants field
      */
@@ -433,11 +448,11 @@ public class ChallengeData extends IdentifiableData {
     private Boolean isLegacy;
 
     /**
-     * Related challenge id for MM
+     * Related for MM type
      */
     @Getter
     @Setter
-    private transient Long mmChallengeId;
+    private Boolean isBanner;
 
     /**
      * Setter for {@link #subTrack}
