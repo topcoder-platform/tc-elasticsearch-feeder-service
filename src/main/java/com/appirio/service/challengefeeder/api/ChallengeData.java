@@ -28,6 +28,13 @@ import lombok.Setter;
 public class ChallengeData extends IdentifiableData {
 
     /**
+     * MM RoundId
+     */
+    @Getter
+    @Setter
+    private Long roundId;
+
+    /**
      * MM contest_id
      */
     @Getter

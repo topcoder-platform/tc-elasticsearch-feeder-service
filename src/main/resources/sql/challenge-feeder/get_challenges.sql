@@ -81,7 +81,8 @@ SELECT
         WHERE pti.project_id = p.project_id
           AND pti.project_info_type_id = 82
           AND pti.value = '1') AS t) AS isTask,
-    (pi87.value = 'Banner') AS isBanner
+    (pi87.value = 'Banner') AS isBanner,
+    pi56.value::Decimal As roundId
   FROM project p
   INNER JOIN project_status_lu pstatus ON pstatus.project_status_id = p.project_status_id
   INNER JOIN project_category_lu pcl ON pcl.project_category_id = p.project_category_id
@@ -115,5 +116,6 @@ SELECT
   LEFT JOIN project_studio_specification pss ON pss.project_studio_spec_id = p.project_studio_spec_id
   LEFT JOIN project_mm_specification pmm_spec ON pmm_spec.project_mm_spec_id = p.project_mm_spec_id
   LEFT JOIN project_info pi87 ON pi87.project_id = p.project_id AND pi87.project_info_type_id = 87
+  LEFT JOIN project_info pi56 ON pi56.project_id = p.project_id AND pi56.project_info_type_id = 56
   WHERE pcl.project_category_id NOT IN (27) 
   AND {filter}
