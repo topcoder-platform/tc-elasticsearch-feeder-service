@@ -102,14 +102,14 @@ public class MmFeederManager {
         List<ChallengeData> mms = this.mmFeederDAO.getMarathonMatches(queryParameter);
 
         //set legacy mm subtrach to MARATHON_MATCH
-        mms = mms.stream().map(c -> {
+        mms.forEach(c -> {
             if (c.getIsLegacy()) {
                 c.setSubTrackFromEnum(SubTrack.MARATHON_MATCH);
                 c.setIsBanner(false);
             }
             c.setIsTask(false);
-            return c;
-        }).collect(Collectors.toList());
+            c.setRoundId(c.getId());
+        });
 
         checkMissedIds(param, mms);
 
