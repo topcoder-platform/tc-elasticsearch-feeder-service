@@ -175,11 +175,20 @@ public interface ChallengeFeederDAO {
     DatabaseTimestamp getTimestamp();
 
     /**
-     * Get contest id and component id for mm challenge
+     * Get contest id, component id, and number of submissions and registrants for mm challenge
      *
      * @param queryParameter
      * @return
      */
     @SqlQueryFile("sql/challenge-feeder/get_mm_contest.sql")
     List<Map<String, Object>> getMMContestComponent(@ApiQueryInput QueryParameter queryParameter);
+
+    /**
+     * Get legacy MM resources
+     *
+     * @param queryParameter the queryParameter to use
+     * @return the List<ResourceData> result
+     */
+    @SqlQueryFile("sql/mm-feeder-into-challenges/get_resources.sql")
+    List<ResourceData> getMMResources(@ApiQueryInput QueryParameter queryParameter);
 }

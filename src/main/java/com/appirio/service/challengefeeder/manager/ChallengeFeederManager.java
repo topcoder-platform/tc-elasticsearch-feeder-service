@@ -220,18 +220,32 @@ public class ChallengeFeederManager {
             }
         }
 
-        //find mm contest and component id
+        //find mm contest and component id, submitter
         if (mmRoundToIdMaps.size() > 0) {
             FilterParameter roundIdFilter = new FilterParameter("roundIds=in(" +
                     String.join(", ", mmRoundToIdMaps.keySet().stream().map(r -> r.toString()).collect(Collectors.toList())) + ")");
             queryParameter.setFilter(roundIdFilter);
 
             List<Map<String, Object>> mmContestIds = this.challengeFeederDAO.getMMContestComponent(queryParameter);
+            List<ResourceData> mmResources = this.challengeFeederDAO.getMMResources(queryParameter);
             mmContestIds.forEach(cm -> {
                 ChallengeData challenge = challenges.stream().filter(c -> c.getId() == mmRoundToIdMaps.get(Long.valueOf(cm.get("roundId").toString())))
                         .findFirst().orElse(null);
                 challenge.setContestId(Long.valueOf(cm.get("contestId").toString()));
                 challenge.setComponentId(Long.valueOf(cm.get("componentId").toString()));
+                Long numSubmission = cm.get("numSubmissions") == null ? 0 : Long.valueOf(cm.get("numSubmissions").toString());
+                challenge.setNumSubmissions(numSubmission);
+                //remove submitter if there's we'll populate from legacy mm data below
+                challenge.setResources(challenge.getResources().stream()
+                        .filter(r -> !"Submitter".equals(r.getRole())).collect(Collectors.toList()));
+                challenge.setNumRegistrants(Long.valueOf(cm.get("numRegistrants").toString()));
+            });
+            //collect submitter from legacy mm
+            mmResources.forEach(r -> {
+                ChallengeData challenge = challenges.stream().filter(c -> c.getId() == mmRoundToIdMaps.get(r.getChallengeId()))
+                        .findFirst().orElse(null);
+                r.setChallengeId(null);
+                challenge.getResources().add(r);
             });
         }
 
