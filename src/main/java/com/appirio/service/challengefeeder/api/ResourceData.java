@@ -90,7 +90,6 @@ public class ResourceData {
     public void setRegistrationDate(Object dateObject) {
         if (dateObject instanceof String) {
             DateFormat dateFormat = new SimpleDateFormat("MM.dd.yyyy h:mm a", Locale.US);
-            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             try {
                 this.registrationDate = dateFormat.parse((String) dateObject);
             } catch (ParseException e) {
