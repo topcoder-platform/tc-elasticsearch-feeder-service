@@ -25,6 +25,7 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
@@ -292,6 +293,7 @@ public class JestClientUtils {
         @Override
         public JsonElement serialize(Date date, Type type, JsonSerializationContext context) {
             DateFormat newDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            newDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             JsonElement element = new JsonPrimitive(newDateFormat.format(date));
             return element;
         }
