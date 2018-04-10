@@ -9,6 +9,7 @@ import com.appirio.service.supply.resources.MetadataApiResponseFactory;
 import com.appirio.supply.ErrorHandler;
 import com.appirio.supply.SupplyException;
 import com.appirio.tech.core.api.v3.request.PostPutRequest;
+import com.appirio.tech.core.api.v3.request.annotation.AllowAnonymous;
 import com.appirio.tech.core.api.v3.response.ApiResponse;
 import com.appirio.tech.core.auth.AuthUser;
 import com.codahale.metrics.annotation.Timed;
@@ -65,6 +66,7 @@ public class ChallengeFeederResource {
      */
     @PUT
     @Timed
+    @AllowAnonymous
     public ApiResponse pushChallengeFeeders(@Auth AuthUser user, @Valid PostPutRequest<ChallengeFeederParam> request) {
         try {
             if (request == null || request.getParam() == null) {
