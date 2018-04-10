@@ -225,7 +225,6 @@ public class ChallengeFeederManager {
             FilterParameter roundIdFilter = new FilterParameter("roundIds=in(" +
                     String.join(", ", mmRoundToIdMaps.keySet().stream().map(r -> r.toString()).collect(Collectors.toList())) + ")");
             queryParameter.setFilter(roundIdFilter);
-
             List<Map<String, Object>> mmContestIds = this.challengeFeederDAO.getMMContestComponent(queryParameter);
             List<ResourceData> mmResources = this.challengeFeederDAO.getMMResources(queryParameter);
             mmContestIds.forEach(cm -> {
@@ -233,17 +232,23 @@ public class ChallengeFeederManager {
                         .findFirst().orElse(null);
                 challenge.setContestId(Long.valueOf(cm.get("contestId").toString()));
                 challenge.setComponentId(Long.valueOf(cm.get("componentId").toString()));
-                Long numSubmission = cm.get("numSubmissions") == null ? 0 : Long.valueOf(cm.get("numSubmissions").toString());
-                challenge.setNumSubmissions(numSubmission);
                 //remove submitter if there's we'll populate from legacy mm data below
                 challenge.setResources(challenge.getResources().stream()
                         .filter(r -> !"Submitter".equals(r.getRole())).collect(Collectors.toList()));
-                challenge.setNumRegistrants(Long.valueOf(cm.get("numRegistrants").toString()));
+                challenge.setNumSubmissions(0L);
+                challenge.setNumRegistrants(0L);
             });
             //collect submitter from legacy mm
             mmResources.forEach(r -> {
                 ChallengeData challenge = challenges.stream().filter(c -> c.getId() == mmRoundToIdMaps.get(r.getChallengeId()))
                         .findFirst().orElse(null);
+                if (challenge.getUserIds() == null) challenge.setUserIds(new ArrayList<>());
+                challenge.getUserIds().add(r.getUserId());
+                if (challenge.getHasUserSubmittedForReview() == null) challenge.setHasUserSubmittedForReview(new ArrayList<>());
+                String hasSubmitted = (r.getSubmissionCount() > 0) ? r.getUserId().toString() + 'T' : r.getUserId().toString() + 'F';
+                challenge.getHasUserSubmittedForReview().add(hasSubmitted);
+                challenge.setNumRegistrants(challenge.getNumRegistrants() + 1);
+                challenge.setNumSubmissions(challenge.getNumSubmissions() + r.getSubmissionCount());
                 r.setChallengeId(null);
                 challenge.getResources().add(r);
             });
