@@ -11,10 +11,8 @@ import com.appirio.supply.SupplyException;
 import com.appirio.tech.core.api.v3.request.PostPutRequest;
 import com.appirio.tech.core.api.v3.request.annotation.AllowAnonymous;
 import com.appirio.tech.core.api.v3.response.ApiResponse;
-import com.appirio.tech.core.auth.AuthUser;
 import com.codahale.metrics.annotation.Timed;
 
-import io.dropwizard.auth.Auth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,20 +57,19 @@ public class ChallengeFeederResource {
     
     /**
      * Push challenge feeders to elasticsearch service
-     * 
-     * @param user the authenticated user
+     *
      * @param request the request
      * @return the api response
      */
     @PUT
     @Timed
     @AllowAnonymous
-    public ApiResponse pushChallengeFeeders(@Auth AuthUser user, @Valid PostPutRequest<ChallengeFeederParam> request) {
+    public ApiResponse pushChallengeFeeders(@Valid PostPutRequest<ChallengeFeederParam> request) {
         try {
             if (request == null || request.getParam() == null) {
                 throw new SupplyException("The request body should be provided", HttpServletResponse.SC_BAD_REQUEST);
             }
-            this.challengeFeederManager.pushChallengeFeeder(user, request.getParam());
+            this.challengeFeederManager.pushChallengeFeeder(request.getParam());
             return MetadataApiResponseFactory.createResponse(null);
         } catch (Exception e) {
             return ErrorHandler.handle(e, logger);
