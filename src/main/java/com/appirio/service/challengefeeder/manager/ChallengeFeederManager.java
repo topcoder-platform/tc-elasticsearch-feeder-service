@@ -95,6 +95,8 @@ public class ChallengeFeederManager {
      */
     public void pushChallengeFeeder(AuthUser authUser, ChallengeFeederParam param) throws SupplyException {
         logger.info("Enter of pushChallengeFeeder");
+        //skip for now
+        //Helper.checkAdmin(authUser);
         this.pushChallengeFeeder(param);
     }
     
