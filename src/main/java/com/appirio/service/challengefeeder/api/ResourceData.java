@@ -83,6 +83,10 @@ public class ResourceData {
     @Setter
     private Long userId;
 
+    @Getter
+    @Setter
+    private transient Long submissionCount;
+
     /**
      * Setter for {@link #registrationDate}
      * @param dateObject
