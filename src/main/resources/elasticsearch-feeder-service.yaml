@@ -74,7 +74,7 @@ redissonConfiguration:
 
 jobs:
   com.appirio.service.challengefeeder.job.LoadChangedChallengesJob: "${LOAD_CHANGED_CHALLENGES_JOB_INTERVAL:-30s}"
-  com.appirio.service.challengefeeder.job.MarathonMatchesJob: "${LOAD_MARATHON_MATCHES_JOB_INTERVAL:-30s}"
+  com.appirio.service.challengefeeder.job.MarathonMatchesJob: "${LOAD_MARATHON_MATCHES_JOB_INTERVAL:-2s}"
   com.appirio.service.challengefeeder.job.SingleRoundMatchesJob: "${LOAD_SINGLE_ROUND_MATCHES_JOB_INTERVAL:-30s}"
   com.appirio.service.challengefeeder.job.LegacyMMToChallengeJob: "${LOAD_LEGACY_MARATHON_MATCHES_JOB_INTERVAL:-30s}"
 

@@ -4,9 +4,12 @@
 package com.appirio.service.challengefeeder.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.text.*;
+import java.util.*;
+import java.util.Date;
 
 /**
  * Represents the ResourceData model 
@@ -54,12 +57,10 @@ public class ResourceData {
 
     /**
      * The registrationDate field
-     * 
-     * Use String type for this value as it's retrieved as String from database
+     *
      */
     @Getter
-    @Setter
-    private String registrationDate;
+    private Object registrationDate;
 
     /**
      * The rating field
@@ -81,4 +82,26 @@ public class ResourceData {
     @Getter
     @Setter
     private Long userId;
+
+    @Getter
+    @Setter
+    private transient Long submissionCount;
+
+    /**
+     * Setter for {@link #registrationDate}
+     * @param dateObject
+     */
+    public void setRegistrationDate(Object dateObject) {
+        if (dateObject instanceof String) {
+            DateFormat dateFormat = new SimpleDateFormat("MM.dd.yyyy h:mm a", Locale.US);
+            try {
+                this.registrationDate = dateFormat.parse((String) dateObject);
+            } catch (ParseException e) {
+                //nothing to do
+                e.printStackTrace();
+            }
+        } else if (dateObject instanceof Date) {
+            this.registrationDate = (Date) dateObject;
+        }
+    }
 }
