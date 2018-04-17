@@ -24,9 +24,11 @@ import org.skife.jdbi.v2.sqlobject.Bind;
  * Version 1.1 - Topcoder - Create CronJob For Populating Changed Challenges To Elasticsearch v1.0
  * - add the methods to get the changed challenge ids and current timestamp
  * 
+ * Version 1.2 - Topcoder - Elasticsearch Service - Populate Challenge Points Prize In Challenges Index
+ * - add the methods to get the prize points for the challenge ids
  * 
  * @author TCCODER
- * @version 1.1 
+ * @version 1.2 
  */
 @DatasourceName("oltp")
 public interface ChallengeFeederDAO {
@@ -191,4 +193,13 @@ public interface ChallengeFeederDAO {
      */
     @SqlQueryFile("sql/mm-feeder-into-challenges/get_resources.sql")
     List<ResourceData> getMMResources(@ApiQueryInput QueryParameter queryParameter);
+    
+    /**
+     * Get prize of type prize points
+     *
+     * @param challengeId challengeId
+     * @return the list of prizes
+     */
+    @SqlQueryFile("sql/challenge-feeder/get_challenge_pointsPrize.sql")
+    List<PrizeData> getPointsPrize(@ApiQueryInput QueryParameter queryParameter);
 }
