@@ -23,9 +23,12 @@ import com.appirio.service.challengefeeder.api.WinnerData;
  * ChallengeFeederUtil provides common methods such as associating the challenge data.
  * 
  * It's added in Topcoder - Populate Marathon Match Related Data Into Challenge Model In Elasticsearch v1.0
- * 
+ *
+ * Version 1.1 - Topcoder - Elasticsearch Service - Populate Challenge Points Prize In Challenges Index
+ * 	- add the methods to associate the prize points with the challenge ids
+ *
  * @author TCSCODER
- * @version 1.0
+ * @version 1.1
  */
 public class ChallengeFeederUtil {
     /**
@@ -297,6 +300,29 @@ public class ChallengeFeederUtil {
         }
 
         return res.toString();
+    }
+    
+    /**
+     * Associate all pointPrizes
+     *
+     * @param challenges the challenges to use
+     * @param checkpointPrizes the checkpointPrizes to use
+     */
+    static void associateAllPointsPrize(List<ChallengeData> challenges, List<PrizeData> pointPrizes) {
+        for (PrizeData item : pointPrizes) {
+            for (ChallengeData challenge : challenges) {
+                if (challenge.getId().equals(item.getChallengeId())) {
+                    if (challenge.getPointPrizes() == null) {
+                        challenge.setPointPrizes(new ArrayList<PrizeData>());
+                    }
+                    challenge.getPointPrizes().add(item);
+                    break;
+                }
+            }
+        }
+        for (PrizeData item : pointPrizes) {
+            item.setChallengeId(null);
+        }
     }
 
 }

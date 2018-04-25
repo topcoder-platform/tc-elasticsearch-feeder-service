@@ -1,0 +1,78 @@
+{
+	"info": {
+		"name": "F2F-Topcoder Elasticsearch Service - Populate Challenge Points Prize In Challenges Index",
+		"_postman_id": "4465d136-75f9-b7ad-fdd4-75d6d3a4bdbd",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "View challenge via ElasticSearch",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://search-test1-ajfk3objpv3xmfyl2mqihujrui.us-east-2.es.amazonaws.com/challenges/_search?q=30005522",
+					"protocol": "https",
+					"host": [
+						"search-test1-ajfk3objpv3xmfyl2mqihujrui",
+						"us-east-2",
+						"es",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"challenges",
+						"_search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "30005522",
+							"equals": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Push challenges",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"param\": {\r\n    \"index\": \"challenges\",\r\n    \"type\": \"challenges\",\r\n    \"challengeIds\": [30005520, 30005521]\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/v3/esfeeder/challenges",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v3",
+						"esfeeder",
+						"challenges"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

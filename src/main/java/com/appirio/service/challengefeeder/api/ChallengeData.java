@@ -20,9 +20,11 @@ import lombok.Setter;
  * Version 1.1 - Topcoder - Populate Marathon Match Related Data Into Challenge Model In Elasticsearch v1.0
  * - It extends from IdentifiableData
  * 
+ * Version 1.2 - Topcoder - Elasticsearch Service - Populate Challenge Points Prize In Challenges Index
+ * - add the methods to populate the prize points for the challenge ids
  * 
  * @author TCCoder
- * @version 1.1 
+ * @version 1.2
  *
  */
 public class ChallengeData extends IdentifiableData {
@@ -477,4 +479,11 @@ public class ChallengeData extends IdentifiableData {
     public void setSubTrackFromEnum(SubTrack subTrackE) {
         this.subTrack = subTrackE.toString();
     }
+    
+    /**
+     * The point prizes field
+     */
+    @Getter
+    @Setter
+    private List<PrizeData> pointPrizes;
 }

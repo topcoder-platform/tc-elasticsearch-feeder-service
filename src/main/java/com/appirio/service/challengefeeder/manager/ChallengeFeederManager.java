@@ -49,8 +49,12 @@ import java.util.stream.*;
  * - add getTimestamp method to get the current timestamp from the database
  * - add pushChallengeFeeder method to call without admin permission check
  * 
+ * Version 1.3 - Topcoder - Elasticsearch Service - Populate Challenge Points Prize In Challenges Index
+ * - add the methods to associate the prize points for the challenge ids
+ * - add the DAO calls to get prize points for the challenge ids.
+ * 
  * @author TCSCODER
- * @version 1.2
+ * @version 1.3
  */
 public class ChallengeFeederManager {
 
@@ -151,6 +155,9 @@ public class ChallengeFeederManager {
 
         List<PrizeData> prizes = this.challengeFeederDAO.getPrizes(queryParameter);
         ChallengeFeederUtil.associateAllPrizes(challenges, prizes);
+        
+        List<PrizeData> pointPrizes = this.challengeFeederDAO.getPointsPrize(queryParameter);
+        ChallengeFeederUtil.associateAllPointsPrize(challenges, pointPrizes);
 
         List<CheckpointPrizeData> checkpointPrizes = this.challengeFeederDAO.getCheckpointPrizes(queryParameter);
         ChallengeFeederUtil.associateAllCheckpointPrizes(challenges, checkpointPrizes);
