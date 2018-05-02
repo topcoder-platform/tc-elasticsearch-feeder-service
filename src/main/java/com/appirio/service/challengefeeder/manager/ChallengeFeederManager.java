@@ -149,9 +149,9 @@ public class ChallengeFeederManager {
         // associate all the data
         List<PhaseData> phases = this.challengeFeederDAO.getPhases(queryParameter);
         ChallengeFeederUtil.associateAllPhases(challenges, phases);
-
-        List<ResourceData> resources = this.challengeFeederDAO.getResources(queryParameter);
-        ChallengeFeederUtil.associateAllResources(challenges, resources);
+// exclude this for now
+//        List<ResourceData> resources = this.challengeFeederDAO.getResources(queryParameter);
+//        ChallengeFeederUtil.associateAllResources(challenges, resources);
 
         List<PrizeData> prizes = this.challengeFeederDAO.getPrizes(queryParameter);
         ChallengeFeederUtil.associateAllPrizes(challenges, prizes);
@@ -167,9 +167,9 @@ public class ChallengeFeederManager {
 
         List<ReviewData> reviews = this.challengeFeederDAO.getReviews(queryParameter);
         ChallengeFeederUtil.associateAllReviews(challenges, reviews);
-
-        List<SubmissionData> submissions = this.challengeFeederDAO.getSubmissions(queryParameter);
-        ChallengeFeederUtil.associateAllSubmissions(challenges, submissions);
+// exclude this for now
+//        List<SubmissionData> submissions = this.challengeFeederDAO.getSubmissions(queryParameter);
+//        ChallengeFeederUtil.associateAllSubmissions(challenges, submissions);
 
         List<WinnerData> winners = this.challengeFeederDAO.getWinners(queryParameter);
         ChallengeFeederUtil.associateAllWinners(challenges, winners);
@@ -232,21 +232,24 @@ public class ChallengeFeederManager {
                     String.join(", ", mmRoundToIdMaps.keySet().stream().map(r -> r.toString()).collect(Collectors.toList())) + ")");
             queryParameter.setFilter(roundIdFilter);
             List<Map<String, Object>> mmContestIds = this.challengeFeederDAO.getMMContestComponent(queryParameter);
+
             List<ResourceData> mmResources = this.challengeFeederDAO.getMMResources(queryParameter);
             mmContestIds.forEach(cm -> {
-                ChallengeData challenge = challenges.stream().filter(c -> c.getId() == mmRoundToIdMaps.get(Long.valueOf(cm.get("roundId").toString())))
+                ChallengeData challenge = challenges.stream().filter(c -> c.getId().equals(mmRoundToIdMaps.get(Long.valueOf(cm.get("roundId").toString()))))
                         .findFirst().orElse(null);
                 challenge.setContestId(Long.valueOf(cm.get("contestId").toString()));
                 challenge.setComponentId(Long.valueOf(cm.get("componentId").toString()));
                 //remove submitter if there's we'll populate from legacy mm data below
-                challenge.setResources(challenge.getResources().stream()
-                        .filter(r -> !"Submitter".equals(r.getRole())).collect(Collectors.toList()));
+// exclude this for now
+//                challenge.setResources(challenge.getResources().stream()
+//                        .filter(r -> !"Submitter".equals(r.getRole())).collect(Collectors.toList()));
                 challenge.setNumSubmissions(0L);
                 challenge.setNumRegistrants(0L);
             });
             //collect submitter from legacy mm
+
             mmResources.forEach(r -> {
-                ChallengeData challenge = challenges.stream().filter(c -> c.getId() == mmRoundToIdMaps.get(r.getChallengeId()))
+                ChallengeData challenge = challenges.stream().filter(c -> c.getId().equals(mmRoundToIdMaps.get(r.getChallengeId())))
                         .findFirst().orElse(null);
                 if (challenge.getUserIds() == null) challenge.setUserIds(new ArrayList<>());
                 challenge.getUserIds().add(r.getUserId());
@@ -256,7 +259,7 @@ public class ChallengeFeederManager {
                 challenge.setNumRegistrants(challenge.getNumRegistrants() + 1);
                 challenge.setNumSubmissions(challenge.getNumSubmissions() + r.getSubmissionCount());
                 r.setChallengeId(null);
-                challenge.getResources().add(r);
+//                challenge.getResources().add(r);
             });
         }
 

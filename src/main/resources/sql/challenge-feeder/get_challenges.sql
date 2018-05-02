@@ -9,7 +9,7 @@ SELECT
          CASE WHEN dr_elligible.value = 'On' THEN dr_points.value::decimal ELSE NULL END AS drPoints,
          env.value AS environment,
          code_repo.value AS codeRepo,
-         pspec.detailed_requirements_text AS softwareDetailRequirements,
+/*         pspec.detailed_requirements_text AS softwareDetailRequirements,
          pspec.final_submission_guidelines_text AS softwareFinalSubmissionGuidelines,
          pspec.private_description_text AS copilotDetailRequirements,
          pss.contest_description_text AS studioDetailRequirements,
@@ -18,6 +18,7 @@ SELECT
          pss.round_two_introduction AS round2Introduction,
          pmm_spec.match_details AS marathonMatchDetailRequirements,
          pmm_spec.match_rules AS marathonMatchRules,
+*/
          pn.value AS name,
          CASE
              WHEN (ptl.description = 'Application') THEN 'DEVELOP'
@@ -112,9 +113,10 @@ SELECT
   LEFT JOIN project_info dr_elligible ON dr_elligible.project_id = p.project_id AND dr_elligible.project_info_type_id = 26
   LEFT JOIN project_info env ON env.project_id = p.project_id AND env.project_info_type_id = 84
   LEFT JOIN project_info code_repo ON code_repo.project_id = p.project_id AND code_repo.project_info_type_id = 85
-  LEFT JOIN project_spec pspec ON pspec.project_id = p.project_id AND pspec.version = (select MAX(project_spec.version) from project_spec where project_spec.project_id = p.project_id) 
+/*  LEFT JOIN project_spec pspec ON pspec.project_id = p.project_id AND pspec.version = (select MAX(project_spec.version) from project_spec where project_spec.project_id = p.project_id)
   LEFT JOIN project_studio_specification pss ON pss.project_studio_spec_id = p.project_studio_spec_id
   LEFT JOIN project_mm_specification pmm_spec ON pmm_spec.project_mm_spec_id = p.project_mm_spec_id
+*/
   LEFT JOIN project_info pi87 ON pi87.project_id = p.project_id AND pi87.project_info_type_id = 87
   LEFT JOIN project_info pi56 ON pi56.project_id = p.project_id AND pi56.project_info_type_id = 56
   WHERE pcl.project_category_id NOT IN (27) 

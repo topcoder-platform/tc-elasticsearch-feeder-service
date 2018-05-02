@@ -109,13 +109,15 @@ public class MmFeederManager {
             }
             c.setIsTask(false);
             c.setRoundId(c.getId());
+            if (c.getNumSubmissions() == null) c.setNumSubmissions(0L);
+            if (c.getTotalPrize() == null) c.setTotalPrize(0.0);
         });
 
         checkMissedIds(param, mms);
 
         //filter isLegacy, if set up
         if (param.getLegacy() != null) {
-            mms = mms.stream().filter(c -> c.getIsLegacy() == param.getLegacy()).collect(Collectors.toList());
+            mms = mms.stream().filter(c -> c.getIsLegacy().equals(param.getLegacy())).collect(Collectors.toList());
         }
         
         // associate all the data
@@ -129,29 +131,29 @@ public class MmFeederManager {
 
         List<PrizeData> prizes = this.mmFeederDAO.getPrizes(queryParameter);
         ChallengeFeederUtil.associateAllPrizes(mms, prizes);
-
-        List<SubmissionData> submissions = this.mmFeederDAO.getSubmissions(queryParameter);
-        ChallengeFeederUtil.associateAllSubmissions(mms, submissions);
+// exclude this for now
+//        List<SubmissionData> submissions = this.mmFeederDAO.getSubmissions(queryParameter);
+//        ChallengeFeederUtil.associateAllSubmissions(mms, submissions);
 
         List<TermsOfUseData> termsOfUse = this.mmFeederDAO.getTerms(queryParameter);
         ChallengeFeederUtil.associateAllTermsOfUse(mms, termsOfUse);
         
         List<EventData> events = this.mmFeederDAO.getEvents(queryParameter);
         ChallengeFeederUtil.associateAllEvents(mms, events);
-        
-        List<ResourceData> resources = this.mmFeederDAO.getResources(queryParameter);
-        // set the user ids before associating the resources as the associate method will set the challenge id to null
-        for (ChallengeData data : mms) {
-            for (ResourceData resourceData : resources) {
-                if (data.getId().longValue() == resourceData.getChallengeId().longValue()) {
-                    if (data.getUserIds() == null) {
-                        data.setUserIds(new ArrayList<Long>());
-                    }
-                    data.getUserIds().add(resourceData.getUserId());
-                }
-            }
-        }
-        ChallengeFeederUtil.associateAllResources(mms, resources);
+// exclude this for now
+//        List<ResourceData> resources = this.mmFeederDAO.getResources(queryParameter);
+//        // set the user ids before associating the resources as the associate method will set the challenge id to null
+//        for (ChallengeData data : mms) {
+//            for (ResourceData resourceData : resources) {
+//                if (data.getId().longValue() == resourceData.getChallengeId().longValue()) {
+//                    if (data.getUserIds() == null) {
+//                        data.setUserIds(new ArrayList<Long>());
+//                    }
+//                    data.getUserIds().add(resourceData.getUserId());
+//                }
+//            }
+//        }
+//        ChallengeFeederUtil.associateAllResources(mms, resources);
         
         try {
             JestClientUtils.pushFeeders(jestClient, param, mms);

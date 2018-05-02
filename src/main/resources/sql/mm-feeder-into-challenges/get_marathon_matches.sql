@@ -8,7 +8,7 @@ c.name || ' - ' || r.name as name,
 'mmatches' as type,
 r.tc_direct_project_id as directProjectId,
 tcdirect.name as directProjectName,
-comp.component_text as marathonMatchDetailRequirements,
+/* comp.component_text as marathonMatchDetailRequirements, */
 'system' as createdBy,
 r.forum_id as forumId,
 CASE
