@@ -23,9 +23,18 @@ import lombok.Setter;
  * <li>Added reference to job MarathonMatchesJob.</li>
  * <li>Added reference to job SingleRoundMatchesJob.</li>
  * </ul>
- * 
+ * </p>
+ *
+ * <p>
+ * Change in v1.2 (Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Detail Index):
+ * <ul>
+ *     <li>Added {@link #challengesDetailType}</li>
+ *     <li>Added {@link #loadChangedChallengesDetailJobLastRunTimestampPrefix}</li>
+ *     <li>Added {@link #loadChangedChallengesDetailJobLockerKeyName}</li>
+ * </ul>
+ * </p>
  * @author TCCoder
- * @version 1.1
+ * @version 1.2
  */
 public class RedissonConfiguration {
     
@@ -45,7 +54,7 @@ public class RedissonConfiguration {
     @Getter
     @Setter
     private String challengesIndex;
-    
+
     /**
      * The marathon match index field
      */
@@ -72,6 +81,16 @@ public class RedissonConfiguration {
     @Getter
     @Setter
     private String challengesType;
+
+    /**
+     * The challenges listing type field
+     * @since 1.2
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String challengesDetailType;
     
     /**
      * The marahon match type field
@@ -99,6 +118,16 @@ public class RedissonConfiguration {
     @Setter
     private int batchUpdateSize;
     
+    /**
+     * Represents the last run timestamp prefix attribute for job LoadChangedChallengesListingJob.
+     * @since 1.2
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String loadChangedChallengesDetailJobLastRunTimestampPrefix;
+
     /**
      * Represents the last run timestamp prefix attribute for job LoadChangedChallengesJob.
      */
@@ -148,6 +177,17 @@ public class RedissonConfiguration {
     @Getter
     @Setter
     private String loadChangedChallengesJobLockerKeyName;
+
+    /**
+     * Represents the locker key name attribute for job LoadChangedChallengesListingJob.
+     * @since 1.2
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String loadChangedChallengesDetailJobLockerKeyName;
+
     
     /**
      * Represents the locker key name attribute for job MarathonMatchesJob.

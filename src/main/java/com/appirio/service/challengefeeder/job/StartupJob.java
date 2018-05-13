@@ -33,9 +33,13 @@ import de.spinscale.dropwizard.jobs.annotations.OnApplicationStart;
  * <li>Renamed class from StartupJobForLoadChallengeChallenges to StartupJob</li>
  * </ul>
  * </p>
- * 
+ *
+ * <p>
+ * Change in 1.2 (Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Detail Index)
+ * - Added reference to job LoadChallengeChallengesDetailJob
+ * </p>
  * @author TCCoder
- * @version 1.1
+ * @version 1.2
  *
  */
 @DelayStart("10s")
@@ -69,8 +73,12 @@ public class StartupJob extends BaseJob {
             }
 
             RedissonClient redisson = Redisson.create(redissonConfig);
-            RMapCache<String, String> mapCache = redisson.getMapCache(config.getRedissonConfiguration().getLoadChangedChallengesJobLastRunTimestampPrefix());
-            String time = mapCache.remove(config.getRedissonConfiguration().getLoadChangedChallengesJobLastRunTimestampPrefix());
+            RMapCache<String, String> mapCache = redisson.getMapCache(config.getRedissonConfiguration().getLoadChangedChallengesDetailJobLastRunTimestampPrefix());
+            String time = mapCache.remove(config.getRedissonConfiguration().getLoadChangedChallengesDetailJobLastRunTimestampPrefix());
+            logger.info("Remove the last run time for challenge detail load job:" + time);
+
+            mapCache = redisson.getMapCache(config.getRedissonConfiguration().getLoadChangedChallengesJobLastRunTimestampPrefix());
+            time = mapCache.remove(config.getRedissonConfiguration().getLoadChangedChallengesJobLastRunTimestampPrefix());
             logger.info("Remove the last run time for challenge load job:" + time);
 
             mapCache = redisson.getMapCache(config.getRedissonConfiguration().getMarathonMatchesJobLastRunTimestampPrefix());

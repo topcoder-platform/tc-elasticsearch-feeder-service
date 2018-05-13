@@ -1,9 +1,10 @@
 /*
- * Copyright (C) 2017 TopCoder Inc., All Rights Reserved.
+ * Copyright (C) 2017 - 2018 TopCoder Inc., All Rights Reserved.
  */
 package com.appirio.service.challengefeeder;
 
 import com.appirio.service.BaseAppConfiguration;
+import com.appirio.service.challengefeeder.config.CommonConfiguration;
 import com.appirio.service.challengefeeder.config.JestClientConfiguration;
 import com.appirio.service.challengefeeder.config.RedissonConfiguration;
 import com.appirio.service.supply.resources.SupplyDatasourceFactory;
@@ -22,9 +23,11 @@ import java.util.Map;
  *
  * Version 1.1 - Topcoder - Create CronJob For Populating Changed Challenges To Elasticsearch v1.0
  * - add the cron job related configuration
- * 
+ *
+ * Version 1.2 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index
+ * - add commonConfiguration
  * @author TCSCODER
- * @version 1.1 
+ * @version 1.2
  */
 public class ChallengeFeederServiceConfiguration extends BaseAppConfiguration implements JobConfiguration {
 
@@ -55,6 +58,14 @@ public class ChallengeFeederServiceConfiguration extends BaseAppConfiguration im
      */
     @JsonProperty("redissonConfiguration")
     private RedissonConfiguration redissonConfiguration;
+
+    /**
+     * common configuration section
+     */
+    @Valid
+    @NotNull
+    @JsonProperty("commonConfiguration")
+    private CommonConfiguration commonConfiguration;
 
     /**
      * Get the data source factory
@@ -91,4 +102,11 @@ public class ChallengeFeederServiceConfiguration extends BaseAppConfiguration im
         return this.redissonConfiguration;
     }
 
+    /**
+     * Getter commonConfiguration
+     * @return
+     */
+    public CommonConfiguration getCommonConfiguration() {
+        return commonConfiguration;
+    }
 }
