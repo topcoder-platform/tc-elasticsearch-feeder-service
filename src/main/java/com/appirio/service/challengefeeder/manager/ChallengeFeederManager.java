@@ -144,9 +144,9 @@ public class ChallengeFeederManager {
         // associate all the data
         List<PhaseData> phases = this.challengeFeederDAO.getPhases(queryParameter);
         ChallengeFeederUtil.associateAllPhases(challenges, phases);
-// exclude this for now
-//        List<ResourceData> resources = this.challengeFeederDAO.getResources(queryParameter);
-//        ChallengeFeederUtil.associateAllResources(challenges, resources);
+
+        List<ResourceData> resources = this.challengeFeederDAO.getResources(queryParameter);
+        ChallengeFeederUtil.associateAllResources(challenges, resources);
 
         List<PrizeData> prizes = this.challengeFeederDAO.getPrizes(queryParameter);
         ChallengeFeederUtil.associateAllPrizes(challenges, prizes);
@@ -162,9 +162,9 @@ public class ChallengeFeederManager {
 
         List<ReviewData> reviews = this.challengeFeederDAO.getReviews(queryParameter);
         ChallengeFeederUtil.associateAllReviews(challenges, reviews);
-// exclude this for now
-//        List<SubmissionData> submissions = this.challengeFeederDAO.getSubmissions(queryParameter);
-//        ChallengeFeederUtil.associateAllSubmissions(challenges, submissions);
+
+        List<SubmissionData> submissions = this.challengeFeederDAO.getSubmissions(queryParameter);
+        ChallengeFeederUtil.associateAllSubmissions(challenges, submissions);
 
         List<WinnerData> winners = this.challengeFeederDAO.getWinners(queryParameter);
         ChallengeFeederUtil.associateAllWinners(challenges, winners);
