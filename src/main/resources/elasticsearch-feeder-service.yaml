@@ -26,27 +26,6 @@ databases:
     minSize: 1
     maxSize: 5
     initialSize: 1
-    
-  - datasourceName: dw
-
-    # the name of your JDBC driver
-    driverClass: com.informix.jdbc.IfxDriver
-
-    # the username
-    user: "${DW_USER:-informix}"
-
-    password: "${DW_PW:-1nf0rm1x}"
-
-    url: "${DW_URL:-jdbc:informix-sqli://cockpit.cloud.topcoder.com:2021/topcoder_dw:INFORMIXSERVER=informixoltp_tcp;IFX_LOCK_MODE_WAIT=5;OPTCOMPIND=0;STMT_CACHE=1;}"
-
-    # the password
-    # NOTE: password is set as a java system property: i.e., -Ddw.database.password=<password>
-
-    validationQuery: select 1 from systables
-
-    minSize: 1
-    maxSize: 5
-    initialSize: 1
   
 jestClientConfiguration:
   # the elastic search URL
