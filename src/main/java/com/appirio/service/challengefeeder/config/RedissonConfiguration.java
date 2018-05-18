@@ -24,8 +24,15 @@ import lombok.Setter;
  * <li>Added reference to job SingleRoundMatchesJob.</li>
  * </ul>
  * 
+ * <p>
+ * Version 1.2 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index v1.0
+ * <ul>
+ * <li>add index/type for challenge listing</li>
+ * </ul>
+ * </p>
+ * 
  * @author TCCoder
- * @version 1.1
+ * @version 1.2 
  */
 public class RedissonConfiguration {
     
@@ -45,6 +52,24 @@ public class RedissonConfiguration {
     @Getter
     @Setter
     private String challengesIndex;
+    
+    /**
+     * The challenge index listing field
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String challengesListingIndex;
+    
+    /**
+     * The challenge index listing field
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String challengesListingType;
     
     /**
      * The marathon match index field
@@ -109,6 +134,15 @@ public class RedissonConfiguration {
     private String loadChangedChallengesJobLastRunTimestampPrefix;
     
     /**
+     * Represents the last run timestamp prefix attribute for job LoadChangedChallengesListingJob.
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String loadChangedChallengesListingJobLastRunTimestampPrefix;
+    
+    /**
      * Represents the last run timestamp prefix attribute for job MarathonMatchesJob.
      */
     @JsonProperty
@@ -148,6 +182,15 @@ public class RedissonConfiguration {
     @Getter
     @Setter
     private String loadChangedChallengesJobLockerKeyName;
+    
+    /**
+     * Represents the locker key name attribute for job LoadChangedChallengesListingJob.
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String loadChangedChallengesListingJobLockerKeyName;
     
     /**
      * Represents the locker key name attribute for job MarathonMatchesJob.
