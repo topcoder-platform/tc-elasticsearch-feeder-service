@@ -14,7 +14,6 @@ import com.appirio.service.resourcefactory.SRMFeederFactory;
 import com.appirio.service.supply.resources.SupplyDatasourceFactory;
 
 import de.spinscale.dropwizard.jobs.JobsBundle;
-import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.setup.Bootstrap;
@@ -46,9 +45,16 @@ import io.searchbox.client.JestClient;
  * <li>Added job for SingleRoundMatchesJob.</li>
  * </ul>
  * </p>
+ * 
+ * <p>
+ * Version 1.4 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index v1.0
+ * <ul>
+ * <li>add job for the challenges listing.</li>
+ * </ul>
+ * </p>
  *
  * @author TCSCODER
- * @version 1.3
+ * @version 1.4 
  */
 public class ChallengeFeederServiceApplication extends BaseApplication<ChallengeFeederServiceConfiguration> {
     /**
@@ -158,7 +164,7 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         // Enable variable substitution with environment variables
         bootstrap.setConfigurationSourceProvider(
                 new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
-        bootstrap.addBundle(new JobsBundle(new StartupJob(), new LoadChangedChallengesJob(),
+        bootstrap.addBundle(new JobsBundle(new StartupJob(), new LoadChangedChallengesJob(), new LoadChangedChallengesListingJob(),
                 new MarathonMatchesJob(), new SingleRoundMatchesJob(), new LegacyMMToChallengeJob()));
     }
 }
