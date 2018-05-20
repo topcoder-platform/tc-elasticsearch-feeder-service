@@ -16,8 +16,11 @@ import lombok.Setter;
 /**
  * Represents the PhaseData model 
  * 
+ * Version 1.1 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index For Legacy Marathon Matches v1.0
+ * - change the fields name from 'phaseStatus' and 'phaseType' to 'status' and 'type'
+ * 
  * @author TCCoder
- * @version 1.0
+ * @version 1.1 
  *
  */
 public class PhaseData {
@@ -37,18 +40,18 @@ public class PhaseData {
     private Long phaseId;
 
     /**
-     * The phaseStatus field
+     * The status field
      */
     @Getter
     @Setter
-    private String phaseStatus;
+    private String status;
 
     /**
-     * The phaseType field
+     * The type field
      */
     @Getter
     @Setter
-    private String phaseType;
+    private String type;
 
     /**
      * The duration field

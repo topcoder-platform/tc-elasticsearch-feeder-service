@@ -24,8 +24,15 @@ import lombok.Setter;
  * <li>Added reference to job SingleRoundMatchesJob.</li>
  * </ul>
  * 
+ * <p>
+ * Version 1.2 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index For Legacy Marathon Matches v1.0
+ * <ul>
+ * <li>Add more configurations for the legacy marathon match loaded to the challenge list</li>
+ * </ul> 
+ * </p>
+ * 
  * @author TCCoder
- * @version 1.1
+ * @version 1.2 
  */
 public class RedissonConfiguration {
     
@@ -92,6 +99,24 @@ public class RedissonConfiguration {
     private String srmsType;
     
     /**
+     * The challenge index listing field
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String challengesListingIndex;
+    
+    /**
+     * The challenge type listing field
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String challengesListingType;
+    
+    /**
      * Represents the batch update size attribute.
      */
     @JsonProperty
@@ -117,6 +142,9 @@ public class RedissonConfiguration {
     @Setter
     private String marathonMatchesJobLastRunTimestampPrefix;
 
+    /**
+    * Represents the last run timestamp prefix attribute for LegacyMMToChallengeJob
+    */
     @JsonProperty
     @NotEmpty
     @Getter
@@ -131,6 +159,15 @@ public class RedissonConfiguration {
     @Getter
     @Setter
     private String singleRoundMatchesJobLastRunTimestampPrefix;
+    
+    /**
+     * Represents the last run timestamp prefix for LegacyMMToChallengeListJob
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String legacyMMToChallengeListingJobLastRunTimestampPrefix;
     
     /**
      * The cluster enabled field
@@ -158,11 +195,23 @@ public class RedissonConfiguration {
     @Setter
     private String marathonMatchesJobLockerKeyName;
 
+    /**
+     * Represents the locker key name attribute for LegacyMMToChallengeJob
+     */
     @JsonProperty
     @NotEmpty
     @Getter
     @Setter
     private String legacyMMJobLockerKeyName;
+    
+    /**
+     * Represents the locker key name attribute for LegacyMMToChallengeListJob
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String legacyMMToChallengeListingJobLockerKeyName;
 
     /**
      * Represents the locker key name attribute for job SingleRoundMatchesJob.
@@ -212,5 +261,14 @@ public class RedissonConfiguration {
     @Getter
     @Setter
     private int singleRoundMatchesDaysToSubtract;
+    
+    /**
+     * Represents the marathonMatchesForumUrl.
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String marathonMatchesForumUrl;
     
 }

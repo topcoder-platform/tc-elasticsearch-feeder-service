@@ -6,8 +6,8 @@ CASE
      WHEN (rs.status = 'A') THEN 'Open'
      WHEN (rs.status = 'F') THEN 'Scheduled'
      ELSE 'Scheduled'
- END as phaseStatus,
-s.segment_desc as phaseType,
+ END as status,
+s.segment_desc as type,
 start_time as fixedStartTime,
 start_time as scheduledStartTime,
 start_time as actualStartTime,
