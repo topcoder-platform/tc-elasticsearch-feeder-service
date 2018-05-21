@@ -36,13 +36,16 @@ import java.util.stream.*;
  * MmFeederManager is used to handle the marathon match feeders.
  * 
  * It's added in Topcoder - Populate Marathon Match Related Data Into Challenge Model In Elasticsearch v1.0
- * 
+ *
  * Version 1.1 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index For Legacy Marathon Matches v1.0
  * - move the common validate methods to the DataScienceHelper class
+ *
+ * Version 1.2 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Detail Index For Legacy Marathon Matches v1.0
+ * - move the common validation logic to the DataScienceHelper
  * 
  * 
  * @author TCSCODER
- * @version 1.1 
+ * @version 1.2
  */
 public class MmFeederManager {
     

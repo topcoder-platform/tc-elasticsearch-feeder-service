@@ -37,8 +37,15 @@ import lombok.Setter;
  * </ul>
  * </p>
  * 
+ * <p>
+ * Version 1.4 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Detail Index For Legacy Marathon Matches v1.0
+ * <ul>
+ * <li>add more configurations for LoadChangedMMChallengeDetailJob.</li>
+ * </ul> 
+ * </p>
+ * 
  * @author TCCoder
- * @version 1.3
+ * @version 1.4
  */
 public class RedissonConfiguration {
     
@@ -76,6 +83,24 @@ public class RedissonConfiguration {
     @Getter
     @Setter
     private String mmIndex;
+    
+    /**
+     * The challenge detail index field
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String challengesDetailIndex;
+    
+    /**
+     * The challenges detail type field
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String challengesDetailType;
     
     /**
      * The single round match index field
@@ -183,6 +208,24 @@ public class RedissonConfiguration {
     @Getter
     @Setter
     private String legacyMMToChallengeListingJobLastRunTimestampPrefix;
+
+    /**
+     * Represents the last run timestamp prefix attribute for load changed mm challenge detail job .
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String loadChangedMMChallengeDetailJobLastRunTimestampPrefix;
+    
+    /**
+     * Represents the locker key name attribute for load changed mm challenge detail job.
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String loadChangedMMChallengeDetailJobLockerKeyName;
     
     /**
      * The cluster enabled field

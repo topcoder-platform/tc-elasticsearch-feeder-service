@@ -45,10 +45,16 @@ import de.spinscale.dropwizard.jobs.annotations.OnApplicationStart;
  * <li>remove the last run time for the legacy mm into challenge listing.</li>
  * </ul>
  * </p>
+ * <p>
+ * Version 1.4 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Detail Index For Legacy Marathon Matches v1.0
+ * <ul>
+ * <li>remove the last run time for the legacy mm.</li>
+ * <li>remove the last run time for the legacy mm into challenge details.</li>
+ * </ul>
+ * </p>
  * 
  * @author TCCoder
- * @version 1.3
- *
+ * @version 1.4
  */
 @DelayStart("10s")
 @OnApplicationStart
@@ -104,6 +110,10 @@ public class StartupJob extends BaseJob {
             mapCache = redisson.getMapCache(config.getRedissonConfiguration().getLegacyMMToChallengeListingJobLastRunTimestampPrefix());
             time = mapCache.remove(config.getRedissonConfiguration().getLegacyMMToChallengeListingJobLastRunTimestampPrefix());
             logger.info("Remove the last run time for legacy mm to challenge listing job:" + time);
+            
+            mapCache = redisson.getMapCache(config.getRedissonConfiguration().getLoadChangedMMChallengeDetailJobLastRunTimestampPrefix());
+            time = mapCache.remove(config.getRedissonConfiguration().getLoadChangedMMChallengeDetailJobLastRunTimestampPrefix());
+            logger.info("Remove the last run time for legacy mm to challenge details job:" + time);
 
             redisson.shutdown();
         }
