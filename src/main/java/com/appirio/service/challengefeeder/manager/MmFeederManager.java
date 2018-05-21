@@ -8,8 +8,6 @@ import com.appirio.service.challengefeeder.api.ChallengeData;
 import com.appirio.service.challengefeeder.api.EventData;
 import com.appirio.service.challengefeeder.api.PhaseData;
 import com.appirio.service.challengefeeder.api.PrizeData;
-import com.appirio.service.challengefeeder.api.ResourceData;
-import com.appirio.service.challengefeeder.api.SubmissionData;
 import com.appirio.service.challengefeeder.api.TermsOfUseData;
 import com.appirio.service.challengefeeder.dao.MmFeederDAO;
 import com.appirio.service.challengefeeder.dto.MmFeederParam;
@@ -24,7 +22,6 @@ import com.appirio.tech.core.auth.AuthUser;
 
 import io.searchbox.client.JestClient;
 
-import org.apache.lucene.search.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,8 +37,12 @@ import java.util.stream.*;
  * 
  * It's added in Topcoder - Populate Marathon Match Related Data Into Challenge Model In Elasticsearch v1.0
  * 
+ * Version 1.1 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index For Legacy Marathon Matches v1.0
+ * - move the common validate methods to the DataScienceHelper class
+ * 
+ * 
  * @author TCSCODER
- * @version 1.0
+ * @version 1.1 
  */
 public class MmFeederManager {
     
@@ -94,7 +95,7 @@ public class MmFeederManager {
      */
     public void pushMarathonMatchDataIntoChallenge(MmFeederParam param) throws SupplyException {
         logger.info("Enter of pushMarathonMatchDataIntoChallenge");
-        checkMarathonFeederParam(param, "challenges");
+        DataScienceHelper.checkMarathonFeederParam(param, "challenges");
 
         FilterParameter filter = new FilterParameter("roundIds=in(" + ChallengeFeederUtil.listAsString(param.getRoundIds()) + ")");
         QueryParameter queryParameter = new QueryParameter(new FieldSelector());
@@ -113,7 +114,7 @@ public class MmFeederManager {
             if (c.getTotalPrize() == null) c.setTotalPrize(0.0);
         });
 
-        checkMissedIds(param, mms);
+        DataScienceHelper.checkMissedIds(param, mms);
 
         //filter isLegacy, if set up
         if (param.getLegacy() != null) {
@@ -161,70 +162,6 @@ public class MmFeederManager {
             SupplyException se = new SupplyException("Internal server error occurs", ioe);
             se.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             throw se;
-        }
-    }
-    
-    /**
-     * Check missed ids
-     *
-     * @param param the param to use
-     * @param result the result to use
-     * @throws SupplyException if any error occurs
-     */
-    private static void checkMissedIds(MmFeederParam param, List<ChallengeData> result) throws SupplyException {
-        List<Long> idsNotFound = new ArrayList<Long>();
-        for (Long id : param.getRoundIds()) {
-            boolean hit = false;
-            for (ChallengeData data : result) {
-                if (id.longValue() == data.getId().longValue()) {
-                    hit = true;
-                    break;
-                }
-            }
-            if (!hit) {
-                idsNotFound.add(id);
-            }
-        }
-        if (!idsNotFound.isEmpty()) {
-            throw new SupplyException("The round ids not found: " + idsNotFound, HttpServletResponse.SC_NOT_FOUND);
-        }
-
-    }
-
-    /**
-     * Check marathon feeder parameter
-     *
-     * @param param the param to use
-     * @param defaultType the defaultType to use
-     * @throws SupplyException if any error occurs
-     */
-    private static void checkMarathonFeederParam(MmFeederParam param, String defaultType) throws SupplyException {
-        if (param.getType() == null || param.getType().trim().length() == 0) {
-            param.setType(defaultType);
-        }
-        if (param.getIndex() == null || param.getIndex().trim().length() == 0) {
-            throw new SupplyException("The index should be non-null and non-empty string.", HttpServletResponse.SC_BAD_REQUEST);
-        }
-
-        if (param.getRoundIds() == null || param.getRoundIds().size() == 0) {
-            throw new SupplyException("Round ids must be provided", HttpServletResponse.SC_BAD_REQUEST);
-        }
-        if (param.getRoundIds().contains(null)) {
-            throw new SupplyException("Null round id is not allowed", HttpServletResponse.SC_BAD_REQUEST);
-        }
-        
-        Set<Long> duplicateIds = new HashSet<Long>();
-        for (Long id : param.getRoundIds()) {
-            if (id.longValue() <= 0) {
-                throw new SupplyException("Round id should be positive", HttpServletResponse.SC_BAD_REQUEST);
-            }
-            if (param.getRoundIds().indexOf(id) != param.getRoundIds().lastIndexOf(id)) {
-                duplicateIds.add(id);
-            }
-        }
-        
-        if (!duplicateIds.isEmpty()) {
-            throw new SupplyException("The round ids are duplicate:" + duplicateIds, HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
