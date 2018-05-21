@@ -43,9 +43,17 @@ import lombok.Setter;
  * <li>add more configurations for LoadChangedMMChallengeDetailJob.</li>
  * </ul> 
  * </p>
- * 
+ *
+ * <p>
+ * Change in v1.5 (Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Detail Index):
+ * <ul>
+ *     <li>Added {@link #challengesDetailType}</li>
+ *     <li>Added {@link #loadChangedChallengesDetailJobLastRunTimestampPrefix}</li>
+ *     <li>Added {@link #loadChangedChallengesDetailJobLockerKeyName}</li>
+ * </ul>
+ * </p>
  * @author TCCoder
- * @version 1.4
+ * @version 1.5
  */
 public class RedissonConfiguration {
     
@@ -65,7 +73,7 @@ public class RedissonConfiguration {
     @Getter
     @Setter
     private String challengesIndex;
-    
+
     /**
      * The challenge index listing field
      */
@@ -94,15 +102,6 @@ public class RedissonConfiguration {
     private String challengesDetailIndex;
     
     /**
-     * The challenges detail type field
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String challengesDetailType;
-    
-    /**
      * The single round match index field
      */
     @JsonProperty
@@ -119,6 +118,16 @@ public class RedissonConfiguration {
     @Getter
     @Setter
     private String challengesType;
+
+    /**
+     * The challenges listing type field
+     * @since 1.2
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String challengesDetailType;
     
     /**
      * The marahon match type field
@@ -155,6 +164,16 @@ public class RedissonConfiguration {
     @Setter
     private int batchUpdateSize;
     
+    /**
+     * Represents the last run timestamp prefix attribute for job LoadChangedChallengesListingJob.
+     * @since 1.2
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String loadChangedChallengesDetailJobLastRunTimestampPrefix;
+
     /**
      * Represents the last run timestamp prefix attribute for job LoadChangedChallengesJob.
      */
@@ -243,6 +262,17 @@ public class RedissonConfiguration {
     @Getter
     @Setter
     private String loadChangedChallengesJobLockerKeyName;
+
+    /**
+     * Represents the locker key name attribute for job LoadChangedChallengesListingJob.
+     * @since 1.2
+     */
+    @JsonProperty
+    @NotEmpty
+    @Getter
+    @Setter
+    private String loadChangedChallengesDetailJobLockerKeyName;
+
     
     /**
      * Represents the locker key name attribute for job LoadChangedChallengesListingJob.
