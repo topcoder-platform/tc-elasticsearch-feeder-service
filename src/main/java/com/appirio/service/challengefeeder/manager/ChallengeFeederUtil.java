@@ -27,8 +27,11 @@ import com.appirio.service.challengefeeder.api.WinnerData;
  * Version 1.1 - Topcoder - Elasticsearch Service - Populate Challenge Points Prize In Challenges Index
  * 	- add the methods to associate the prize points with the challenge ids
  *
+ * Version 1.2 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Detail Index
+ *  - added {@link #getColorStyle(Integer)}
+ *
  * @author TCSCODER
- * @version 1.1
+ * @version 1.2
  */
 public class ChallengeFeederUtil {
     /**
@@ -325,4 +328,39 @@ public class ChallengeFeederUtil {
         }
     }
 
+    /**
+     * Get color style
+     *
+     * @param rating the rating to use
+     * @return the String result representing the color
+     * @since 1.2
+     */
+    public static String getColorStyle(Integer rating) {
+
+        if (rating == null) {
+            return "color: #000000";
+        }
+
+        if (rating < 0) {
+            return "color: #FF9900"; // orange
+        }
+        if (rating < 900) {
+            return "color: #999999";// gray
+        }
+        if (rating < 1200) {
+            return "color: #00A900";// green
+        }
+        if (rating < 1500) {
+            return "color: #6666FF";// blue
+        }
+        if (rating < 2200) {
+            return "color: #DDCC00";// yellow
+        }
+        if (rating > 2199) {
+            return "color: #EE0000";// red
+        }
+        // return black otherwise.
+        return "color: #000000";
+
+    }
 }
