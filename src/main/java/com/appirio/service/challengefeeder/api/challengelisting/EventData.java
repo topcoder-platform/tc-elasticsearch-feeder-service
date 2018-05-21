@@ -8,7 +8,7 @@ import lombok.Setter;
 
 /**
  * Represents the EventData entity.
- * 
+ *
  * It's added in Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index v1.0
  * 
  * @author TCCoder

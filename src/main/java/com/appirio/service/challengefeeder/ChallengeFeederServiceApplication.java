@@ -45,16 +45,21 @@ import io.searchbox.client.JestClient;
  * <li>Added job for SingleRoundMatchesJob.</li>
  * </ul>
  * </p>
- * 
  * <p>
  * Version 1.4 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index v1.0
  * <ul>
  * <li>add job for the challenges listing.</li>
  * </ul>
  * </p>
+ * <p>
+ * Changes in v1.5 (Topcoder - Create CronJob For Populating Marathon Matches and SRMs To Elasticsearch v1.0):
+ * <ul>
+ * <li>Added LegacyMMToChallengeListingJob for schedule.</li>
+ * </ul>
+ * </p>
  *
  * @author TCSCODER
- * @version 1.4 
+ * @version 1.5
  */
 public class ChallengeFeederServiceApplication extends BaseApplication<ChallengeFeederServiceConfiguration> {
     /**
@@ -164,7 +169,8 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         // Enable variable substitution with environment variables
         bootstrap.setConfigurationSourceProvider(
                 new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
+
         bootstrap.addBundle(new JobsBundle(new StartupJob(), new LoadChangedChallengesJob(), new LoadChangedChallengesListingJob(),
-                new MarathonMatchesJob(), new SingleRoundMatchesJob(), new LegacyMMToChallengeJob()));
+                new MarathonMatchesJob(), new SingleRoundMatchesJob(), new LegacyMMToChallengeJob(), new LegacyMMToChallengeListingJob()));
     }
 }

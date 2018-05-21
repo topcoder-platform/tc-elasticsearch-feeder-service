@@ -21,7 +21,7 @@ import lombok.Setter;
 
 /**
  * Represents the ChallengeListData model 
- * 
+ *
  * It's added in Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index v1.0
  * 
  * @author TCCoder
