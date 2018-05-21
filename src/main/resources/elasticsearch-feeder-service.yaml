@@ -54,11 +54,15 @@ redissonConfiguration:
   challengesType: "${REDISSON_JOB_CHALLENGES_TYPE:-challenges}"
   mmType: "${REDISSON_JOB_MMATCHES_TYPE:-mmatches}"
   srmsType: "${REDISSON_JOB_SRMS_TYPE:-srms}"
+  challengesDetailIndex: "${REDISSON_JOB_CHALLENGES_DETAIL_INDEX:-challengesdetail}"
+  challengesDetailType: "${REDISSON_JOB_CHALLENGES_DETAIL_TYPE:-challengesdetail}"
   batchUpdateSize: "${REDISSON_JOB_BATCH_UPDATE_SIZE:-1}"
   loadChangedChallengesJobLastRunTimestampPrefix: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LAST_RUN_TIMESTAMP_PREFIX:-loadChangedChallengesJobLastRunTimestamp}"
   marathonMatchesJobLastRunTimestampPrefix: "${REDISSON_MM_JOB_LAST_RUN_TIMESTAMP_PREFIX:-marathonMatchesJobLastRunTimestamp}"
   singleRoundMatchesJobLastRunTimestampPrefix: "${REDISSON_SRM_JOB_LAST_RUN_TIMESTAMP_PREFIX:-singleRoundMatchesJobLastRunTimestamp}"
   legacyMMJobLastRunTimestampPrefix: "${REDISSON_SRM_JOB_LAST_RUN_TIMESTAMP_PREFIX:-legacyMMJobLastRunTimestamp}"
+  loadChangedMMChallengeDetailJobLastRunTimestampPrefix: "${REDISSON_LOAD_CHANGED_MM_CHALLENGE_DETAIL_JOB_LAST_RUN_TIMESTAMP_PREFIX:-loadChangedMMChallengeDetailJobLastRunTimestamp}"
+  loadChangedMMChallengeDetailJobLockerKeyName: "${REDISSON_LOAD_CHANGED_MM_CHALLENGE_DETAIL_JOB_LOCK_KEY:-loadChangedMMChallengeDetailJobLockKey}"
   loadChangedChallengesJobLockerKeyName: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LOCK_KEY:-loadChangedChallengesJobLockKey}"
   marathonMatchesJobLockerKeyName: "${REDISSON_MM_JOB_LOCK_KEY:-marathonMatchesJobLockerKey}"
   singleRoundMatchesJobLockerKeyName: "${REDISSON_SRM_JOB_LOCK_KEY:-singleRoundMatchesJobLockerKey}"
@@ -73,6 +77,7 @@ redissonConfiguration:
   singleRoundMatchesDaysToSubtract: -60
 
 jobs:
+  com.appirio.service.challengefeeder.job.LoadChangedMMChallengeDetailJob: "${LOAD_LEGACY_MARATHON_MATCHES_INTO_CHALLENGE_DETAILS_JOB_INTERVAL:-30s}"
   com.appirio.service.challengefeeder.job.LoadChangedChallengesJob: "${LOAD_CHANGED_CHALLENGES_JOB_INTERVAL:-30s}"
   com.appirio.service.challengefeeder.job.MarathonMatchesJob: "${LOAD_MARATHON_MATCHES_JOB_INTERVAL:-2s}"
   com.appirio.service.challengefeeder.job.SingleRoundMatchesJob: "${LOAD_SINGLE_ROUND_MATCHES_JOB_INTERVAL:-30s}"

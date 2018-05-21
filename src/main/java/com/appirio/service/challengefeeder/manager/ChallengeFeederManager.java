@@ -64,6 +64,11 @@ public class ChallengeFeederManager {
     private static final Logger logger = LoggerFactory.getLogger(ChallengeFeederManager.class);
 
     /**
+     * MM Round id project_info_type_id
+     */
+    private static final long MM_PROPERTY_ID = 56;
+
+    /**
      * DAO to access challenge data from the transactional database.
      */
     private final ChallengeFeederDAO challengeFeederDAO;
@@ -144,9 +149,9 @@ public class ChallengeFeederManager {
         // associate all the data
         List<PhaseData> phases = this.challengeFeederDAO.getPhases(queryParameter);
         ChallengeFeederUtil.associateAllPhases(challenges, phases);
-
-        List<ResourceData> resources = this.challengeFeederDAO.getResources(queryParameter);
-        ChallengeFeederUtil.associateAllResources(challenges, resources);
+// exclude this for now
+//        List<ResourceData> resources = this.challengeFeederDAO.getResources(queryParameter);
+//        ChallengeFeederUtil.associateAllResources(challenges, resources);
 
         List<PrizeData> prizes = this.challengeFeederDAO.getPrizes(queryParameter);
         ChallengeFeederUtil.associateAllPrizes(challenges, prizes);
@@ -162,9 +167,9 @@ public class ChallengeFeederManager {
 
         List<ReviewData> reviews = this.challengeFeederDAO.getReviews(queryParameter);
         ChallengeFeederUtil.associateAllReviews(challenges, reviews);
-
-        List<SubmissionData> submissions = this.challengeFeederDAO.getSubmissions(queryParameter);
-        ChallengeFeederUtil.associateAllSubmissions(challenges, submissions);
+// exclude this for now
+//        List<SubmissionData> submissions = this.challengeFeederDAO.getSubmissions(queryParameter);
+//        ChallengeFeederUtil.associateAllSubmissions(challenges, submissions);
 
         List<WinnerData> winners = this.challengeFeederDAO.getWinners(queryParameter);
         ChallengeFeederUtil.associateAllWinners(challenges, winners);
@@ -186,7 +191,12 @@ public class ChallengeFeederManager {
                     SubTrack.DEVELOP_MARATHON_MATCH.name().equals(data.getSubTrack())) {
                 if (data.getIsBanner() == null) data.setIsBanner(Boolean.FALSE);
                 data.setIsLegacy(Boolean.FALSE);
-                if (data.getRoundId() != null) mmRoundToIdMaps.put(data.getRoundId(), data.getId());
+                for (PropertyData prop : data.getProperties()) {
+                    if (prop.getPropertyId() == MM_PROPERTY_ID && prop.getValue() != null) {
+                        mmRoundToIdMaps.put(Long.valueOf(prop.getValue()), data.getId());
+                        break;
+                    }
+                }
             }
             for (Map<String, Object> item : groupIds) {
                 if (item.get("challengeId").toString().equals(data.getId().toString())) {
@@ -223,11 +233,33 @@ public class ChallengeFeederManager {
             queryParameter.setFilter(roundIdFilter);
             List<Map<String, Object>> mmContestIds = this.challengeFeederDAO.getMMContestComponent(queryParameter);
 
+            List<ResourceData> mmResources = this.challengeFeederDAO.getMMResources(queryParameter);
             mmContestIds.forEach(cm -> {
                 ChallengeData challenge = challenges.stream().filter(c -> c.getId().equals(mmRoundToIdMaps.get(Long.valueOf(cm.get("roundId").toString()))))
                         .findFirst().orElse(null);
                 challenge.setContestId(Long.valueOf(cm.get("contestId").toString()));
                 challenge.setComponentId(Long.valueOf(cm.get("componentId").toString()));
+                //remove submitter if there's we'll populate from legacy mm data below
+// exclude this for now
+//                challenge.setResources(challenge.getResources().stream()
+//                        .filter(r -> !"Submitter".equals(r.getRole())).collect(Collectors.toList()));
+                challenge.setNumSubmissions(0L);
+                challenge.setNumRegistrants(0L);
+            });
+            //collect submitter from legacy mm
+
+            mmResources.forEach(r -> {
+                ChallengeData challenge = challenges.stream().filter(c -> c.getId().equals(mmRoundToIdMaps.get(r.getChallengeId())))
+                        .findFirst().orElse(null);
+                if (challenge.getUserIds() == null) challenge.setUserIds(new ArrayList<>());
+                challenge.getUserIds().add(r.getUserId());
+                if (challenge.getHasUserSubmittedForReview() == null) challenge.setHasUserSubmittedForReview(new ArrayList<>());
+                String hasSubmitted = (r.getSubmissionCount() > 0) ? r.getUserId().toString() + 'T' : r.getUserId().toString() + 'F';
+                challenge.getHasUserSubmittedForReview().add(hasSubmitted);
+                challenge.setNumRegistrants(challenge.getNumRegistrants() + 1);
+                challenge.setNumSubmissions(challenge.getNumSubmissions() + r.getSubmissionCount());
+                r.setChallengeId(null);
+//                challenge.getResources().add(r);
             });
         }
 
