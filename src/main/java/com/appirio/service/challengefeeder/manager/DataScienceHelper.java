@@ -41,8 +41,13 @@ import javax.servlet.http.HttpServletResponse;
  * - add common methods to validate the marathon match data
  * </p>
  *
+ * Version 1.2 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Detail Index For Legacy Marathon Matches v1.0
+ * <p>
+ * add common methods to validate the arguments
+ * </p>
+ *
  * @author TCCoder
- * @version 1.1 
+ * @version 1.2
  */
 final class DataScienceHelper {
     /**
@@ -53,7 +58,7 @@ final class DataScienceHelper {
      * @throws SupplyException if any error occurs
      */
     static void checkMissedIds(MmFeederParam param, List<? extends IdentifiableData> result) throws SupplyException {
-        List<Long> idsNotFound = new ArrayList<Long>();
+        List<Long> idsNotFound = new ArrayList<>();
         for (Long id : param.getRoundIds()) {
             boolean hit = false;
             for (IdentifiableData data : result) {
@@ -94,9 +99,9 @@ final class DataScienceHelper {
             throw new SupplyException("Null round id is not allowed", HttpServletResponse.SC_BAD_REQUEST);
         }
         
-        Set<Long> duplicateIds = new HashSet<Long>();
+        Set<Long> duplicateIds = new HashSet<>();
         for (Long id : param.getRoundIds()) {
-            if (id.longValue() <= 0) {
+            if (id <= 0) {
                 throw new SupplyException("Round id should be positive", HttpServletResponse.SC_BAD_REQUEST);
             }
             if (param.getRoundIds().indexOf(id) != param.getRoundIds().lastIndexOf(id)) {
@@ -174,7 +179,7 @@ final class DataScienceHelper {
      */
     static <T extends DataScienceData> void checkDataScienceExist(List<Long> roundIds, List<T> data)
         throws SupplyException {
-        List<Long> idsNotFound = new ArrayList<Long>();
+        List<Long> idsNotFound = new ArrayList<>();
         for (Long roundId : roundIds) {
             boolean hit = false;
             for (DataScienceData dataScience : data) {
@@ -209,7 +214,7 @@ final class DataScienceHelper {
                     List<Long> userIds = dataScience.getUserIds();
                     if (userIds == null) {
                         // create new empty list
-                        userIds = new ArrayList<Long>();
+                        userIds = new ArrayList<>();
                         dataScience.setUserIds(userIds);
                     }
 
@@ -219,14 +224,14 @@ final class DataScienceHelper {
                     if (dataScience instanceof MarathonMatchData) {
                         isRateds = ((MarathonMatchData) dataScience).getIsRatedForMM();
                         if (isRateds == null) {
-                            isRateds = new ArrayList<String>();
+                            isRateds = new ArrayList<>();
                             ((MarathonMatchData) dataScience).setIsRatedForMM(isRateds);
                         }
                         isRated = (String) user.get("isRatedForMM");
                     } else if (dataScience instanceof SRMData) {
                         isRateds = ((SRMData) dataScience).getIsRatedForSRM();
                         if (isRateds == null) {
-                            isRateds = new ArrayList<String>();
+                            isRateds = new ArrayList<>();
                             ((SRMData) dataScience).setIsRatedForSRM(isRateds);
                         }
                         isRated = (String) user.get("isRatedForSRM");

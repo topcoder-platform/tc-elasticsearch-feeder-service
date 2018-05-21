@@ -57,9 +57,16 @@ import io.searchbox.client.JestClient;
  * <li>Added LegacyMMToChallengeListingJob for schedule.</li>
  * </ul>
  * </p>
+ * 
+ * <p>
+ * Version 1.6 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Detail Index For Legacy Marathon Matches v1.0
+ * <ul>
+ * <li>add job LoadChangedMMChallengeDetailJob for schedule.</li>
+ * </ul>
+ * </p>
  *
  * @author TCSCODER
- * @version 1.5
+ * @version 1.6
  */
 public class ChallengeFeederServiceApplication extends BaseApplication<ChallengeFeederServiceConfiguration> {
     /**
@@ -170,7 +177,7 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         bootstrap.setConfigurationSourceProvider(
                 new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
 
-        bootstrap.addBundle(new JobsBundle(new StartupJob(), new LoadChangedChallengesJob(), new LoadChangedChallengesListingJob(),
-                new MarathonMatchesJob(), new SingleRoundMatchesJob(), new LegacyMMToChallengeJob(), new LegacyMMToChallengeListingJob()));
+        bootstrap.addBundle(new JobsBundle(new StartupJob(), new LoadChangedChallengesJob(), new LoadChangedChallengesListingJob(), new LegacyMMToChallengeListingJob(),
+                new MarathonMatchesJob(), new SingleRoundMatchesJob(), new LegacyMMToChallengeJob(), new LoadChangedMMChallengeDetailJob()));
     }
 }
