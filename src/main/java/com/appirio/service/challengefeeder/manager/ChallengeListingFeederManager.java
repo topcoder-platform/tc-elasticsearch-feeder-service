@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.appirio.service.challengefeeder.api.FileTypeData;
 import com.appirio.service.challengefeeder.api.PhaseData;
 import com.appirio.service.challengefeeder.api.PrizeData;
+import com.appirio.service.challengefeeder.api.UserIdData;
 import com.appirio.service.challengefeeder.api.challengelisting.ChallengeListingData;
 import com.appirio.service.challengefeeder.api.challengelisting.EventData;
 import com.appirio.service.challengefeeder.api.challengelisting.WinnerData;
@@ -161,6 +162,9 @@ public class ChallengeListingFeederManager {
         
         List<Map<String, Object>> checkpointsSubmissions = this.challengeListingFeederDAO.getCheckpointsSubmissions(queryParameter);
         List<Map<String, Object>> groupIds = this.challengeFeederDAO.getGroupIds(queryParameter);
+        
+        List<UserIdData> userIds = this.challengeListingFeederDAO.getChallengeUserIds(queryParameter);
+        associateAllUserIds(challenges, userIds);
 
         // set other field
         for (ChallengeListingData data : challenges) {
@@ -372,6 +376,30 @@ public class ChallengeListingFeederManager {
             aPhase.setPhaseId(null);
             aPhase.setDuration(null);
             aPhase.setFixedStartTime(null);
+        }
+    }
+    
+    
+    /**
+     * Associate all user ids
+     *
+     * @param challenges the challenges to use
+     * @param userIds the userIds to use
+     */
+    private static void associateAllUserIds(List<ChallengeListingData> challenges, List<UserIdData> userIds) {
+        for (UserIdData item : userIds) {
+            for (ChallengeListingData challenge : challenges) {
+                if (challenge.getId().equals(item.getChallengeId())) {
+                    if (challenge.getUserIds() == null) {
+                        challenge.setUserIds(new ArrayList<Long>());
+                    }
+                    challenge.getUserIds().add(item.getUserId());
+                    break;
+                }
+            }
+        }
+        for (UserIdData item : userIds) {
+            item.setChallengeId(null);
         }
     }
 }

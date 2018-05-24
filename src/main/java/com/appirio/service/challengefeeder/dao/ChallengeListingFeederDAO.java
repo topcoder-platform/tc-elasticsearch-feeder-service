@@ -6,6 +6,7 @@ package com.appirio.service.challengefeeder.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.appirio.service.challengefeeder.api.UserIdData;
 import com.appirio.service.challengefeeder.api.challengelisting.ChallengeListingData;
 import com.appirio.service.challengefeeder.api.challengelisting.EventData;
 import com.appirio.service.challengefeeder.api.challengelisting.WinnerData;
@@ -60,4 +61,13 @@ public interface ChallengeListingFeederDAO {
      */
     @SqlQueryFile("sql/challenge-feeder/get_winners_for_challenge_listing.sql")
     List<WinnerData> getWinnersForChallengeListing(@ApiQueryInput QueryParameter queryParameter);
+    
+    /**
+     * Get user Id
+     *
+     * @param queryParameter the queryParameter to use
+     * @return the List<UserIdData> result
+     */
+    @SqlQueryFile("sql/challenge-feeder/get_challenge-userids.sql")
+    List<UserIdData> getChallengeUserIds(@ApiQueryInput QueryParameter queryParameter);
 }

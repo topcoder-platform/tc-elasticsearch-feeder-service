@@ -6,15 +6,13 @@ package com.appirio.service.challengefeeder.api.challengelisting;
 import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.appirio.service.challengefeeder.api.challengelisting.EventData;
 import com.appirio.service.challengefeeder.api.FileTypeData;
 import com.appirio.service.challengefeeder.api.IdentifiableData;
 import com.appirio.service.challengefeeder.api.PhaseData;
-import com.appirio.service.challengefeeder.api.challengelisting.WinnerData;
 import com.appirio.service.challengefeeder.helper.CustomDateDeserializer;
 import com.appirio.supply.constants.SubTrack;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -436,6 +434,13 @@ public class ChallengeListingData extends IdentifiableData {
     @Getter
     @Setter
     private Long challengeId;
+    
+    /**
+     *  The userIds field
+     */
+    @Getter
+    @Setter
+    private List<Long> userIds;
     
     /**
      * Setter for {@link #subTrack}
