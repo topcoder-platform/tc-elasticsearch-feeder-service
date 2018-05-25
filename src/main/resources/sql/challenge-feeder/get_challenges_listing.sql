@@ -19,8 +19,6 @@ SELECT
          END AS track,
          pcl.description AS subTrack,
          pstatus.NAME AS status,
-         Technology_list(pi1.value) AS technologiesStr,
-         Platform_list(p.project_id) AS platformsStr,
          Nvl(pp1.actual_start_time, pp1.scheduled_start_time) AS registrationStartDate,
          Nvl(pp1.actual_end_time, pp1.scheduled_end_time) AS registrationEndDate,
          Nvl(pp2.actual_end_time, pp2.scheduled_end_time) AS submissionEndDate,
@@ -102,8 +100,6 @@ SELECT
   AND pp2.phase_type_id = 2
   INNER JOIN project_info pn ON pn.project_id = p.project_id
   AND pn.project_info_type_id = 6
-  INNER JOIN project_info pi1 ON pi1.project_id = p.project_id
-  AND pi1.project_info_type_id = 1
   LEFT JOIN TCS_CATALOG\:project_info AS forum_id_info ON forum_id_info.project_id = p.project_id
   AND forum_id_info.project_info_type_id = 4
   LEFT JOIN TCS_CATALOG\:project_info AS review_type_info ON review_type_info.project_id = p.project_id

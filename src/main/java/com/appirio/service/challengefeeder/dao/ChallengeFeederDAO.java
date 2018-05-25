@@ -202,4 +202,22 @@ public interface ChallengeFeederDAO {
      */
     @SqlQueryFile("sql/challenge-feeder/get_challenge_pointsPrize.sql")
     List<PrizeData> getPointsPrize(@ApiQueryInput QueryParameter queryParameter);
+    
+    /**
+     * Get challenge technologies
+     *
+     * @param queryParameter the queryParameter to use
+     * @return the List<Map<String,Object>> result
+     */
+    @SqlQueryFile("sql/challenge-feeder/get_challenge_technologies.sql")
+    List<Map<String, Object>> getChallengeTechnologies(@ApiQueryInput QueryParameter queryParameter);
+    
+    /**
+     * Get challenge plagforms
+     *
+     * @param queryParameter the queryParameter to use
+     * @return the List<Map<String,Object>> result
+     */
+    @SqlQueryFile("sql/challenge-feeder/get_challenge_plagforms.sql")
+    List<Map<String, Object>> getChallengePlagforms(@ApiQueryInput QueryParameter queryParameter);
 }

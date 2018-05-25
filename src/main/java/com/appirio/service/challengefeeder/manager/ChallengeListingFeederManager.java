@@ -162,9 +162,31 @@ public class ChallengeListingFeederManager {
         
         List<Map<String, Object>> checkpointsSubmissions = this.challengeListingFeederDAO.getCheckpointsSubmissions(queryParameter);
         List<Map<String, Object>> groupIds = this.challengeFeederDAO.getGroupIds(queryParameter);
-        
         List<UserIdData> userIds = this.challengeListingFeederDAO.getChallengeUserIds(queryParameter);
         associateAllUserIds(challenges, userIds);
+        
+        List<Map<String, Object>> platforms = this.challengeFeederDAO.getChallengePlagforms(queryParameter);
+        for (Map<String, Object> item : platforms) {
+            for (ChallengeListingData data : challenges) {
+                if (data.getChallengeId().longValue() == Long.parseLong(item.get("challengeId").toString())) {
+                    if (data.getPlatforms() == null) {
+                        data.setPlatforms(new ArrayList<String>());
+                    }
+                    data.getPlatforms().add(item.get("name").toString());
+                }
+            }
+        }
+        List<Map<String, Object>> technoglies = this.challengeFeederDAO.getChallengeTechnologies(queryParameter);
+        for (Map<String, Object> item : technoglies) {
+            for (ChallengeListingData data : challenges) {
+                if (data.getChallengeId().longValue() == Long.parseLong(item.get("challengeId").toString())) {
+                    if (data.getTechnologies() == null) {
+                        data.setTechnologies(new ArrayList<String>());
+                    }
+                    data.getTechnologies().add(item.get("name").toString());
+                }
+            }
+        }
 
         // set other field
         for (ChallengeListingData data : challenges) {
@@ -187,17 +209,6 @@ public class ChallengeListingFeederManager {
                     data.setNumberOfCheckpointSubmissions(Integer.parseInt(item.get("numberOfSubmissions").toString()));
                 }
             }
-            
-            if (data.getPlatformsStr() != null && data.getPlatformsStr().trim().length() > 0) {
-                data.setPlatforms(Arrays.asList(data.getPlatformsStr().split(", ")));
-                
-            }
-            data.setPlatformsStr(null);
-            if (data.getTechnologiesStr() != null && data.getTechnologiesStr().trim().length() > 0) {
-                data.setTechnologies(Arrays.asList(data.getTechnologiesStr().split(", ")));
-                
-            }
-            data.setTechnologiesStr(null);
             
             for (Map<String, Object> item : groupIds) {
                 if (item.get("challengeId").toString().equals(data.getId().toString())) {

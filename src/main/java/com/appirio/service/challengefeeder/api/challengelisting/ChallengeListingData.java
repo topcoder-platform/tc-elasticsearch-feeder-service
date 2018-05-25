@@ -65,13 +65,6 @@ public class ChallengeListingData extends IdentifiableData {
     @Getter
     @Setter
     private List<String> technologies;
-    
-    /**
-     * The technologiesStr field
-     */
-    @Getter
-    @Setter
-    private String technologiesStr;
 
     /**
      * The status field
@@ -170,13 +163,6 @@ public class ChallengeListingData extends IdentifiableData {
     @Getter
     @Setter
     private List<String> platforms;
-    
-    /**
-     * The platformsStr field
-     */
-    @Getter
-    @Setter
-    private String platformsStr;
 
     /**
      * The numberOfCheckpointPrizes field
