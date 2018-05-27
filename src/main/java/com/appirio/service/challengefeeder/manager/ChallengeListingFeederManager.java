@@ -153,6 +153,9 @@ public class ChallengeListingFeederManager {
         
         List<PrizeData> prizes = this.challengeFeederDAO.getPrizes(queryParameter);
         associateAllPrizes(challenges, prizes);
+
+        List<PrizeData> pointPrizes = this.challengeFeederDAO.getPointsPrize(queryParameter);
+        associatePointPrizes(challenges, pointPrizes);
         
         List<FileTypeData> fileTypes = this.challengeFeederDAO.getFileTypes(queryParameter);
         associateAllFileTypes(challenges, fileTypes);
@@ -316,6 +319,26 @@ public class ChallengeListingFeederManager {
                         challenge.setPrize(new ArrayList<Double>());
                     }
                     challenge.getPrize().add(item.getAmount());
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Associate point prizes
+     *
+     * @param challenges the challenges to use
+     * @param points the point prizes to use
+     */
+    private static void associatePointPrizes(List<ChallengeListingData> challenges, List<PrizeData> points) {
+        for (PrizeData item : points) {
+            for (ChallengeListingData challenge : challenges) {
+                if (challenge.getId().equals(item.getChallengeId())) {
+                    if (challenge.getPointPrizes() == null) {
+                        challenge.setPointPrizes(new ArrayList<>());
+                    }
+                    challenge.getPointPrizes().add(item.getAmount());
                     break;
                 }
             }
