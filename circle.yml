@@ -12,9 +12,13 @@ test:
 
 deployment:
   development:
-    branch: ["dev","test-env"]
+    branch: ["dev"]
     commands:      
       - .deploy/ecs_deploy.sh DEV
+  test:
+    branch: ["test-env"]
+    commands:      
+      - .deploy/ecs_deploy.sh TEST
   production:
     branch: master
     commands:
