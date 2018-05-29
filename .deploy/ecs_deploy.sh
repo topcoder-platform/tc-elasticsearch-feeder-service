@@ -31,7 +31,6 @@ OLTP_URL=$(eval "echo \$${ENV}_OLTP_URL")
 
 JQ="jq --raw-output --exit-status"
 
-
 # Define script variables
 DEPLOY_DIR="$( cd "$( dirname "$0" )" && pwd )"
 WORKSPACE=$PWD
