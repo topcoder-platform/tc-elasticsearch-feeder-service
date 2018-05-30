@@ -10,7 +10,6 @@ test:
   override:
     - mvn clean compile package
 
-
 deployment:
   development:
     branch: ["dev"]
