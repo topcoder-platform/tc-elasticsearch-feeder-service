@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@DelayStart("15s")
+@DelayStart("16s")
 @Every("${com.appirio.service.challengefeeder.job.LoadChangedChallengesDetailJob}")
 public class LoadChangedChallengesDetailJob extends BaseJob {
     /**
@@ -107,7 +107,7 @@ public class LoadChangedChallengesDetailJob extends BaseJob {
 
                     logger.info("The last run timestamp for challenges job is:" + timestamp);
 
-                    String currentTime = DATE_FORMAT.format(this.challengeDetailFeederManager.getTimestamp());
+                    String currentTime = DATE_FORMAT.format(new Date());
 
                     List<TCID> totalIds = this.challengeDetailFeederManager.getChangedChallengeIds(new java.sql.Date(lastRunTimestamp.getTime()));
 
@@ -125,7 +125,7 @@ public class LoadChangedChallengesDetailJob extends BaseJob {
                         to += (to + batchSize) > ids.size() ? (ids.size() - to) : batchSize;
                         List<Long> sub = ids.subList(from, to);
                         ChallengeFeederParam param = new ChallengeFeederParam();
-                        param.setIndex(this.config.getRedissonConfiguration().getChallengesIndex());
+                        param.setIndex(this.config.getRedissonConfiguration().getChallengesDetailIndex());
                         param.setType(this.config.getRedissonConfiguration().getChallengesDetailType());
                         param.setChallengeIds(sub);
                         try {

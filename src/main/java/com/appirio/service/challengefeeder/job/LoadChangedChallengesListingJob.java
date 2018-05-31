@@ -38,7 +38,7 @@ import de.spinscale.dropwizard.jobs.annotations.Every;
  * @version 1.0
  *
  */
-@DelayStart("15s")
+@DelayStart("14s")
 @Every("${com.appirio.service.challengefeeder.job.LoadChangedChallengesListingJob}")
 public class LoadChangedChallengesListingJob extends BaseJob {
     /**
@@ -117,8 +117,7 @@ public class LoadChangedChallengesListingJob extends BaseJob {
 
                     logger.info("The last run timestamp for challenges listing job is:" + timestamp);
 
-                    String currentTime = DATE_FORMAT.format(this.challengeListingFeederManager.getTimestamp());
-
+                    String currentTime = DATE_FORMAT.format(new Date());
                     List<TCID> totalIds = this.challengeListingFeederManager.getChangedChallengeIds(new java.sql.Date(lastRunTimestamp.getTime()));
 
                     List<Long> ids = new ArrayList<>();

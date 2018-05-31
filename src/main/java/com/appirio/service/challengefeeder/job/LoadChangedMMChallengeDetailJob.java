@@ -35,7 +35,7 @@ import lombok.NoArgsConstructor;
  * @version 1.0
  *
  */
-@DelayStart("20s")
+@DelayStart("21s")
 @Every("${com.appirio.service.challengefeeder.job.LoadChangedMMChallengeDetailJob}")
 @NoArgsConstructor
 public class LoadChangedMMChallengeDetailJob extends BaseJob {
@@ -105,7 +105,7 @@ public class LoadChangedMMChallengeDetailJob extends BaseJob {
 
                     logger.info("The last run timestamp for marathon matches challenge detail job is:" + lastRunTimestamp);
 
-                    Date currentTimestamp = this.manager.getTimestamp();
+                    Date currentTimestamp = new Date();
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(currentTimestamp);
                     calendar.add(Calendar.DAY_OF_MONTH, this.config.getRedissonConfiguration().getMarathonMatchesDaysToSubtract());

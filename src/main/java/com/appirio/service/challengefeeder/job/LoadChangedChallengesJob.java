@@ -117,7 +117,7 @@ public class LoadChangedChallengesJob extends BaseJob {
 
                     logger.info("The last run timestamp for challenges job is:" + timestamp);
 
-                    String currentTime = DATE_FORMAT.format(this.challengeFeederManager.getTimestamp());
+                    String currentTime = DATE_FORMAT.format(new Date());
 
                     List<TCID> totalIds = this.challengeFeederManager.getChangedChallengeIds(new java.sql.Date(lastRunTimestamp.getTime()));
 
