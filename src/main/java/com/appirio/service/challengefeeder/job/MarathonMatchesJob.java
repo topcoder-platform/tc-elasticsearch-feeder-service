@@ -109,7 +109,7 @@ public class MarathonMatchesJob extends BaseJob {
 
                     logger.info("The last run timestamp for marathon matches job is:" + lastRunTimestamp);
 
-                    Date currentTimestamp = this.manager.getTimestamp();
+                    Date currentTimestamp = new Date();
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(currentTimestamp);
                     calendar.add(Calendar.DAY_OF_MONTH, this.config.getRedissonConfiguration().getMarathonMatchesDaysToSubtract());

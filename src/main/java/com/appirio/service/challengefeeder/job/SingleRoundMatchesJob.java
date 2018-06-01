@@ -105,7 +105,7 @@ public class SingleRoundMatchesJob extends BaseJob {
 
                     logger.info("The last run timestamp for single algorithm matches job is:" + lastRunTimestamp.getTime());
 
-                    Date currentTimestamp = this.manager.getTimestamp();
+                    Date currentTimestamp = new Date();
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(currentTimestamp);
                     calendar.add(Calendar.DAY_OF_MONTH, this.config.getRedissonConfiguration().getSingleRoundMatchesDaysToSubtract());

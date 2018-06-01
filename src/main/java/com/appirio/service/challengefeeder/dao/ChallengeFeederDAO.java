@@ -166,7 +166,7 @@ public interface ChallengeFeederDAO {
      */
     @SqlQueryFile("sql/challenge-feeder/job/get_changed_challenge_ids.sql")
     List<TCID> getChangedChallengeIds(@Bind("lastRunTimestamp") Date lastRunTimestamp);
-    
+
     /**
      * Get timestamp 
      *
