@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -86,7 +87,14 @@ public class ChallengeDetailMMFeederManager {
         queryParameter.setFilter(filter);
         List<ChallengeDetailData> mms = this.challengeDetailMMFeederDAO.getMarathonMatchesForChallengeDetails(queryParameter);
 
-        DataScienceHelper.checkMissedIds(param, mms);
+        List<Long> ids = mms.stream().map(c -> c.getId()).collect(Collectors.toList());
+        List<Long> idsNotFound = param.getRoundIds().stream().filter(id -> !ids.contains(id)).collect(Collectors.toList());
+
+        if (!idsNotFound.isEmpty()) {
+            logger.warn("These challenge ids can not be found:" + idsNotFound);
+
+            ids.removeAll(idsNotFound);
+        }
         
         List<SubmissionData> submissions = this.challengeDetailMMFeederDAO.getSubmissionsForChallengeDetail(queryParameter);
         associateAllSubmissions(mms, submissions);

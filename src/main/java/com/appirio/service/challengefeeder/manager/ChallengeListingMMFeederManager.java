@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -102,7 +103,14 @@ public class ChallengeListingMMFeederManager {
         queryParameter.setFilter(filter);
         List<ChallengeListingData> mms = this.challengeListingMmFeederDAO.getMarathonMatches(queryParameter);
 
-        DataScienceHelper.checkMissedIds(param, mms);
+        List<Long> ids = mms.stream().map(c -> c.getId()).collect(Collectors.toList());
+        List<Long> idsNotFound = param.getRoundIds().stream().filter(id -> !ids.contains(id)).collect(Collectors.toList());
+
+        if (!idsNotFound.isEmpty()) {
+            logger.warn("These challenge ids can not be found:" + idsNotFound);
+
+            ids.removeAll(idsNotFound);
+        }
         
         // associate all the data
         List<PhaseData> phases = this.mmFeederDAO.getPhases(queryParameter);

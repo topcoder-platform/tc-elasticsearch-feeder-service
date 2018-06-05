@@ -159,7 +159,7 @@ public class ChallengeListingFeederManager {
         List<WinnerData> winners = this.challengeListingFeederDAO.getWinnersForChallengeListing(queryParameter);
         associateAllWinners(challenges, winners);
 
-        logger.info("getWinnersForChallengeListing");
+        logger.info("getCheckpointsSubmissions");
         List<Map<String, Object>> checkpointsSubmissions = this.challengeListingFeederDAO.getCheckpointsSubmissions(queryParameter);
         List<Map<String, Object>> groupIds = this.challengeFeederDAO.getGroupIds(queryParameter);
         List<UserIdData> userIds = this.challengeListingFeederDAO.getChallengeUserIds(queryParameter);

@@ -63,7 +63,7 @@ redissonConfiguration:
   challengesListingType: "${REDISSON_JOB_CHALLENGES_LISTING_TYPE:-challenges}"
   challengesDetailIndex: "${REDISSON_JOB_CHALLENGES_DETAIL_INDEX:-challengesdetail}"
   challengesDetailType: "${REDISSON_JOB_CHALLENGES_DETAIL_TYPE:-challenges}"
-  batchUpdateSize: "${REDISSON_JOB_BATCH_UPDATE_SIZE:-1}"
+  batchUpdateSize: "${REDISSON_JOB_BATCH_UPDATE_SIZE:-5}"
   loadChangedChallengesJobLastRunTimestampPrefix: "${REDISSON_LOAD_CHANGED_CHALLENGES_JOB_LAST_RUN_TIMESTAMP_PREFIX:-loadChangedChallengesJobLastRunTimestamp}"
   loadChangedChallengesListingJobLastRunTimestampPrefix: "${REDISSON_LOAD_CHANGED_CHALLENGES_LISTING_JOB_LAST_RUN_TIMESTAMP_PREFIX:-loadChangedChallengesListingJobLastRunTimestamp}"
   loadChangedChallengesDetailJobLastRunTimestampPrefix: "${REDISSON_LOAD_CHANGED_CHALLENGES_DETAIL_JOB_LAST_RUN_TIMESTAMP_PREFIX:-loadChangedChallengesDetailJobLastRunTimestamp}"
@@ -91,14 +91,14 @@ redissonConfiguration:
   marathonMatchesForumUrl: "https://apps.topcoder.com/forums/?module=ThreadList&forumID="
 
 jobs:
-  com.appirio.service.challengefeeder.job.LoadChangedMMChallengeDetailJob: "${LOAD_LEGACY_MARATHON_MATCHES_INTO_CHALLENGE_DETAILS_JOB_INTERVAL:-30s}"
+  com.appirio.service.challengefeeder.job.LoadChangedMMChallengeDetailJob: "${LOAD_LEGACY_MARATHON_MATCHES_INTO_CHALLENGE_DETAILS_JOB_INTERVAL:-120s}"
   com.appirio.service.challengefeeder.job.LoadChangedChallengesJob: "${LOAD_CHANGED_CHALLENGES_JOB_INTERVAL:-30s}"
-  com.appirio.service.challengefeeder.job.LoadChangedChallengesListingJob: "${LOAD_CHANGED_CHALLENGES_LISTING_JOB_INTERVAL:-30s}"
-  com.appirio.service.challengefeeder.job.LoadChangedChallengesDetailJob: "${LOAD_CHANGED_CHALLENGES_DETAIL_JOB_INTERVAL:-30s}"
-  com.appirio.service.challengefeeder.job.MarathonMatchesJob: "${LOAD_MARATHON_MATCHES_JOB_INTERVAL:-30s}"
-  com.appirio.service.challengefeeder.job.SingleRoundMatchesJob: "${LOAD_SINGLE_ROUND_MATCHES_JOB_INTERVAL:-30s}"
+  com.appirio.service.challengefeeder.job.LoadChangedChallengesListingJob: "${LOAD_CHANGED_CHALLENGES_LISTING_JOB_INTERVAL:-120s}"
+  com.appirio.service.challengefeeder.job.LoadChangedChallengesDetailJob: "${LOAD_CHANGED_CHALLENGES_DETAIL_JOB_INTERVAL:-120s}"
+  com.appirio.service.challengefeeder.job.MarathonMatchesJob: "${LOAD_MARATHON_MATCHES_JOB_INTERVAL:-120s}"
+  com.appirio.service.challengefeeder.job.SingleRoundMatchesJob: "${LOAD_SINGLE_ROUND_MATCHES_JOB_INTERVAL:-120s}"
   com.appirio.service.challengefeeder.job.LegacyMMToChallengeJob: "${LOAD_LEGACY_MARATHON_MATCHES_JOB_INTERVAL:-30s}"
-  com.appirio.service.challengefeeder.job.LegacyMMToChallengeListingJob: "${LOAD_LEGACY_MARATHON_MATCHES_TO_CHALLENGE_LISTING_JOB_INTERVAL:-30s}"
+  com.appirio.service.challengefeeder.job.LegacyMMToChallengeListingJob: "${LOAD_LEGACY_MARATHON_MATCHES_TO_CHALLENGE_LISTING_JOB_INTERVAL:-120s}"
 
 commonConfiguration:
   submissionImageUrl: "${SUBMISSION_IMAGE_URL:-https://studio.topcoder-dev.com/studio.jpg?module=DownloadSubmission&sbmid=%s}"
