@@ -219,5 +219,5 @@ public interface ChallengeFeederDAO {
      * @return the List<Map<String,Object>> result
      */
     @SqlQueryFile("sql/challenge-feeder/get_challenge_plagforms.sql")
-    List<Map<String, Object>> getChallengePlagforms(@ApiQueryInput QueryParameter queryParameter);
+    List<Map<String, Object>> getChallengePlatforms(@ApiQueryInput QueryParameter queryParameter);
 }

@@ -5,7 +5,6 @@ package com.appirio.service.challengefeeder.manager;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -136,33 +135,41 @@ public class ChallengeListingFeederManager {
             ids.removeAll(idsNotFound);
         }
 
+        logger.info("getEventsListing");
         List<EventData> events = this.challengeListingFeederDAO.getEventsListing(queryParameter);
         associateAllEvents(challenges, events);
-        
+
+        logger.info("getPhases");
         List<PhaseData> phases = this.challengeFeederDAO.getPhases(queryParameter);
         associateAllPhases(challenges, phases);
-        
+
+        logger.info("getPrizes");
         List<PrizeData> prizes = this.challengeFeederDAO.getPrizes(queryParameter);
         associateAllPrizes(challenges, prizes);
 
+        logger.info("getPointsPrize");
         List<PrizeData> pointPrizes = this.challengeFeederDAO.getPointsPrize(queryParameter);
         associatePointPrizes(challenges, pointPrizes);
-        
+
+        logger.info("getFileTypes");
         List<FileTypeData> fileTypes = this.challengeFeederDAO.getFileTypes(queryParameter);
         associateAllFileTypes(challenges, fileTypes);
-        
+
+        logger.info("getWinnersForChallengeListing");
         List<WinnerData> winners = this.challengeListingFeederDAO.getWinnersForChallengeListing(queryParameter);
         associateAllWinners(challenges, winners);
-        
+
+        logger.info("getWinnersForChallengeListing");
         List<Map<String, Object>> checkpointsSubmissions = this.challengeListingFeederDAO.getCheckpointsSubmissions(queryParameter);
         List<Map<String, Object>> groupIds = this.challengeFeederDAO.getGroupIds(queryParameter);
         List<UserIdData> userIds = this.challengeListingFeederDAO.getChallengeUserIds(queryParameter);
         associateAllUserIds(challenges, userIds);
-        
-        List<Map<String, Object>> platforms = this.challengeFeederDAO.getChallengePlagforms(queryParameter);
+
+        logger.info("getChallengePlatforms");
+        List<Map<String, Object>> platforms = this.challengeFeederDAO.getChallengePlatforms(queryParameter);
         for (Map<String, Object> item : platforms) {
             for (ChallengeListingData data : challenges) {
-                if (data.getChallengeId().longValue() == Long.parseLong(item.get("challengeId").toString())) {
+                if (data.getChallengeId() == Long.parseLong(item.get("challengeId").toString())) {
                     if (data.getPlatforms() == null) {
                         data.setPlatforms(new ArrayList<>());
                     }
@@ -170,10 +177,12 @@ public class ChallengeListingFeederManager {
                 }
             }
         }
-        List<Map<String, Object>> technoglies = this.challengeFeederDAO.getChallengeTechnologies(queryParameter);
-        for (Map<String, Object> item : technoglies) {
+
+        logger.info("getChallengeTechnologies");
+        List<Map<String, Object>> technologies = this.challengeFeederDAO.getChallengeTechnologies(queryParameter);
+        for (Map<String, Object> item : technologies) {
             for (ChallengeListingData data : challenges) {
-                if (data.getChallengeId().longValue() == Long.parseLong(item.get("challengeId").toString())) {
+                if (data.getChallengeId() == Long.parseLong(item.get("challengeId").toString())) {
                     if (data.getTechnologies() == null) {
                         data.setTechnologies(new ArrayList<>());
                     }
@@ -183,6 +192,7 @@ public class ChallengeListingFeederManager {
         }
 
         // set other field
+        logger.info("others");
         for (ChallengeListingData data : challenges) {
             boolean isStudio = DESIGN_TYPE.equalsIgnoreCase(data.getTrack().trim());
             if (isStudio) {
@@ -199,7 +209,7 @@ public class ChallengeListingFeederManager {
             data.setDirectUrl(this.challengeConfiguration.getDirectProjectLink() + data.getChallengeId());
             
             for (Map<String, Object> item : checkpointsSubmissions) {
-                if (data.getId().longValue() == Long.parseLong(item.get("challengeId").toString())) {
+                if (data.getId() == Long.parseLong(item.get("challengeId").toString())) {
                     data.setNumberOfCheckpointSubmissions(Integer.parseInt(item.get("numberOfSubmissions").toString()));
                 }
             }
@@ -216,6 +226,7 @@ public class ChallengeListingFeederManager {
             }
         }
 
+        logger.info("pushFeeders");
         try {
             JestClientUtils.pushFeeders(jestClient, param, challenges);
         } catch (IOException ioe) {
@@ -260,7 +271,7 @@ public class ChallengeListingFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getWinners() == null) {
-                        challenge.setWinners(new ArrayList<WinnerData>());
+                        challenge.setWinners(new ArrayList<>());
                     }
                     challenge.getWinners().add(item);
                     break;
@@ -283,7 +294,7 @@ public class ChallengeListingFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getFileTypes() == null) {
-                        challenge.setFileTypes(new ArrayList<FileTypeData>());
+                        challenge.setFileTypes(new ArrayList<>());
                     }
                     challenge.getFileTypes().add(item);
                     break;
@@ -306,7 +317,7 @@ public class ChallengeListingFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getPrize() == null) {
-                        challenge.setPrize(new ArrayList<Double>());
+                        challenge.setPrize(new ArrayList<>());
                     }
                     challenge.getPrize().add(item.getAmount());
                     break;
@@ -346,7 +357,7 @@ public class ChallengeListingFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getEvents() == null) {
-                        challenge.setEvents(new ArrayList<EventData>());
+                        challenge.setEvents(new ArrayList<>());
                     }
                     challenge.getEvents().add(item);
                     break;
@@ -369,12 +380,12 @@ public class ChallengeListingFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(aPhase.getChallengeId())) {
                     if (challenge.getPhases() == null) {
-                        challenge.setPhases(new ArrayList<PhaseData>());
+                        challenge.setPhases(new ArrayList<>());
                     }
                     challenge.getPhases().add(aPhase);
                     
                     if (challenge.getCurrentPhases() == null) {
-                        challenge.setCurrentPhases(new ArrayList<PhaseData>());
+                        challenge.setCurrentPhases(new ArrayList<>());
                     }
                     if (PHASE_OPEN.equalsIgnoreCase(aPhase.getStatus())) {
                         challenge.getCurrentPhases().add(aPhase);
@@ -415,7 +426,7 @@ public class ChallengeListingFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getUserIds() == null) {
-                        challenge.setUserIds(new ArrayList<Long>());
+                        challenge.setUserIds(new ArrayList<>());
                     }
                     challenge.getUserIds().add(item.getUserId());
                     break;
