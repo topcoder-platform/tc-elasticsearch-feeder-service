@@ -110,7 +110,6 @@ public class MarathonMatchFeederManager {
      *             if any error occurs
      */
     public void pushMarathonMatchFeeder(AuthUser authUser, DataScienceFeederParam param) throws SupplyException {
-        logger.info("Enter of pushMarathonMatchFeeder(AuthUser, DataScienceFeederParam)");
         Helper.checkAdmin(authUser);
         pushMarathonMatchFeeder(param);
     }

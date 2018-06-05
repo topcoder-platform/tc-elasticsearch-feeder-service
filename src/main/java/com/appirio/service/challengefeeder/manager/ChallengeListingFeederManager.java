@@ -136,8 +136,6 @@ public class ChallengeListingFeederManager {
             ids.removeAll(idsNotFound);
         }
 
-        logger.info("aggregating challenge listing data for " + ids);
-
         List<EventData> events = this.challengeListingFeederDAO.getEventsListing(queryParameter);
         associateAllEvents(challenges, events);
         
@@ -221,6 +219,7 @@ public class ChallengeListingFeederManager {
         try {
             JestClientUtils.pushFeeders(jestClient, param, challenges);
         } catch (IOException ioe) {
+            ioe.printStackTrace();
             SupplyException se = new SupplyException("Internal server error occurs", ioe);
             se.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             throw se;

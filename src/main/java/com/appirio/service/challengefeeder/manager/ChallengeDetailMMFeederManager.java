@@ -79,7 +79,6 @@ public class ChallengeDetailMMFeederManager {
      * @throws SupplyException if any error occurs
      */
     public void pushMarathonMatchDataIntoChallengeDetail(MmFeederParam param) throws SupplyException {
-        logger.info("Enter of pushMarathonMatchDataIntoChallengeDetail");
         DataScienceHelper.checkMarathonFeederParam(param, "challenges");
 
         FilterParameter filter = new FilterParameter("roundIds=in(" + ChallengeFeederUtil.listAsString(param.getRoundIds()) + ")");

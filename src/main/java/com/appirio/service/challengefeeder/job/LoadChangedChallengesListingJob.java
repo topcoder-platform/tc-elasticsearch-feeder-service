@@ -132,12 +132,15 @@ public class LoadChangedChallengesListingJob extends BaseJob {
                     int from = 0;
                     while (to < ids.size()) {
                         to += (to + batchSize) > ids.size() ? (ids.size() - to) : batchSize;
-                        List<Long> sub = ids.subList(from, to);
-                        ChallengeFeederParam param = new ChallengeFeederParam();
-                        param.setIndex(this.config.getRedissonConfiguration().getChallengesListingIndex());
-                        param.setType(this.config.getRedissonConfiguration().getChallengesListingType());
-                        param.setChallengeIds(sub);
                         try {
+                            List<Long> sub = ids.subList(from, to);
+
+                            logger.info("aggregate tha push to challenge listing index for " + sub);
+                            ChallengeFeederParam param = new ChallengeFeederParam();
+                            param.setIndex(this.config.getRedissonConfiguration().getChallengesListingIndex());
+                            param.setType(this.config.getRedissonConfiguration().getChallengesListingType());
+                            param.setChallengeIds(sub);
+
                             this.challengeListingFeederManager.pushChallengeFeeder(param);
                         } catch (Exception e) {
                             // ignore all exception
