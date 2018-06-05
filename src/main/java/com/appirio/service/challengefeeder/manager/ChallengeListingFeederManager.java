@@ -135,37 +135,29 @@ public class ChallengeListingFeederManager {
             ids.removeAll(idsNotFound);
         }
 
-        logger.info("getEventsListing");
         List<EventData> events = this.challengeListingFeederDAO.getEventsListing(queryParameter);
         associateAllEvents(challenges, events);
 
-        logger.info("getPhases");
         List<PhaseData> phases = this.challengeFeederDAO.getPhases(queryParameter);
         associateAllPhases(challenges, phases);
 
-        logger.info("getPrizes");
         List<PrizeData> prizes = this.challengeFeederDAO.getPrizes(queryParameter);
         associateAllPrizes(challenges, prizes);
 
-        logger.info("getPointsPrize");
         List<PrizeData> pointPrizes = this.challengeFeederDAO.getPointsPrize(queryParameter);
         associatePointPrizes(challenges, pointPrizes);
 
-        logger.info("getFileTypes");
         List<FileTypeData> fileTypes = this.challengeFeederDAO.getFileTypes(queryParameter);
         associateAllFileTypes(challenges, fileTypes);
 
-        logger.info("getWinnersForChallengeListing");
         List<WinnerData> winners = this.challengeListingFeederDAO.getWinnersForChallengeListing(queryParameter);
         associateAllWinners(challenges, winners);
 
-        logger.info("getCheckpointsSubmissions");
         List<Map<String, Object>> checkpointsSubmissions = this.challengeListingFeederDAO.getCheckpointsSubmissions(queryParameter);
         List<Map<String, Object>> groupIds = this.challengeFeederDAO.getGroupIds(queryParameter);
         List<UserIdData> userIds = this.challengeListingFeederDAO.getChallengeUserIds(queryParameter);
         associateAllUserIds(challenges, userIds);
 
-        logger.info("getChallengePlatforms");
         List<Map<String, Object>> platforms = this.challengeFeederDAO.getChallengePlatforms(queryParameter);
         for (Map<String, Object> item : platforms) {
             for (ChallengeListingData data : challenges) {
@@ -178,7 +170,6 @@ public class ChallengeListingFeederManager {
             }
         }
 
-        logger.info("getChallengeTechnologies");
         List<Map<String, Object>> technologies = this.challengeFeederDAO.getChallengeTechnologies(queryParameter);
         for (Map<String, Object> item : technologies) {
             for (ChallengeListingData data : challenges) {
@@ -192,7 +183,6 @@ public class ChallengeListingFeederManager {
         }
 
         // set other field
-        logger.info("others");
         for (ChallengeListingData data : challenges) {
             boolean isStudio = DESIGN_TYPE.equalsIgnoreCase(data.getTrack().trim());
             if (isStudio) {

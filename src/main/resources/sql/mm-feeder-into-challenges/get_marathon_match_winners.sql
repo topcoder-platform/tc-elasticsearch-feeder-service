@@ -1,7 +1,10 @@
 select 
 ls.long_component_state_id as submissionId,
 user.handle as submitter,
-extend(dbinfo("UTC_TO_DATETIME",ls.submit_time/1000), year to fraction) as submissionTime,
+CASE
+  WHEN ls.submit_time IS NOT NULL THEN extend(dbinfo("UTC_TO_DATETIME",ls.submit_time/1000), year to fraction)
+  ELSE NULL
+END as submissionTime,
 lcr.placed as rank,
 ls.submission_points as points,
 lcs.round_id as challengeId

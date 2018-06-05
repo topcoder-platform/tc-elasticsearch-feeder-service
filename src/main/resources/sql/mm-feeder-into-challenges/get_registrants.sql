@@ -1,7 +1,10 @@
 select
 rr.round_id as challengeId,
 rr.timestamp as registrationDate,
-extend(dbinfo("UTC_TO_DATETIME",ls.submit_time/1000), year to fraction) as submissionDate,
+CASE
+  WHEN ls.submit_time IS NOT NULL THEN extend(dbinfo("UTC_TO_DATETIME",ls.submit_time/1000), year to fraction)
+  ELSE NULL
+END as submissionDate,
 al.rating as rating,
 u.handle as handle
 from informixoltp\:round_registration rr
