@@ -182,7 +182,7 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         bootstrap.setConfigurationSourceProvider(
                 new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
 
-        bootstrap.addBundle(new JobsBundle(new StartupJob(), new LoadChangedChallengesJob(), new LoadChangedChallengesListingJob(), new LegacyMMToChallengeListingJob(),
-                new MarathonMatchesJob(), new SingleRoundMatchesJob(), new LegacyMMToChallengeJob(), new LoadChangedChallengesDetailJob(), new LoadChangedMMChallengeDetailJob()));
+        bootstrap.addBundle(new JobsBundle(new StartupJob(), new LoadChangedChallengesListingJob(), new LegacyMMToChallengeListingJob(),
+                new MarathonMatchesJob(), new SingleRoundMatchesJob(), new LoadChangedChallengesDetailJob(), new LoadChangedMMChallengeDetailJob()));
     }
 }
