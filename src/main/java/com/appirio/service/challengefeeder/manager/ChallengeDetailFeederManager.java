@@ -111,9 +111,11 @@ public class ChallengeDetailFeederManager {
 
         if (!idsNotFound.isEmpty()) {
             logger.warn("These challenge ids can not be found:" + idsNotFound);
+
+            ids.removeAll(idsNotFound);
         }
 
-        logger.info("aggregating challenge detail data for " + param.getChallengeIds());
+        logger.info("aggregating challenge detail data for " + ids);
 
         for (ChallengeDetailData challenge : challenges) {
             String requirement = "";
@@ -146,8 +148,6 @@ public class ChallengeDetailFeederManager {
 
         List<TermsOfUseData> terms = this.challengeDetailFeederDAO.getTerms(queryParameter);
         this.associateAllTermsOfUse(challenges, terms);
-
-        logger.info("pushing challenge detail data to elasticsearch for " + param.getChallengeIds());
 
         try {
             JestClientUtils.pushFeeders(jestClient, param, challenges);

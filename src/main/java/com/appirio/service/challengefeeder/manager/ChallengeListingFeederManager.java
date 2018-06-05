@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -125,26 +126,18 @@ public class ChallengeListingFeederManager {
         QueryParameter queryParameter = new QueryParameter(new FieldSelector());
         queryParameter.setFilter(filter);
         List<ChallengeListingData> challenges = this.challengeListingFeederDAO.getChallenges(queryParameter);
-        
-        List<Long> idsNotFound = new ArrayList<>();
-        for (Long id : param.getChallengeIds()) {
-            boolean hit = false;
-            for (ChallengeListingData data : challenges) {
-                if (id.longValue() == data.getId().longValue()) {
-                    hit = true;
-                    break;
-                }
-            }
-            if (!hit) {
-                idsNotFound.add(id);
-            }
-        }
+
+        List<Long> ids = challenges.stream().map(c -> c.getId()).collect(Collectors.toList());
+        List<Long> idsNotFound = param.getChallengeIds().stream().filter(id -> !ids.contains(id)).collect(Collectors.toList());
+
         if (!idsNotFound.isEmpty()) {
             logger.warn("These challenge ids can not be found:" + idsNotFound);
+
+            ids.removeAll(idsNotFound);
         }
-        
-        logger.info("aggregating challenge listing data for " + param.getChallengeIds());
-        
+
+        logger.info("aggregating challenge listing data for " + ids);
+
         List<EventData> events = this.challengeListingFeederDAO.getEventsListing(queryParameter);
         associateAllEvents(challenges, events);
         
@@ -173,7 +166,7 @@ public class ChallengeListingFeederManager {
             for (ChallengeListingData data : challenges) {
                 if (data.getChallengeId().longValue() == Long.parseLong(item.get("challengeId").toString())) {
                     if (data.getPlatforms() == null) {
-                        data.setPlatforms(new ArrayList<String>());
+                        data.setPlatforms(new ArrayList<>());
                     }
                     data.getPlatforms().add(item.get("name").toString());
                 }
@@ -184,7 +177,7 @@ public class ChallengeListingFeederManager {
             for (ChallengeListingData data : challenges) {
                 if (data.getChallengeId().longValue() == Long.parseLong(item.get("challengeId").toString())) {
                     if (data.getTechnologies() == null) {
-                        data.setTechnologies(new ArrayList<String>());
+                        data.setTechnologies(new ArrayList<>());
                     }
                     data.getTechnologies().add(item.get("name").toString());
                 }
@@ -224,8 +217,6 @@ public class ChallengeListingFeederManager {
                 }
             }
         }
-      
-        logger.info("pushing challenge listing data to elasticsearch for " + param.getChallengeIds());
 
         try {
             JestClientUtils.pushFeeders(jestClient, param, challenges);

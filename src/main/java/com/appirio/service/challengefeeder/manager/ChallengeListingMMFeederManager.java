@@ -95,7 +95,6 @@ public class ChallengeListingMMFeederManager {
      * @throws SupplyException if any error occurs
      */
     public void pushMarathonMatchDataIntoChallenge(MmFeederParam param) throws SupplyException {
-        logger.info("Enter of pushMarathonMatchDataIntoChallenge");
         DataScienceHelper.checkMarathonFeederParam(param, "challenges");
 
         FilterParameter filter = new FilterParameter("roundIds=in(" + ChallengeFeederUtil.listAsString(param.getRoundIds()) + ")");
@@ -155,7 +154,7 @@ public class ChallengeListingMMFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getWinners() == null) {
-                        challenge.setWinners(new ArrayList<WinnerData>());
+                        challenge.setWinners(new ArrayList<>());
                     }
                     challenge.getWinners().add(item);
                     break;
@@ -178,7 +177,7 @@ public class ChallengeListingMMFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getEvents() == null) {
-                        challenge.setEvents(new ArrayList<com.appirio.service.challengefeeder.api.challengelisting.EventData>());
+                        challenge.setEvents(new ArrayList<>());
                     }
                     com.appirio.service.challengefeeder.api.challengelisting.EventData data = new com.appirio.service.challengefeeder.api.challengelisting.EventData();
                     data.setEventDescription(item.getEventName());
@@ -202,7 +201,7 @@ public class ChallengeListingMMFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getPrize() == null) {
-                        challenge.setPrize(new ArrayList<Double>());
+                        challenge.setPrize(new ArrayList<>());
                     }
                     challenge.getPrize().add(item.getAmount());
                     break;
@@ -222,11 +221,11 @@ public class ChallengeListingMMFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(aPhase.getChallengeId())) {
                     if (challenge.getPhases() == null) {
-                        challenge.setPhases(new ArrayList<PhaseData>());
+                        challenge.setPhases(new ArrayList<>());
                     }
                     challenge.getPhases().add(aPhase);
                     if (challenge.getCurrentPhases() == null) {
-                        challenge.setCurrentPhases(new ArrayList<PhaseData>());
+                        challenge.setCurrentPhases(new ArrayList<>());
                     }
                     if (PHASE_OPEN.equalsIgnoreCase(aPhase.getStatus())) {
                         challenge.getCurrentPhases().add(aPhase);

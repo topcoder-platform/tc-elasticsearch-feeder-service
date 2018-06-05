@@ -78,7 +78,6 @@ public class MarathonMatchFeederManager {
      *             if any error occurs
      */
     public void pushMarathonMatchFeeder(DataScienceFeederParam param) throws SupplyException {
-        logger.info("Enter of pushMarathonMatchFeeder(DataScienceFeederParam)");
         DataScienceHelper.checkDataScienceFeederParam(param, "mmatches");
 
         List<Long> roundIds = param.getRoundIds();
@@ -90,8 +89,6 @@ public class MarathonMatchFeederManager {
 
         // check if all MMs with given roundIds exist
         DataScienceHelper.checkDataScienceExist(roundIds, marathonMatches);
-
-        logger.info("Total hits:" + marathonMatches.size());
 
         List<Map<String, Object>> userIds = this.marathonMatchFeederDAO.getUserIds(queryParameter);
 
