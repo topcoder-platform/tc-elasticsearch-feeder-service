@@ -77,7 +77,6 @@ public class ChallengeListingData extends IdentifiableData {
      * The track field
      */
     @Getter
-    @Setter
     private String track;
 
     /**
@@ -434,6 +433,14 @@ public class ChallengeListingData extends IdentifiableData {
     @Getter
     @Setter
     private List<Double> pointPrizes;
+
+    /**
+     * Setter for {@link #track}
+     * @param track
+     */
+    public void setTrack(String track) {
+        this.track = track.trim();
+    }
 
     /**
      * Setter for {@link #subTrack}
