@@ -22,7 +22,6 @@ public class ChallengeDetailData extends IdentifiableData {
      * The track field
      */
     @Getter
-    @Setter
     private String track;
 
     /**
@@ -135,6 +134,14 @@ public class ChallengeDetailData extends IdentifiableData {
     @Getter
     @Setter
     private transient String marathonMatchRules;
+
+    /**
+     * Setter for {@link #track}
+     * @param track
+     */
+    public void setTrack(String track) {
+       this.track = track.trim();
+    }
 
     /**
      * Setter for {@link #subTrack}
