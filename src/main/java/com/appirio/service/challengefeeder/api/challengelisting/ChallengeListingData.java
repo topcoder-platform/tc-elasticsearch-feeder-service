@@ -5,6 +5,7 @@ package com.appirio.service.challengefeeder.api.challengelisting;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import com.appirio.service.challengefeeder.api.FileTypeData;
 import com.appirio.service.challengefeeder.api.IdentifiableData;
@@ -433,6 +434,13 @@ public class ChallengeListingData extends IdentifiableData {
     @Getter
     @Setter
     private List<Double> pointPrizes;
+
+    /**
+     * Submitter ids
+     */
+    @Getter
+    @Setter
+    private Set<Long> submitterIds;
 
     /**
      * Setter for {@link #track}
