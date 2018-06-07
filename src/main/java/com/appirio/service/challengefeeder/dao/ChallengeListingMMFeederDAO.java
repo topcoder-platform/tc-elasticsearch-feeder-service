@@ -11,6 +11,7 @@ import com.appirio.supply.dataaccess.SqlQueryFile;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * DAO to interact with marathon match data
@@ -39,4 +40,13 @@ public interface ChallengeListingMMFeederDAO {
      */
     @SqlQueryFile("sql/mm-feeder-into-challenges/get_marathon_match_winners.sql")
     List<WinnerData> getMarathonMatchWinners(@ApiQueryInput QueryParameter queryParameter);
+
+    /**
+     * Get id of all submitters
+     *
+     * @param queryParameter query parameter
+     * @return list of submitter
+     */
+    @SqlQueryFile("sql/mm-feeder-into-challenges/get_submitter_ids.sql")
+    List<Map<String, Object>> getSubmitterIds(@ApiQueryInput QueryParameter queryParameter);
 }

@@ -124,6 +124,9 @@ public class ChallengeListingMMFeederManager {
         
         List<WinnerData> winners = this.challengeListingMmFeederDAO.getMarathonMatchWinners(queryParameter);
         associateAllWinners(mms, winners);
+
+        List<Map<String, Object>> submitterIds = this.challengeListingMmFeederDAO.getSubmitterIds(queryParameter);
+        ChallengeFeederUtil.associateSubmitterIds(mms, submitterIds);
         
         mms.forEach(c -> {
             if (c.getForumId() != null) {

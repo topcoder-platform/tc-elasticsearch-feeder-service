@@ -4,7 +4,9 @@
 package com.appirio.service.challengefeeder.manager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import com.appirio.service.challengefeeder.api.ChallengeData;
 import com.appirio.service.challengefeeder.api.CheckpointPrizeData;
@@ -18,6 +20,7 @@ import com.appirio.service.challengefeeder.api.ReviewData;
 import com.appirio.service.challengefeeder.api.SubmissionData;
 import com.appirio.service.challengefeeder.api.TermsOfUseData;
 import com.appirio.service.challengefeeder.api.WinnerData;
+import com.appirio.service.challengefeeder.api.challengelisting.ChallengeListingData;
 
 /**
  * ChallengeFeederUtil provides common methods such as associating the challenge data.
@@ -328,6 +331,25 @@ public class ChallengeFeederUtil {
         }
     }
 
+    /**
+     * Associate list of submitter for challenges
+     *
+     * @param challenges challenges
+     * @param submitterIds submitterIds
+     */
+    static void associateSubmitterIds(List<ChallengeListingData> challenges, List<Map<String, Object>> submitterIds) {
+        for (Map<String, Object> submitter : submitterIds) {
+            for (ChallengeListingData challenge : challenges) {
+                if (challenge.getChallengeId().equals(Long.valueOf(submitter.get("challengeId").toString()))) {
+                    if (challenge.getSubmitterIds() == null) {
+                        challenge.setSubmitterIds(new HashSet<>());
+                    }
+                    challenge.getSubmitterIds().add(Long.valueOf(submitter.get("submitterId").toString()));
+                    break;
+                }
+            }
+        }
+    }
     /**
      * Get color style
      *

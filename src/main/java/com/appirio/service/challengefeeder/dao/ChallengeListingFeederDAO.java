@@ -70,4 +70,12 @@ public interface ChallengeListingFeederDAO {
      */
     @SqlQueryFile("sql/challenge-feeder/get_challenge-userids.sql")
     List<UserIdData> getChallengeUserIds(@ApiQueryInput QueryParameter queryParameter);
+
+    /**
+     * Get submitter Ids
+     * @param queryParameter query parameter
+     * @return list of id of submitter
+     */
+    @SqlQueryFile("sql/challenge-feeder/get_submitter_ids.sql")
+    List<Map<String, Object>> getSubmitterIds(@ApiQueryInput QueryParameter queryParameter);
 }

@@ -216,6 +216,9 @@ public class ChallengeListingFeederManager {
             }
         }
 
+        List<Map<String, Object>> submitterIds = challengeListingFeederDAO.getSubmitterIds(queryParameter);
+        ChallengeFeederUtil.associateSubmitterIds(challenges, submitterIds);
+
         logger.info("pushFeeders");
         try {
             JestClientUtils.pushFeeders(jestClient, param, challenges);
