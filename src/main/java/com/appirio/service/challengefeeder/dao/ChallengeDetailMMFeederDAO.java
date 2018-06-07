@@ -3,15 +3,15 @@
  */
 package com.appirio.service.challengefeeder.dao;
 
-import java.util.List;
-
-import com.appirio.service.challengefeeder.api.challengedetail.ChallengeDetailData;
-import com.appirio.service.challengefeeder.api.challengedetail.RegistrantData;
-import com.appirio.service.challengefeeder.api.challengedetail.SubmissionData;
+import com.appirio.service.challengefeeder.api.detail.ChallengeDetailData;
+import com.appirio.service.challengefeeder.api.detail.RegistrantData;
+import com.appirio.service.challengefeeder.api.detail.SubmissionData;
 import com.appirio.supply.dataaccess.ApiQueryInput;
 import com.appirio.supply.dataaccess.DatasourceName;
 import com.appirio.supply.dataaccess.SqlQueryFile;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
+
+import java.util.List;
 
 /**
  * DAO to interact with challenge data
