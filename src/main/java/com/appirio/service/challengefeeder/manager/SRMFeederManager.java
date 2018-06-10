@@ -71,12 +71,16 @@ public class SRMFeederManager {
     /**
      * Push SRM feeder
      *
+     * @param authUser
+     *            the authUser to use
      * @param param
      *            the data science feeders param to use
      * @throws SupplyException
      *             if any error occurs
      */
     public void pushSRMFeeder(DataScienceFeederParam param) throws SupplyException {
+        logger.info("Enter of pushSRMFeeder(DataScienceFeederParam)");
+
         List<Long> roundIds = param.getRoundIds();
         // build query string to filter on round ids
         QueryParameter queryParameter = DataScienceHelper.buildInQueryParameter(roundIds, "roundIds");
@@ -86,6 +90,8 @@ public class SRMFeederManager {
 
         // check if all SRMs with given roundIds exist
         DataScienceHelper.checkDataScienceExist(roundIds, srms);
+
+        logger.info("Total hits:" + srms.size());
 
         List<Map<String, Object>> userIds = this.srmFeederDAO.getUserIds(queryParameter);
 

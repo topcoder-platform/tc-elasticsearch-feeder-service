@@ -5,8 +5,6 @@ package com.appirio.service.challengefeeder.config;
 
 import java.util.List;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
@@ -52,200 +50,17 @@ import lombok.Setter;
  *     <li>Added {@link #loadChangedChallengesDetailJobLockerKeyName}</li>
  * </ul>
  * </p>
+ * 
+ * <p>
+ * Version 2.0 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * <ul>
+ *     <li>keep only redisson connection configurations</li>
+ * </ul>
+ * </p>
  * @author TCCoder
- * @version 1.5
+ * @version 2.0
  */
 public class RedissonConfiguration {
-    
-    /**
-     * The forceInitialLoad field
-     */
-    @JsonProperty
-    @Getter
-    @Setter
-    private boolean forceInitialLoad;
-    
-    /**
-     * The challenge index field
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String challengesIndex;
-
-    /**
-     * The challenge index listing field
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String challengesListingIndex;
-    
-    /**
-     * The marathon match index field
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String mmIndex;
-    
-    /**
-     * The challenge detail index field
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String challengesDetailIndex;
-    
-    /**
-     * The single round match index field
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String srmsIndex;
-    
-    /**
-     * The challenges type field
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String challengesType;
-
-    /**
-     * The challenges listing type field
-     * @since 1.2
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String challengesDetailType;
-    
-    /**
-     * The marahon match type field
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String mmType;
-    
-    /**
-     * The single round match type field
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String srmsType;
-    
-    /**
-     * The challenge type listing field
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String challengesListingType;
-    
-    /**
-     * Represents the batch update size attribute.
-     */
-    @JsonProperty
-    @Getter
-    @Setter
-    private int batchUpdateSize;
-    
-    /**
-     * Represents the last run timestamp prefix attribute for job LoadChangedChallengesListingJob.
-     * @since 1.2
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String loadChangedChallengesDetailJobLastRunTimestampPrefix;
-
-    /**
-     * Represents the last run timestamp prefix attribute for job LoadChangedChallengesJob.
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String loadChangedChallengesJobLastRunTimestampPrefix;
-    
-    /**
-     * Represents the last run timestamp prefix attribute for job LoadChangedChallengesListingJob.
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String loadChangedChallengesListingJobLastRunTimestampPrefix;
-    
-    /**
-     * Represents the last run timestamp prefix attribute for job MarathonMatchesJob.
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String marathonMatchesJobLastRunTimestampPrefix;
-
-    /**
-    * Represents the last run timestamp prefix attribute for LegacyMMToChallengeJob
-    */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String legacyMMJobLastRunTimestampPrefix;
-
-    /**
-     * Represents the last run timestamp prefix attribute for job SingleRoundMatchesJob.
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String singleRoundMatchesJobLastRunTimestampPrefix;
-    
-    /**
-     * Represents the last run timestamp prefix for LegacyMMToChallengeListJob
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String legacyMMToChallengeListingJobLastRunTimestampPrefix;
-
-    /**
-     * Represents the last run timestamp prefix attribute for load changed mm challenge detail job .
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String loadChangedMMChallengeDetailJobLastRunTimestampPrefix;
-    
-    /**
-     * Represents the locker key name attribute for load changed mm challenge detail job.
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String loadChangedMMChallengeDetailJobLockerKeyName;
-    
     /**
      * The cluster enabled field
      */
@@ -253,71 +68,6 @@ public class RedissonConfiguration {
     @Getter
     @Setter
     private boolean clusterEnabled;
-    
-    /**
-     * Represents the locker key name attribute for job LoadChangedChallengesJob.
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String loadChangedChallengesJobLockerKeyName;
-
-    /**
-     * Represents the locker key name attribute for job LoadChangedChallengesListingJob.
-     * @since 1.2
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String loadChangedChallengesDetailJobLockerKeyName;
-
-    
-    /**
-     * Represents the locker key name attribute for job LoadChangedChallengesListingJob.
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String loadChangedChallengesListingJobLockerKeyName;
-    
-    /**
-     * Represents the locker key name attribute for job MarathonMatchesJob.
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String marathonMatchesJobLockerKeyName;
-
-    /**
-     * Represents the locker key name attribute for LegacyMMToChallengeJob
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String legacyMMJobLockerKeyName;
-    
-    /**
-     * Represents the locker key name attribute for LegacyMMToChallengeListJob
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String legacyMMToChallengeListingJobLockerKeyName;
-
-    /**
-     * Represents the locker key name attribute for job SingleRoundMatchesJob.
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String singleRoundMatchesJobLockerKeyName;
     
     /**
      * Represents the lock watchdog timeout attribute.
@@ -342,30 +92,5 @@ public class RedissonConfiguration {
     @Getter
     @Setter
     private String singleServerAddress;
-    
-    /**
-     * The days to subtract in MarathonMatchesJob.
-     */
-    @JsonProperty
-    @Getter
-    @Setter
-    private int marathonMatchesDaysToSubtract;
-    
-    /**
-     * The days to subtract in SingleRoundMatchesJob.
-     */
-    @JsonProperty
-    @Getter
-    @Setter
-    private int singleRoundMatchesDaysToSubtract;
-    
-    /**
-     * Represents the marathonMatchesForumUrl.
-     */
-    @JsonProperty
-    @NotEmpty
-    @Getter
-    @Setter
-    private String marathonMatchesForumUrl;
     
 }

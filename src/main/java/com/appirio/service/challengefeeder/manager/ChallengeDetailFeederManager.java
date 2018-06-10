@@ -14,7 +14,6 @@ import com.appirio.service.challengefeeder.dao.ChallengeDetailFeederDAO;
 import com.appirio.service.challengefeeder.dto.ChallengeFeederParam;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.supply.SupplyException;
-import com.appirio.supply.constants.Track;
 import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.FieldSelector;
 import com.appirio.tech.core.api.v3.request.FilterParameter;
@@ -34,9 +33,13 @@ import lombok.Setter;
 
 /**
  * ChallengeDetailFeederManager is used to handle the challenge detail feeder.
+ * 
+ * Version 1.1 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * - remove the userless dao
+ * 
  *
  * @author TCSCODER
- * @version 1.0
+ * @version 1.1 
  */
 public class ChallengeDetailFeederManager {
 
@@ -49,6 +52,11 @@ public class ChallengeDetailFeederManager {
      * contest submission type id
      */
     private static final Long CONTEST_SUBMISSION_TYPE_ID = 1L;
+
+    /**
+     * Studio type id
+     */
+    private static final Long STUDIO_TYPE_ID = 3L;
 
     /**
      * DAO to access challenge data from the transactional database.
@@ -107,17 +115,14 @@ public class ChallengeDetailFeederManager {
 
         if (!idsNotFound.isEmpty()) {
             logger.warn("These challenge ids can not be found:" + idsNotFound);
-
-            ids.removeAll(idsNotFound);
         }
 
-        logger.info("aggregating challenge detail data for " + ids);
+        logger.info("aggregating challenge detail data for " + param.getChallengeIds());
 
         for (ChallengeDetailData challenge : challenges) {
             String requirement = "";
-            if ("DESIGN".equalsIgnoreCase(challenge.getTrack())) {
-                if (challenge.getStudioDetailRequirements() != null)
-                    requirement = challenge.getStudioDetailRequirements();
+            if (STUDIO_TYPE_ID.equals(challenge.getType())) {
+                if (challenge.getStudioDetailRequirements() != null) requirement = challenge.getStudioDetailRequirements();
                 if (challenge.getRound1Introduction() != null) {
                     if (!requirement.startsWith(challenge.getRound1Introduction())) {
                         requirement += challenge.getRound1Introduction();
@@ -125,23 +130,11 @@ public class ChallengeDetailFeederManager {
                     }
                 }
 
-                if (challenge.getRound2Introduction() != null) {
-                    requirement += challenge.getRound2Introduction();
-                }
-            } else if ("DEVELOP_MARATHON_MATCH".equalsIgnoreCase(challenge.getSubTrack()) || "MARATHON_MATCH".equalsIgnoreCase(challenge.getSubTrack())) {
-                if (challenge.getMarathonMatchDetailRequirements() != null) {
-                    requirement = challenge.getMarathonMatchDetailRequirements();
-                    requirement += "\n";
-                }
-
-                if (challenge.getMarathonMatchRules() != null) {
-                    requirement += challenge.getMarathonMatchRules();
-                }
+                if (challenge.getRound2Introduction() != null) requirement += challenge.getRound2Introduction();
             } else {
                 if (challenge.getSoftwareDetailRequirements() != null)
                     requirement += challenge.getSoftwareDetailRequirements();
             }
-
             challenge.setDetailRequirements(requirement);
         }
 
@@ -157,6 +150,8 @@ public class ChallengeDetailFeederManager {
 
         List<TermsOfUseData> terms = this.challengeDetailFeederDAO.getTerms(queryParameter);
         this.associateAllTermsOfUse(challenges, terms);
+
+        logger.info("pushing challenge detail data to elasticsearch for " + param.getChallengeIds());
 
         try {
             JestClientUtils.pushFeeders(jestClient, param, challenges);
@@ -245,7 +240,7 @@ public class ChallengeDetailFeederManager {
                         if (challenge.getSubmissions() == null) {
                             challenge.setSubmissions(new ArrayList<>());
                         }
-                        if ("DESIGN".equalsIgnoreCase(challenge.getTrack()))
+                        if (STUDIO_TYPE_ID.equals(challenge.getType()))
                             item.setSubmissionImage(generateSubmissionImageUrls(item.getSubmissionId()));
                         challenge.getSubmissions().add(item);
                     } else {

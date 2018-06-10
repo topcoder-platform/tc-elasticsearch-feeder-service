@@ -1,19 +1,20 @@
 package com.appirio.service.resourcefactory;
 
-import com.appirio.service.challengefeeder.dao.ChallengeFeederDAO;
-import com.appirio.service.challengefeeder.manager.ChallengeFeederManager;
 import com.appirio.service.challengefeeder.resources.ChallengeFeederResource;
 import com.appirio.service.supply.resources.ResourceFactory;
-import com.appirio.supply.DAOFactory;
 import com.appirio.supply.SupplyException;
 import io.searchbox.client.JestClient;
 
 /**
  * Factory for ChallengeFeederResource
+ * 
+ * Version 1.1 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * - create dummy resource
+ * 
  *
  * 
  * @author TCSCODER
- * @version 1.0
+ * @version 1.1 
  */
 public class ChallengeFeederFactory implements ResourceFactory<ChallengeFeederResource> {
 
@@ -39,8 +40,6 @@ public class ChallengeFeederFactory implements ResourceFactory<ChallengeFeederRe
      */
     @Override
     public ChallengeFeederResource getResourceInstance() throws SupplyException {
-        final ChallengeFeederManager challengeManager = new ChallengeFeederManager(jestClient, DAOFactory.getInstance().createDAO(ChallengeFeederDAO.class));
-
-        return new ChallengeFeederResource(challengeManager);
+        return new ChallengeFeederResource();
     }
 }

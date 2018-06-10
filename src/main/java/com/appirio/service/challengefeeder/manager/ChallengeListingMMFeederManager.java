@@ -9,7 +9,6 @@ import com.appirio.service.challengefeeder.api.PrizeData;
 import com.appirio.service.challengefeeder.api.challengelisting.ChallengeListingData;
 import com.appirio.service.challengefeeder.api.challengelisting.WinnerData;
 import com.appirio.service.challengefeeder.dao.ChallengeListingMMFeederDAO;
-import com.appirio.service.challengefeeder.dao.MmFeederDAO;
 import com.appirio.service.challengefeeder.dto.MmFeederParam;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.supply.SupplyException;
@@ -25,8 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -35,8 +35,11 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * It's added in Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index For Legacy Marathon Matches v1.0
  * 
+ * Version 1.1 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * - remove the useless dao 
+ * 
  * @author TCSCODER
- * @version 1.0
+ * @version 1.1 
  */
 public class ChallengeListingMMFeederManager {
     
@@ -54,11 +57,6 @@ public class ChallengeListingMMFeederManager {
      * The constant for the upcoming phase status name
      */
     private static final String PHASE_SCHEDULED = "Scheduled";
-
-    /**
-     * DAO to access marathon match data from the transactional database.
-     */
-    private final MmFeederDAO mmFeederDAO;
     
     /**
      * DAO to access marathon match data from the transactional database.
@@ -79,12 +77,11 @@ public class ChallengeListingMMFeederManager {
      * Create ChallengeListingMMFeederManager
      *
      * @param jestClient the jestClient to use
-     * @param mmFeederDAO the mmFeederDAO to use
      * @param challengeListingMmFeederDAO the challengeListingMmFeederDAO to use
+     * @param forumLinkUrl the forumLinkUrl to use
      */
-    public ChallengeListingMMFeederManager(JestClient jestClient, MmFeederDAO mmFeederDAO, ChallengeListingMMFeederDAO challengeListingMmFeederDAO, String forumLinkUrl) {
+    public ChallengeListingMMFeederManager(JestClient jestClient, ChallengeListingMMFeederDAO challengeListingMmFeederDAO, String forumLinkUrl) {
         this.jestClient = jestClient;
-        this.mmFeederDAO = mmFeederDAO;
         this.challengeListingMmFeederDAO = challengeListingMmFeederDAO;
         this.forumLinkUrl = forumLinkUrl;
     }
@@ -96,6 +93,7 @@ public class ChallengeListingMMFeederManager {
      * @throws SupplyException if any error occurs
      */
     public void pushMarathonMatchDataIntoChallenge(MmFeederParam param) throws SupplyException {
+        logger.info("Enter of pushMarathonMatchDataIntoChallenge");
         DataScienceHelper.checkMarathonFeederParam(param, "challenges");
 
         FilterParameter filter = new FilterParameter("roundIds=in(" + ChallengeFeederUtil.listAsString(param.getRoundIds()) + ")");
@@ -103,30 +101,20 @@ public class ChallengeListingMMFeederManager {
         queryParameter.setFilter(filter);
         List<ChallengeListingData> mms = this.challengeListingMmFeederDAO.getMarathonMatches(queryParameter);
 
-        List<Long> ids = mms.stream().map(c -> c.getId()).collect(Collectors.toList());
-        List<Long> idsNotFound = param.getRoundIds().stream().filter(id -> !ids.contains(id)).collect(Collectors.toList());
-
-        if (!idsNotFound.isEmpty()) {
-            logger.warn("These challenge ids can not be found:" + idsNotFound);
-
-            ids.removeAll(idsNotFound);
-        }
+        DataScienceHelper.checkMissedIds(param, mms);
         
         // associate all the data
-        List<PhaseData> phases = this.mmFeederDAO.getPhases(queryParameter);
+        List<PhaseData> phases = this.challengeListingMmFeederDAO.getPhases(queryParameter);
         associateAllPhases(mms, phases);
 
-        List<PrizeData> prizes = this.mmFeederDAO.getPrizes(queryParameter);
+        List<PrizeData> prizes = this.challengeListingMmFeederDAO.getPrizes(queryParameter);
         associateAllPrizes(mms, prizes);
         
-        List<EventData> events = this.mmFeederDAO.getEvents(queryParameter);
+        List<EventData> events = this.challengeListingMmFeederDAO.getEvents(queryParameter);
         associateAllEvents(mms, events);
         
         List<WinnerData> winners = this.challengeListingMmFeederDAO.getMarathonMatchWinners(queryParameter);
         associateAllWinners(mms, winners);
-
-        List<Map<String, Object>> submitterIds = this.challengeListingMmFeederDAO.getSubmitterIds(queryParameter);
-        ChallengeFeederUtil.associateSubmitterIds(mms, submitterIds);
         
         mms.forEach(c -> {
             if (c.getForumId() != null) {
@@ -165,7 +153,7 @@ public class ChallengeListingMMFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getWinners() == null) {
-                        challenge.setWinners(new ArrayList<>());
+                        challenge.setWinners(new ArrayList<WinnerData>());
                     }
                     challenge.getWinners().add(item);
                     break;
@@ -188,7 +176,7 @@ public class ChallengeListingMMFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getEvents() == null) {
-                        challenge.setEvents(new ArrayList<>());
+                        challenge.setEvents(new ArrayList<com.appirio.service.challengefeeder.api.challengelisting.EventData>());
                     }
                     com.appirio.service.challengefeeder.api.challengelisting.EventData data = new com.appirio.service.challengefeeder.api.challengelisting.EventData();
                     data.setEventDescription(item.getEventName());
@@ -212,7 +200,7 @@ public class ChallengeListingMMFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getPrize() == null) {
-                        challenge.setPrize(new ArrayList<>());
+                        challenge.setPrize(new ArrayList<Double>());
                     }
                     challenge.getPrize().add(item.getAmount());
                     break;
@@ -232,11 +220,11 @@ public class ChallengeListingMMFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(aPhase.getChallengeId())) {
                     if (challenge.getPhases() == null) {
-                        challenge.setPhases(new ArrayList<>());
+                        challenge.setPhases(new ArrayList<PhaseData>());
                     }
                     challenge.getPhases().add(aPhase);
                     if (challenge.getCurrentPhases() == null) {
-                        challenge.setCurrentPhases(new ArrayList<>());
+                        challenge.setCurrentPhases(new ArrayList<PhaseData>());
                     }
                     if (PHASE_OPEN.equalsIgnoreCase(aPhase.getStatus())) {
                         challenge.getCurrentPhases().add(aPhase);
@@ -264,7 +252,7 @@ public class ChallengeListingMMFeederManager {
      * @return the timestamp result
      */
     public Date getTimestamp() throws SupplyException {
-        return this.mmFeederDAO.getTimestamp().getDate();
+        return this.challengeListingMmFeederDAO.getTimestamp().getDate();
     }
 
     /**
@@ -275,6 +263,6 @@ public class ChallengeListingMMFeederManager {
      * @return The list of TCID.
      */
     public List<TCID> getMatchesWithRegistrationPhaseStartedIds(java.sql.Date date, long lastRunTimestamp) {
-        return this.mmFeederDAO.getMatchesWithRegistrationPhaseStartedIds(date, lastRunTimestamp);
+        return this.challengeListingMmFeederDAO.getMatchesWithRegistrationPhaseStartedIds(date, lastRunTimestamp);
     }
 }

@@ -4,10 +4,7 @@ lcs.long_component_state_id as submissionId,
 user.handle as submitter,
 ls.submission_points as finalScore,
 ls.submission_points as initialScore,
-CASE
-  WHEN ls.submit_time IS NOT NULL THEN extend(dbinfo("UTC_TO_DATETIME",ls.submit_time/1000), year to fraction)
-  ELSE NULL
-END as submissionTime,
+extend(dbinfo("UTC_TO_DATETIME",ls.submit_time/1000), year to fraction) as submissionTime,
 -1 as placement,
 -1 as screeningScore,
 'Active' as submissionStatus
