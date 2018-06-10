@@ -35,8 +35,13 @@ import java.util.Map;
  *
  * Version 1.3 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index
  * - add commonConfiguration
+ * 
+ * Version 1.4 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * - refactor the job configuration
+ * 
+ * 
  * @author TCSCODER
- * @version 1.3
+ * @version 1.4 
  */
 public class ChallengeFeederServiceConfiguration extends BaseAppConfiguration implements JobConfiguration {
 
