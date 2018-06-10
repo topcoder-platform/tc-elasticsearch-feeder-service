@@ -33,9 +33,13 @@ import lombok.Setter;
 
 /**
  * ChallengeDetailFeederManager is used to handle the challenge detail feeder.
+ * 
+ * Version 1.1 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * - remove the userless dao
+ * 
  *
  * @author TCSCODER
- * @version 1.0
+ * @version 1.1 
  */
 public class ChallengeDetailFeederManager {
 

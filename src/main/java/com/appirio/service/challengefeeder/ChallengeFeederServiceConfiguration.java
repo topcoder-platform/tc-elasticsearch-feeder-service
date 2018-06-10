@@ -11,11 +11,12 @@ import com.appirio.service.BaseAppConfiguration;
 import com.appirio.service.challengefeeder.config.ChallengeConfiguration;
 import com.appirio.service.challengefeeder.config.CommonConfiguration;
 import com.appirio.service.challengefeeder.config.JestClientConfiguration;
-import com.appirio.service.challengefeeder.config.RedissonConfiguration;
+import com.appirio.service.challengefeeder.config.JobsConfiguration;
 import com.appirio.service.supply.resources.SupplyDatasourceFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import de.spinscale.dropwizard.jobs.JobConfiguration;
+import lombok.Getter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -34,8 +35,13 @@ import java.util.Map;
  *
  * Version 1.3 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index
  * - add commonConfiguration
+ * 
+ * Version 1.4 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * - refactor the job configuration
+ * 
+ * 
  * @author TCSCODER
- * @version 1.3
+ * @version 1.4 
  */
 public class ChallengeFeederServiceConfiguration extends BaseAppConfiguration implements JobConfiguration {
 
@@ -62,10 +68,11 @@ public class ChallengeFeederServiceConfiguration extends BaseAppConfiguration im
     private Map<String , String> jobs;
     
     /**
-     * Represents the redissonConfiguration field
+     * Represents the jobsConfiguration field
      */
-    @JsonProperty("redissonConfiguration")
-    private RedissonConfiguration redissonConfiguration;
+    @JsonProperty("jobsConfiguration")
+    @Getter
+    private JobsConfiguration jobsConfiguration;
     
     /**
      * The challengeConfiguration
@@ -108,14 +115,6 @@ public class ChallengeFeederServiceConfiguration extends BaseAppConfiguration im
      */
     public Map<String, String> getJobs() {
         return jobs;
-    }
-
-    /**
-     * Get redissonConfiguration
-     * @return the redissonConfiguration
-     */
-    public RedissonConfiguration getRedissonConfiguration() {
-        return this.redissonConfiguration;
     }
 
     /**
