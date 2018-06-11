@@ -3,7 +3,6 @@
  */
 package com.appirio.service.challengefeeder.manager;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -111,16 +110,6 @@ public class SRMFeederManager {
         Helper.checkAdmin(authUser);
         DataScienceHelper.checkDataScienceFeederParam(param, "srms");
         pushSRMFeeder(param);
-    }
-
-    /**
-     * Get current timestamp from the database.
-     *
-     * @throws SupplyException if any error occurs
-     * @return the timestamp result
-     */
-    public Date getTimestamp() throws SupplyException {
-        return this.srmFeederDAO.getTimestamp().getDate();
     }
 
     /**

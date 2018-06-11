@@ -3,23 +3,30 @@
  */
 package com.appirio.service.challengefeeder.dao;
 
+import java.sql.Date;
+import java.util.List;
+
+import org.skife.jdbi.v2.sqlobject.Bind;
+
 import com.appirio.service.challengefeeder.api.detail.ChallengeDetailData;
 import com.appirio.service.challengefeeder.api.detail.RegistrantData;
 import com.appirio.service.challengefeeder.api.detail.SubmissionData;
 import com.appirio.supply.dataaccess.ApiQueryInput;
 import com.appirio.supply.dataaccess.DatasourceName;
 import com.appirio.supply.dataaccess.SqlQueryFile;
+import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
-
-import java.util.List;
 
 /**
  * DAO to interact with challenge data
  *
  * It's added in Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Detail Index For Legacy Marathon Matches v1.0
  * 
+ * Version 1.1 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * - add more methods for marathon match
+ * 
  * @author TCCODER
- * @version 1.1
+ * @version 1.1 
  */
 @DatasourceName("oltp")
 public interface ChallengeDetailMMFeederDAO {
@@ -50,4 +57,13 @@ public interface ChallengeDetailMMFeederDAO {
      */
     @SqlQueryFile("sql/mm-feeder-into-challenges/get_submissions_for_challenge_detail.sql")
     List<SubmissionData> getSubmissionsForChallengeDetail(@ApiQueryInput QueryParameter queryParameter);
+
+    /**
+     * Get the marathon matches whose registration phase started after the specified date and after the last run timestamp.
+     * @param date
+     * @param lastRunTimestamp
+     * @return
+     */
+    @SqlQueryFile("sql/mmatches-feeder/job/get_mm_registration_phase_started.sql")
+    List<TCID> getMatchesWithRegistrationPhaseStartedIds(@Bind("initialDate") Date date, @Bind("lastRunTimestamp") Long lastRunTimestamp);
 }

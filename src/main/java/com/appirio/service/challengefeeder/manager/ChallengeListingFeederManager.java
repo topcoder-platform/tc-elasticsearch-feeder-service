@@ -23,7 +23,6 @@ import com.appirio.service.challengefeeder.api.challengelisting.ChallengeListing
 import com.appirio.service.challengefeeder.api.challengelisting.EventData;
 import com.appirio.service.challengefeeder.api.challengelisting.WinnerData;
 import com.appirio.service.challengefeeder.config.ChallengeConfiguration;
-import com.appirio.service.challengefeeder.dao.ChallengeFeederDAO;
 import com.appirio.service.challengefeeder.dao.ChallengeListingFeederDAO;
 import com.appirio.service.challengefeeder.dto.ChallengeFeederParam;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
@@ -40,8 +39,12 @@ import io.searchbox.client.JestClient;
  * 
  * It's added in Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index v1.0
  * 
+ * Version 1.1 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * - remove the useless dao
+ * 
+ * 
  * @author TCCoder
- * @version 1.0
+ * @version 1.1 
  *
  */
 public class ChallengeListingFeederManager {
@@ -64,11 +67,6 @@ public class ChallengeListingFeederManager {
      * The constant for the design challenge type
      */
     private static final String DESIGN_TYPE = "DESIGN";
-
-    /**
-     * DAO to access challenge data from the transactional database.
-     */
-    private final ChallengeFeederDAO challengeFeederDAO;
     
     /**
      * DAO to access challenge data from the transactional database.
@@ -89,14 +87,12 @@ public class ChallengeListingFeederManager {
      * Create ChallengeListingFeederManager
      *
      * @param jestClient the jestClient to use
-     * @param challengeFeederDAO the challengeFeederDAO to use
      * @param challengeListingFeederDAO the challengeListingFeederDAO to use
      * @param challengeConfiguration the challengeConfiguration to use
      */
-    public ChallengeListingFeederManager(JestClient jestClient, ChallengeFeederDAO challengeFeederDAO, ChallengeListingFeederDAO challengeListingFeederDAO, 
+    public ChallengeListingFeederManager(JestClient jestClient, ChallengeListingFeederDAO challengeListingFeederDAO, 
             ChallengeConfiguration challengeConfiguration) {
         this.jestClient = jestClient;
-        this.challengeFeederDAO = challengeFeederDAO;
         this.challengeListingFeederDAO = challengeListingFeederDAO;
         this.challengeConfiguration = challengeConfiguration;
     }
@@ -137,28 +133,29 @@ public class ChallengeListingFeederManager {
 
         List<EventData> events = this.challengeListingFeederDAO.getEventsListing(queryParameter);
         associateAllEvents(challenges, events);
-
-        List<PhaseData> phases = this.challengeFeederDAO.getPhases(queryParameter);
+        
+        List<PhaseData> phases = this.challengeListingFeederDAO.getPhases(queryParameter);
         associateAllPhases(challenges, phases);
+        
+        List<PrizeData> prizes = this.challengeListingFeederDAO.getPrizes(queryParameter);
 
-        List<PrizeData> prizes = this.challengeFeederDAO.getPrizes(queryParameter);
         associateAllPrizes(challenges, prizes);
 
-        List<PrizeData> pointPrizes = this.challengeFeederDAO.getPointsPrize(queryParameter);
+        List<PrizeData> pointPrizes = this.challengeListingFeederDAO.getPointsPrize(queryParameter);
         associatePointPrizes(challenges, pointPrizes);
-
-        List<FileTypeData> fileTypes = this.challengeFeederDAO.getFileTypes(queryParameter);
+        
+        List<FileTypeData> fileTypes = this.challengeListingFeederDAO.getFileTypes(queryParameter);
         associateAllFileTypes(challenges, fileTypes);
 
         List<WinnerData> winners = this.challengeListingFeederDAO.getWinnersForChallengeListing(queryParameter);
         associateAllWinners(challenges, winners);
 
         List<Map<String, Object>> checkpointsSubmissions = this.challengeListingFeederDAO.getCheckpointsSubmissions(queryParameter);
-        List<Map<String, Object>> groupIds = this.challengeFeederDAO.getGroupIds(queryParameter);
+        List<Map<String, Object>> groupIds = this.challengeListingFeederDAO.getGroupIds(queryParameter);
         List<UserIdData> userIds = this.challengeListingFeederDAO.getChallengeUserIds(queryParameter);
         associateAllUserIds(challenges, userIds);
-
-        List<Map<String, Object>> platforms = this.challengeFeederDAO.getChallengePlatforms(queryParameter);
+        
+        List<Map<String, Object>> platforms = this.challengeListingFeederDAO.getChallengePlatforms(queryParameter);
         for (Map<String, Object> item : platforms) {
             for (ChallengeListingData data : challenges) {
                 if (data.getChallengeId() == Long.parseLong(item.get("challengeId").toString())) {
@@ -170,7 +167,7 @@ public class ChallengeListingFeederManager {
             }
         }
 
-        List<Map<String, Object>> technologies = this.challengeFeederDAO.getChallengeTechnologies(queryParameter);
+        List<Map<String, Object>> technologies = this.challengeListingFeederDAO.getChallengeTechnologies(queryParameter);
         for (Map<String, Object> item : technologies) {
             for (ChallengeListingData data : challenges) {
                 if (data.getChallengeId() == Long.parseLong(item.get("challengeId").toString())) {
@@ -229,16 +226,6 @@ public class ChallengeListingFeederManager {
             throw se;
         }
     }
-    
-    /**
-     * Get timestamp from the persistence
-     *
-     * @throws SupplyException if any error occurs
-     * @return the Date result
-     */
-    public Date getTimestamp() throws SupplyException {
-        return this.challengeFeederDAO.getTimestamp().getDate();
-    }
 
     /**
      * Get changed challenge ids
@@ -250,7 +237,7 @@ public class ChallengeListingFeederManager {
         if (lastRunTimestamp == null) {
             throw new IllegalArgumentException("The lastRunTimestamp should be non-null.");
         }
-        return this.challengeFeederDAO.getChangedChallengeIds(lastRunTimestamp);
+        return this.challengeListingFeederDAO.getChangedChallengeIds(lastRunTimestamp);
     }
     
     /**

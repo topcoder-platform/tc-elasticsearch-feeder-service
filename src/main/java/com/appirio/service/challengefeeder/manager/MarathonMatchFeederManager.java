@@ -3,7 +3,6 @@
  */
 package com.appirio.service.challengefeeder.manager;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -112,16 +111,6 @@ public class MarathonMatchFeederManager {
     public void pushMarathonMatchFeeder(AuthUser authUser, DataScienceFeederParam param) throws SupplyException {
         Helper.checkAdmin(authUser);
         pushMarathonMatchFeeder(param);
-    }
-    
-    /**
-     * Get current timestamp from the database.
-     *
-     * @throws SupplyException if any error occurs
-     * @return the timestamp result
-     */
-    public Date getTimestamp() throws SupplyException {
-        return this.marathonMatchFeederDAO.getTimestamp().getDate();
     }
 
     /**

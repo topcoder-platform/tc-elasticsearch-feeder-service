@@ -32,9 +32,13 @@ import com.appirio.service.challengefeeder.api.challengelisting.ChallengeListing
  *
  * Version 1.2 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Detail Index
  *  - added {@link #getColorStyle(Integer)}
+ *  
+ * Version 1.3 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * - remove the useless methods
+ * 
  *
  * @author TCSCODER
- * @version 1.2
+ * @version 1.3 
  */
 public class ChallengeFeederUtil {
     /**
@@ -289,24 +293,6 @@ public class ChallengeFeederUtil {
             item.setChallengeId(null);
         }
     }
-
-    /**
-     * List the items as string
-     *
-     * @param items the items to use
-     * @return the String result, separated by comma
-     */
-    static String listAsString(List<? extends Object> items) {
-        StringBuilder res = new StringBuilder();
-        for (int i = 0; i < items.size(); ++i) {
-            res.append(items.get(i).toString());
-            if (i < items.size() - 1) {
-                res.append(", ");
-            }
-        }
-
-        return res.toString();
-    }
     
     /**
      * Associate all pointPrizes
@@ -350,6 +336,7 @@ public class ChallengeFeederUtil {
             }
         }
     }
+
     /**
      * Get color style
      *
@@ -357,7 +344,7 @@ public class ChallengeFeederUtil {
      * @return the String result representing the color
      * @since 1.2
      */
-    public static String getColorStyle(Integer rating) {
+    static String getColorStyle(Integer rating) {
 
         if (rating == null) {
             return "color: #000000";
@@ -385,4 +372,23 @@ public class ChallengeFeederUtil {
         return "color: #000000";
 
     }
+    
+    /**
+     * List the items as string
+     *
+     * @param items the items to use
+     * @return the String result, separated by comma
+     */
+    static String listAsString(List<? extends Object> items) {
+        StringBuilder res = new StringBuilder();
+        for (int i = 0; i < items.size(); ++i) {
+            res.append(items.get(i).toString());
+            if (i < items.size() - 1) {
+                res.append(", ");
+            }
+        }
+
+        return res.toString();
+    }
+
 }

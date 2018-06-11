@@ -4,10 +4,8 @@
 package com.appirio.service.challengefeeder.resources;
 
 import com.appirio.service.challengefeeder.dto.ChallengeFeederParam;
-import com.appirio.service.challengefeeder.manager.ChallengeFeederManager;
 import com.appirio.service.supply.resources.MetadataApiResponseFactory;
 import com.appirio.supply.ErrorHandler;
-import com.appirio.supply.SupplyException;
 import com.appirio.tech.core.api.v3.request.PostPutRequest;
 import com.appirio.tech.core.api.v3.request.annotation.AllowAnonymous;
 import com.appirio.tech.core.api.v3.response.ApiResponse;
@@ -16,7 +14,6 @@ import com.codahale.metrics.annotation.Timed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
@@ -27,9 +24,13 @@ import javax.ws.rs.core.MediaType;
 /**
  * Resource to handle the challenge feeder
  * 
+ * Version 1.1 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * - make it dummy
+ * 
+ * 
  * 
  * @author TCSCODER
- * @version 1.0
+ * @version 1.1 
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -42,17 +43,9 @@ public class ChallengeFeederResource {
     private static final Logger logger = LoggerFactory.getLogger(ChallengeFeederResource.class);
 
     /**
-     * Manager to access search business logic
-     */
-    private final ChallengeFeederManager challengeFeederManager;
-
-    /**
      * Create ChallengeFeederResource
-     *
-     * @param challengeFeederManager the challengeManager to use
      */
-    public ChallengeFeederResource(ChallengeFeederManager challengeFeederManager) {
-        this.challengeFeederManager = challengeFeederManager;
+    public ChallengeFeederResource() {
     }
     
     /**
@@ -66,10 +59,6 @@ public class ChallengeFeederResource {
     @AllowAnonymous
     public ApiResponse pushChallengeFeeders(@Valid PostPutRequest<ChallengeFeederParam> request) {
         try {
-            if (request == null || request.getParam() == null) {
-                throw new SupplyException("The request body should be provided", HttpServletResponse.SC_BAD_REQUEST);
-            }
-            this.challengeFeederManager.pushChallengeFeeder(request.getParam());
             return MetadataApiResponseFactory.createResponse(null);
         } catch (Exception e) {
             return ErrorHandler.handle(e, logger);

@@ -1,27 +1,15 @@
 package com.appirio.service.challengefeeder.job;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.redisson.Redisson;
-import org.redisson.api.RLock;
-import org.redisson.api.RMapCache;
-import org.redisson.api.RedissonClient;
-import org.redisson.config.Config;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.appirio.service.challengefeeder.ChallengeFeederServiceConfiguration;
-import com.appirio.service.challengefeeder.dao.MmFeederDAO;
 import com.appirio.service.challengefeeder.dao.ChallengeDetailMMFeederDAO;
 import com.appirio.service.challengefeeder.dto.MmFeederParam;
 import com.appirio.service.challengefeeder.manager.ChallengeDetailMMFeederManager;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.supply.DAOFactory;
+import com.appirio.supply.SupplyException;
 import com.appirio.tech.core.api.v3.TCID;
 
 import de.spinscale.dropwizard.jobs.annotations.DelayStart;
@@ -30,9 +18,13 @@ import lombok.NoArgsConstructor;
 
 /**
  * LoadChangedMMChallengeDetailJob is used to populate legacy marathon matches to elasticsearch challenge detail.
+ * 
+ * Version 2.0 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * - refactor it to use the new configuration 
+ * 
  *
  * @author TCCoder
- * @version 1.0
+ * @version 2.0 
  *
  */
 @DelayStart("21s")
@@ -46,120 +38,66 @@ public class LoadChangedMMChallengeDetailJob extends BaseJob {
     private ChallengeDetailMMFeederManager manager;
 
     /**
-     * Logger used to log events
-     */
-    private static final Logger logger = LoggerFactory.getLogger(LoadChangedMMChallengeDetailJob.class);
-
-    /**
-     * Create LoadChangedMMChallengeDetailJob
+     * Init the job
      *
-     * @param manager the manager to use
-     * @param config the config to use
-     */
-    public LoadChangedMMChallengeDetailJob(ChallengeDetailMMFeederManager manager, ChallengeFeederServiceConfiguration config) {
-        super(config);
-        this.manager = manager;
-    }
-
-    /**
-     * Do job. Load the legacy marathon matches to elasticsearch service.
-     *
-     * @param context the job context to use
-     * @throws JobExecutionException if any error occurs
+     * @throws SupplyException if any error occurs
      */
     @Override
-    public void doJob(JobExecutionContext context) throws JobExecutionException {
-        RLock lock = null;
-        RedissonClient redisson = null;
-        try {
-            if (this.manager == null) {
-                this.manager = new ChallengeDetailMMFeederManager(JestClientUtils.get(GLOBAL_CONFIGURATION.getJestClientConfiguration()), 
-                        DAOFactory.getInstance().createDAO(MmFeederDAO.class), DAOFactory.getInstance().createDAO(ChallengeDetailMMFeederDAO.class));
-            }
-            if (this.config == null) {
-                this.config = GLOBAL_CONFIGURATION;
-            }
-            Config redissonConfig = new Config();
-            redissonConfig.setLockWatchdogTimeout(this.config.getRedissonConfiguration().getLockWatchdogTimeout());
-            if (this.config.getRedissonConfiguration().isClusterEnabled()) {
-                for (String addr : this.config.getRedissonConfiguration().getNodeAddresses()) {
-                    redissonConfig.useClusterServers().addNodeAddress(addr);
-                }
-            } else {
-                redissonConfig.useSingleServer().setAddress(this.config.getRedissonConfiguration().getSingleServerAddress());
-            }
-
-            logger.info("Try to get the lock for legacy marathon matches challenge detail job");
-            redisson = Redisson.create(redissonConfig);
-            lock = redisson.getLock(config.getRedissonConfiguration().getLoadChangedMMChallengeDetailJobLockerKeyName());
-            if (lock.tryLock()) {
-                logger.info("Get the lock for legacy marathon matches challenge detail job successfully");
-                try {
-                    RMapCache<String, String> mapCache = redisson.getMapCache(config.getRedissonConfiguration().getLoadChangedMMChallengeDetailJobLastRunTimestampPrefix());
-                    String timestamp = mapCache.get(config.getRedissonConfiguration().getLoadChangedMMChallengeDetailJobLastRunTimestampPrefix());
-
-                    Date lastRunTimestamp = new Date(INITIAL_TIMESTAMP);
-                    if (timestamp != null) {
-                        lastRunTimestamp = DATE_FORMAT.parse(timestamp);
-                    }
-
-                    logger.info("The last run timestamp for marathon matches challenge detail job is:" + lastRunTimestamp);
-
-                    Date currentTimestamp = new Date();
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(currentTimestamp);
-                    calendar.add(Calendar.DAY_OF_MONTH, this.config.getRedissonConfiguration().getMarathonMatchesDaysToSubtract());
-                    Date dateParam = calendar.getTime();
-
-                    logger.info("The initial timestamp for legacy marathon matches challenge detail job is:" + dateParam);
-
-                    List<TCID> totalIds = this.manager.getMatchesWithRegistrationPhaseStartedIds(new java.sql.Date(dateParam.getTime()), lastRunTimestamp.getTime());
-
-                    List<Long> ids = new ArrayList<>();
-                    for (int i = 0; i < totalIds.size(); ++i) {
-                        ids.add(Long.parseLong(totalIds.get(i).getId()));
-                    }
-
-                    logger.info("The count of the MM ids to load:" + ids.size());
-                    logger.info("The MM ids to load:" + ids);
-
-                    int batchSize = this.config.getRedissonConfiguration().getBatchUpdateSize();
-                    int to = 0;
-                    int from = 0;
-                    while (to < ids.size()) {
-                        to += (to + batchSize) > ids.size() ? (ids.size() - to) : batchSize;
-                        List<Long> sub = ids.subList(from, to);
-                        MmFeederParam param = new MmFeederParam();
-                        param.setIndex(this.config.getRedissonConfiguration().getChallengesDetailIndex());
-                        param.setType(this.config.getRedissonConfiguration().getChallengesDetailType());
-                        param.setRoundIds(sub);
-                        param.setLegacy(Boolean.TRUE);
-                        try {
-                            this.manager.pushMarathonMatchDataIntoChallengeDetail(param);
-                        } catch(Exception e) {
-                            e.printStackTrace();
-                        }
-                        from = to;
-                    }
-
-                    // mark last execution as current timestamp
-                    logger.info("update last run timestamp for challenges challenge detail job is:" + currentTimestamp);
-                    mapCache.put(config.getRedissonConfiguration().getLoadChangedMMChallengeDetailJobLastRunTimestampPrefix(), DATE_FORMAT.format(currentTimestamp));
-                } finally {
-                    logger.info("release the lock for legacy marathon matches job");
-                    lock.unlock();
-                }
-            } else {
-                logger.warn("the previous job for legacy marathon matches challenge detail job is still running");
-            }
-        } catch(Exception exp) {
-            exp.printStackTrace();
-        } finally {
-            if (redisson != null) {
-                redisson.shutdown();
-            }
+    protected void init() throws SupplyException {
+        super.init();
+        if (this.manager == null) {
+            this.manager = new ChallengeDetailMMFeederManager(JestClientUtils.get(this.config.getJestClientConfiguration()), 
+                    DAOFactory.getInstance().createDAO(ChallengeDetailMMFeederDAO.class));
+        }
+        
+        if (this.indexName == null) {
+            this.indexName = this.config.getJobsConfiguration().getLoadChangedMMChallengeDetailJob().getIndexName();
+            this.typeName = "challenges";
+            this.lastRuntimestampeKey = this.indexName + BaseJob.JOB_LAST_RUN_TIMESTAMP_SUFFIX;
+            this.lockerKey = this.indexName + BaseJob.JOB_LOCKER_NAME_SUFFIX;
+            this.jobEnableKey = this.indexName + BaseJob.JOB_ENABLE_SUFFIX;
+            this.batchSize = this.config.getJobsConfiguration().getLoadChangedMMChallengeDetailJob().getBatchUpdateSize();
         }
     }
 
+    /**
+     * Push feeders
+     *
+     * @param ids the ids to use
+     * @throws SupplyException if any error occurs
+     */
+    @Override
+    protected void pushFeeders(List<Long> ids) throws SupplyException {
+        MmFeederParam param = new MmFeederParam();
+        param.setIndex(this.indexName);
+        param.setType(this.typeName);
+        param.setRoundIds(ids);
+        param.setLegacy(Boolean.TRUE);
+        try {
+            this.manager.pushMarathonMatchDataIntoChallengeDetail(param);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Get feeder ids to push
+     *
+     * @param lastRunTimestamp the lastRunTimestamp to use
+     * @throws SupplyException if any error occurs
+     * @return the List<Long> result
+     */
+    @Override
+    protected List<Long> getFeederIdsToPush(Date lastRunTimestamp) throws SupplyException {
+        Date currentTimestamp = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentTimestamp);
+        calendar.add(Calendar.DAY_OF_MONTH, this.config.getJobsConfiguration().getLoadChangedMMChallengeDetailJob().getMarathonMatchesDaysToSubtract());
+        Date dateParam = calendar.getTime();
+
+        List<TCID> totalIds = this.manager.getMatchesWithRegistrationPhaseStartedIds(new java.sql.Date(dateParam.getTime()), lastRunTimestamp.getTime());
+        
+        return convertTCID(totalIds);
+    }
 }
 

@@ -14,7 +14,6 @@ import com.appirio.service.challengefeeder.dao.ChallengeDetailFeederDAO;
 import com.appirio.service.challengefeeder.dto.ChallengeFeederParam;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.supply.SupplyException;
-import com.appirio.supply.constants.Track;
 import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.FieldSelector;
 import com.appirio.tech.core.api.v3.request.FilterParameter;
@@ -34,9 +33,13 @@ import lombok.Setter;
 
 /**
  * ChallengeDetailFeederManager is used to handle the challenge detail feeder.
+ * 
+ * Version 1.1 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * - remove the userless dao
+ * 
  *
  * @author TCSCODER
- * @version 1.0
+ * @version 1.1 
  */
 public class ChallengeDetailFeederManager {
 
@@ -165,16 +168,6 @@ public class ChallengeDetailFeederManager {
             se.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             throw se;
         }
-    }
-
-    /**
-     * Get timestamp from the persistence
-     *
-     * @throws SupplyException if any error occurs
-     * @return the Date result
-     */
-    public Date getTimestamp() throws SupplyException {
-        return this.challengeDetailFeederDAO.getTimestamp().getDate();
     }
 
     /**
