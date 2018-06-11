@@ -54,11 +54,6 @@ public class ChallengeDetailFeederManager {
     private static final Long CONTEST_SUBMISSION_TYPE_ID = 1L;
 
     /**
-     * Studio type id
-     */
-    private static final Long STUDIO_TYPE_ID = 3L;
-
-    /**
      * DAO to access challenge data from the transactional database.
      */
     private final ChallengeDetailFeederDAO challengeDetailFeederDAO;
@@ -115,14 +110,17 @@ public class ChallengeDetailFeederManager {
 
         if (!idsNotFound.isEmpty()) {
             logger.warn("These challenge ids can not be found:" + idsNotFound);
+
+            ids.removeAll(idsNotFound);
         }
 
-        logger.info("aggregating challenge detail data for " + param.getChallengeIds());
+        logger.info("aggregating challenge detail data for " + ids);
 
         for (ChallengeDetailData challenge : challenges) {
             String requirement = "";
-            if (STUDIO_TYPE_ID.equals(challenge.getType())) {
-                if (challenge.getStudioDetailRequirements() != null) requirement = challenge.getStudioDetailRequirements();
+            if ("DESIGN".equalsIgnoreCase(challenge.getTrack())) {
+                if (challenge.getStudioDetailRequirements() != null)
+                    requirement = challenge.getStudioDetailRequirements();
                 if (challenge.getRound1Introduction() != null) {
                     if (!requirement.startsWith(challenge.getRound1Introduction())) {
                         requirement += challenge.getRound1Introduction();
@@ -130,11 +128,23 @@ public class ChallengeDetailFeederManager {
                     }
                 }
 
-                if (challenge.getRound2Introduction() != null) requirement += challenge.getRound2Introduction();
+                if (challenge.getRound2Introduction() != null) {
+                    requirement += challenge.getRound2Introduction();
+                }
+            } else if ("DEVELOP_MARATHON_MATCH".equalsIgnoreCase(challenge.getSubTrack()) || "MARATHON_MATCH".equalsIgnoreCase(challenge.getSubTrack())) {
+                if (challenge.getMarathonMatchDetailRequirements() != null) {
+                    requirement = challenge.getMarathonMatchDetailRequirements();
+                    requirement += "\n";
+                }
+
+                if (challenge.getMarathonMatchRules() != null) {
+                    requirement += challenge.getMarathonMatchRules();
+                }
             } else {
                 if (challenge.getSoftwareDetailRequirements() != null)
                     requirement += challenge.getSoftwareDetailRequirements();
             }
+
             challenge.setDetailRequirements(requirement);
         }
 
@@ -151,8 +161,6 @@ public class ChallengeDetailFeederManager {
         List<TermsOfUseData> terms = this.challengeDetailFeederDAO.getTerms(queryParameter);
         this.associateAllTermsOfUse(challenges, terms);
 
-        logger.info("pushing challenge detail data to elasticsearch for " + param.getChallengeIds());
-
         try {
             JestClientUtils.pushFeeders(jestClient, param, challenges);
         } catch (IOException ioe) {
@@ -160,16 +168,6 @@ public class ChallengeDetailFeederManager {
             se.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             throw se;
         }
-    }
-
-    /**
-     * Get timestamp from the persistence
-     *
-     * @throws SupplyException if any error occurs
-     * @return the Date result
-     */
-    public Date getTimestamp() throws SupplyException {
-        return this.challengeDetailFeederDAO.getTimestamp().getDate();
     }
 
     /**
@@ -240,7 +238,7 @@ public class ChallengeDetailFeederManager {
                         if (challenge.getSubmissions() == null) {
                             challenge.setSubmissions(new ArrayList<>());
                         }
-                        if (STUDIO_TYPE_ID.equals(challenge.getType()))
+                        if ("DESIGN".equalsIgnoreCase(challenge.getTrack()))
                             item.setSubmissionImage(generateSubmissionImageUrls(item.getSubmissionId()));
                         challenge.getSubmissions().add(item);
                     } else {

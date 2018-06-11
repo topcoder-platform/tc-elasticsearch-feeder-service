@@ -13,7 +13,7 @@ import com.appirio.service.challengefeeder.dto.MmFeederParam;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.supply.SupplyException;
 import com.appirio.supply.constants.SubTrack;
-import com.appirio.tech.core.api.v3.*;
+import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.FieldSelector;
 import com.appirio.tech.core.api.v3.request.FilterParameter;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
@@ -25,8 +25,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -93,7 +95,6 @@ public class ChallengeListingMMFeederManager {
      * @throws SupplyException if any error occurs
      */
     public void pushMarathonMatchDataIntoChallenge(MmFeederParam param) throws SupplyException {
-        logger.info("Enter of pushMarathonMatchDataIntoChallenge");
         DataScienceHelper.checkMarathonFeederParam(param, "challenges");
 
         FilterParameter filter = new FilterParameter("roundIds=in(" + ChallengeFeederUtil.listAsString(param.getRoundIds()) + ")");
@@ -101,7 +102,14 @@ public class ChallengeListingMMFeederManager {
         queryParameter.setFilter(filter);
         List<ChallengeListingData> mms = this.challengeListingMmFeederDAO.getMarathonMatches(queryParameter);
 
-        DataScienceHelper.checkMissedIds(param, mms);
+        List<Long> ids = mms.stream().map(c -> c.getId()).collect(Collectors.toList());
+        List<Long> idsNotFound = param.getRoundIds().stream().filter(id -> !ids.contains(id)).collect(Collectors.toList());
+
+        if (!idsNotFound.isEmpty()) {
+            logger.warn("These challenge ids can not be found:" + idsNotFound);
+
+            ids.removeAll(idsNotFound);
+        }
         
         // associate all the data
         List<PhaseData> phases = this.challengeListingMmFeederDAO.getPhases(queryParameter);
@@ -115,6 +123,9 @@ public class ChallengeListingMMFeederManager {
         
         List<WinnerData> winners = this.challengeListingMmFeederDAO.getMarathonMatchWinners(queryParameter);
         associateAllWinners(mms, winners);
+
+        List<Map<String, Object>> submitterIds = this.challengeListingMmFeederDAO.getSubmitterIds(queryParameter);
+        ChallengeFeederUtil.associateSubmitterIds(mms, submitterIds);
         
         mms.forEach(c -> {
             if (c.getForumId() != null) {
@@ -153,7 +164,7 @@ public class ChallengeListingMMFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getWinners() == null) {
-                        challenge.setWinners(new ArrayList<WinnerData>());
+                        challenge.setWinners(new ArrayList<>());
                     }
                     challenge.getWinners().add(item);
                     break;
@@ -176,7 +187,7 @@ public class ChallengeListingMMFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getEvents() == null) {
-                        challenge.setEvents(new ArrayList<com.appirio.service.challengefeeder.api.challengelisting.EventData>());
+                        challenge.setEvents(new ArrayList<>());
                     }
                     com.appirio.service.challengefeeder.api.challengelisting.EventData data = new com.appirio.service.challengefeeder.api.challengelisting.EventData();
                     data.setEventDescription(item.getEventName());
@@ -200,7 +211,7 @@ public class ChallengeListingMMFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getPrize() == null) {
-                        challenge.setPrize(new ArrayList<Double>());
+                        challenge.setPrize(new ArrayList<>());
                     }
                     challenge.getPrize().add(item.getAmount());
                     break;
@@ -220,11 +231,11 @@ public class ChallengeListingMMFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(aPhase.getChallengeId())) {
                     if (challenge.getPhases() == null) {
-                        challenge.setPhases(new ArrayList<PhaseData>());
+                        challenge.setPhases(new ArrayList<>());
                     }
                     challenge.getPhases().add(aPhase);
                     if (challenge.getCurrentPhases() == null) {
-                        challenge.setCurrentPhases(new ArrayList<PhaseData>());
+                        challenge.setCurrentPhases(new ArrayList<>());
                     }
                     if (PHASE_OPEN.equalsIgnoreCase(aPhase.getStatus())) {
                         challenge.getCurrentPhases().add(aPhase);
@@ -243,16 +254,6 @@ public class ChallengeListingMMFeederManager {
         for (PhaseData aPhase : allPhases) {
             aPhase.setChallengeId(null);
         }
-    }
-
-    /**
-     * Get current timestamp from the database.
-     *
-     * @throws SupplyException if any error occurs
-     * @return the timestamp result
-     */
-    public Date getTimestamp() throws SupplyException {
-        return this.challengeListingMmFeederDAO.getTimestamp().getDate();
     }
 
     /**

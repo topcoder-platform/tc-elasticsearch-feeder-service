@@ -8,10 +8,9 @@ import java.util.List;
 
 import org.skife.jdbi.v2.sqlobject.Bind;
 
-import com.appirio.service.challengefeeder.api.challengedetail.ChallengeDetailData;
-import com.appirio.service.challengefeeder.api.challengedetail.RegistrantData;
-import com.appirio.service.challengefeeder.api.challengedetail.SubmissionData;
-import com.appirio.service.challengefeeder.dto.DatabaseTimestamp;
+import com.appirio.service.challengefeeder.api.detail.ChallengeDetailData;
+import com.appirio.service.challengefeeder.api.detail.RegistrantData;
+import com.appirio.service.challengefeeder.api.detail.SubmissionData;
 import com.appirio.supply.dataaccess.ApiQueryInput;
 import com.appirio.supply.dataaccess.DatasourceName;
 import com.appirio.supply.dataaccess.SqlQueryFile;
@@ -58,14 +57,6 @@ public interface ChallengeDetailMMFeederDAO {
      */
     @SqlQueryFile("sql/mm-feeder-into-challenges/get_submissions_for_challenge_detail.sql")
     List<SubmissionData> getSubmissionsForChallengeDetail(@ApiQueryInput QueryParameter queryParameter);
-    
-    /**
-     * Get timestamp
-     *
-     * @return the result
-     */
-    @SqlQueryFile("sql/challenge-feeder/job/get_timestamp.sql")
-    DatabaseTimestamp getTimestamp();
 
     /**
      * Get the marathon matches whose registration phase started after the specified date and after the last run timestamp.

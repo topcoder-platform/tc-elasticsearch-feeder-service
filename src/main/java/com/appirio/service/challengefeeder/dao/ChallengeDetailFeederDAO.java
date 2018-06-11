@@ -8,7 +8,6 @@ import com.appirio.service.challengefeeder.api.detail.DocumentData;
 import com.appirio.service.challengefeeder.api.detail.RegistrantData;
 import com.appirio.service.challengefeeder.api.detail.SubmissionData;
 import com.appirio.service.challengefeeder.api.detail.TermsOfUseData;
-import com.appirio.service.challengefeeder.dto.DatabaseTimestamp;
 import com.appirio.supply.dataaccess.ApiQueryInput;
 import com.appirio.supply.dataaccess.DatasourceName;
 import com.appirio.supply.dataaccess.SqlQueryFile;
@@ -80,12 +79,4 @@ public interface ChallengeDetailFeederDAO {
      */
     @SqlQueryFile("sql/challenge-feeder/job/get_changed_challenge_detail_ids.sql")
     List<TCID> getChangedChallengeIds(@Bind("lastRunTimestamp") Date lastRunTimestamp);
-
-    /**
-     * Get timestamp
-     *
-     * @return the result
-     */
-    @SqlQueryFile("sql/challenge-feeder/job/get_timestamp.sql")
-    DatabaseTimestamp getTimestamp();
 }

@@ -8,7 +8,6 @@ import com.appirio.service.challengefeeder.api.PhaseData;
 import com.appirio.service.challengefeeder.api.PrizeData;
 import com.appirio.service.challengefeeder.api.challengelisting.ChallengeListingData;
 import com.appirio.service.challengefeeder.api.challengelisting.WinnerData;
-import com.appirio.service.challengefeeder.dto.DatabaseTimestamp;
 import com.appirio.supply.dataaccess.ApiQueryInput;
 import com.appirio.supply.dataaccess.DatasourceName;
 import com.appirio.supply.dataaccess.SqlQueryFile;
@@ -17,6 +16,7 @@ import com.appirio.tech.core.api.v3.request.QueryParameter;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.skife.jdbi.v2.sqlobject.Bind;
 
@@ -51,20 +51,12 @@ public interface ChallengeListingMMFeederDAO {
      */
     @SqlQueryFile("sql/mm-feeder-into-challenges/get_marathon_match_winners.sql")
     List<WinnerData> getMarathonMatchWinners(@ApiQueryInput QueryParameter queryParameter);
-    
-    /**
-     * Get timestamp
-     *
-     * @return the result
-     */
-    @SqlQueryFile("sql/challenge-feeder/job/get_timestamp.sql")
-    DatabaseTimestamp getTimestamp();
 
     /**
      * Get the marathon matches whose registration phase started after the specified date and after the last run timestamp.
-     * @param date
-     * @param lastRunTimestamp
-     * @return
+     * @param date the intial date
+     * @param lastRunTimestamp  the last run timestamp
+     * @return the list of marathon match ids.
      */
     @SqlQueryFile("sql/mmatches-feeder/job/get_mm_registration_phase_started.sql")
     List<TCID> getMatchesWithRegistrationPhaseStartedIds(@Bind("initialDate") Date date, @Bind("lastRunTimestamp") Long lastRunTimestamp);
@@ -95,4 +87,13 @@ public interface ChallengeListingMMFeederDAO {
      */
     @SqlQueryFile("sql/mm-feeder-into-challenges/get_events.sql")
     List<EventData> getEvents(@ApiQueryInput QueryParameter queryParameter);
+
+    /**
+     * Get id of all submitters
+     *
+     * @param queryParameter query parameter
+     * @return list of submitter
+     */
+    @SqlQueryFile("sql/mm-feeder-into-challenges/get_submitter_ids.sql")
+    List<Map<String, Object>> getSubmitterIds(@ApiQueryInput QueryParameter queryParameter);
 }

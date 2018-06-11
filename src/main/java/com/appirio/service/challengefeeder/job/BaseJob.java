@@ -153,7 +153,7 @@ public abstract class BaseJob extends Job {
 
                         logger.info("The last run timestamp for " + this.getClass().getName() + " is:" + timestamp);
 
-                        Date currentTime = this.getTimestamp();
+                        Date currentTime = new Date();
                         List<Long> ids = this.getFeederIdsToPush(lastRunTimestamp);
                         logger.info("The count of the ids to load for " + this.getClass().getName() + ":" + ids.size());
                         logger.info("The ids to load for " + this.getClass().getName() + ":" + ids);
@@ -198,14 +198,6 @@ public abstract class BaseJob extends Job {
             this.config = GLOBAL_CONFIGURATION;
         }
     }
-
-    /**
-     * Get current timestamp
-     *
-     * @throws SupplyException if any error occurs
-     * @return the Date result
-     */
-    abstract protected Date getTimestamp() throws SupplyException;
     
     /**
      * Push feeders
@@ -253,7 +245,7 @@ public abstract class BaseJob extends Job {
         if (ids == null) {
             return null;
         }
-        List<Long> result = new ArrayList<Long>();
+        List<Long> result = new ArrayList<>();
         for (TCID id : ids) {
             result.add(Long.parseLong(id.getId()));
         }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -120,26 +121,16 @@ public class ChallengeListingFeederManager {
         QueryParameter queryParameter = new QueryParameter(new FieldSelector());
         queryParameter.setFilter(filter);
         List<ChallengeListingData> challenges = this.challengeListingFeederDAO.getChallenges(queryParameter);
-        
-        List<Long> idsNotFound = new ArrayList<>();
-        for (Long id : param.getChallengeIds()) {
-            boolean hit = false;
-            for (ChallengeListingData data : challenges) {
-                if (id.longValue() == data.getId().longValue()) {
-                    hit = true;
-                    break;
-                }
-            }
-            if (!hit) {
-                idsNotFound.add(id);
-            }
-        }
+
+        List<Long> ids = challenges.stream().map(c -> c.getId()).collect(Collectors.toList());
+        List<Long> idsNotFound = param.getChallengeIds().stream().filter(id -> !ids.contains(id)).collect(Collectors.toList());
+
         if (!idsNotFound.isEmpty()) {
             logger.warn("These challenge ids can not be found:" + idsNotFound);
+
+            ids.removeAll(idsNotFound);
         }
-        
-        logger.info("aggregating challenge listing data for " + param.getChallengeIds());
-        
+
         List<EventData> events = this.challengeListingFeederDAO.getEventsListing(queryParameter);
         associateAllEvents(challenges, events);
         
@@ -147,6 +138,7 @@ public class ChallengeListingFeederManager {
         associateAllPhases(challenges, phases);
         
         List<PrizeData> prizes = this.challengeListingFeederDAO.getPrizes(queryParameter);
+
         associateAllPrizes(challenges, prizes);
 
         List<PrizeData> pointPrizes = this.challengeListingFeederDAO.getPointsPrize(queryParameter);
@@ -154,10 +146,10 @@ public class ChallengeListingFeederManager {
         
         List<FileTypeData> fileTypes = this.challengeListingFeederDAO.getFileTypes(queryParameter);
         associateAllFileTypes(challenges, fileTypes);
-        
+
         List<WinnerData> winners = this.challengeListingFeederDAO.getWinnersForChallengeListing(queryParameter);
         associateAllWinners(challenges, winners);
-        
+
         List<Map<String, Object>> checkpointsSubmissions = this.challengeListingFeederDAO.getCheckpointsSubmissions(queryParameter);
         List<Map<String, Object>> groupIds = this.challengeListingFeederDAO.getGroupIds(queryParameter);
         List<UserIdData> userIds = this.challengeListingFeederDAO.getChallengeUserIds(queryParameter);
@@ -166,20 +158,21 @@ public class ChallengeListingFeederManager {
         List<Map<String, Object>> platforms = this.challengeListingFeederDAO.getChallengePlatforms(queryParameter);
         for (Map<String, Object> item : platforms) {
             for (ChallengeListingData data : challenges) {
-                if (data.getChallengeId().longValue() == Long.parseLong(item.get("challengeId").toString())) {
+                if (data.getChallengeId() == Long.parseLong(item.get("challengeId").toString())) {
                     if (data.getPlatforms() == null) {
-                        data.setPlatforms(new ArrayList<String>());
+                        data.setPlatforms(new ArrayList<>());
                     }
                     data.getPlatforms().add(item.get("name").toString());
                 }
             }
         }
-        List<Map<String, Object>> technoglies = this.challengeListingFeederDAO.getChallengeTechnologies(queryParameter);
-        for (Map<String, Object> item : technoglies) {
+
+        List<Map<String, Object>> technologies = this.challengeListingFeederDAO.getChallengeTechnologies(queryParameter);
+        for (Map<String, Object> item : technologies) {
             for (ChallengeListingData data : challenges) {
-                if (data.getChallengeId().longValue() == Long.parseLong(item.get("challengeId").toString())) {
+                if (data.getChallengeId() == Long.parseLong(item.get("challengeId").toString())) {
                     if (data.getTechnologies() == null) {
-                        data.setTechnologies(new ArrayList<String>());
+                        data.setTechnologies(new ArrayList<>());
                     }
                     data.getTechnologies().add(item.get("name").toString());
                 }
@@ -203,7 +196,7 @@ public class ChallengeListingFeederManager {
             data.setDirectUrl(this.challengeConfiguration.getDirectProjectLink() + data.getChallengeId());
             
             for (Map<String, Object> item : checkpointsSubmissions) {
-                if (data.getId().longValue() == Long.parseLong(item.get("challengeId").toString())) {
+                if (data.getId() == Long.parseLong(item.get("challengeId").toString())) {
                     data.setNumberOfCheckpointSubmissions(Integer.parseInt(item.get("numberOfSubmissions").toString()));
                 }
             }
@@ -219,26 +212,19 @@ public class ChallengeListingFeederManager {
                 }
             }
         }
-      
-        logger.info("pushing challenge listing data to elasticsearch for " + param.getChallengeIds());
 
+        List<Map<String, Object>> submitterIds = challengeListingFeederDAO.getSubmitterIds(queryParameter);
+        ChallengeFeederUtil.associateSubmitterIds(challenges, submitterIds);
+
+        logger.info("pushFeeders");
         try {
             JestClientUtils.pushFeeders(jestClient, param, challenges);
         } catch (IOException ioe) {
+            ioe.printStackTrace();
             SupplyException se = new SupplyException("Internal server error occurs", ioe);
             se.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             throw se;
         }
-    }
-    
-    /**
-     * Get timestamp from the persistence
-     *
-     * @throws SupplyException if any error occurs
-     * @return the Date result
-     */
-    public Date getTimestamp() throws SupplyException {
-        return this.challengeListingFeederDAO.getTimestamp().getDate();
     }
 
     /**
@@ -265,7 +251,7 @@ public class ChallengeListingFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getWinners() == null) {
-                        challenge.setWinners(new ArrayList<WinnerData>());
+                        challenge.setWinners(new ArrayList<>());
                     }
                     challenge.getWinners().add(item);
                     break;
@@ -288,7 +274,7 @@ public class ChallengeListingFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getFileTypes() == null) {
-                        challenge.setFileTypes(new ArrayList<FileTypeData>());
+                        challenge.setFileTypes(new ArrayList<>());
                     }
                     challenge.getFileTypes().add(item);
                     break;
@@ -311,7 +297,7 @@ public class ChallengeListingFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getPrize() == null) {
-                        challenge.setPrize(new ArrayList<Double>());
+                        challenge.setPrize(new ArrayList<>());
                     }
                     challenge.getPrize().add(item.getAmount());
                     break;
@@ -351,7 +337,7 @@ public class ChallengeListingFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getEvents() == null) {
-                        challenge.setEvents(new ArrayList<EventData>());
+                        challenge.setEvents(new ArrayList<>());
                     }
                     challenge.getEvents().add(item);
                     break;
@@ -374,12 +360,12 @@ public class ChallengeListingFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(aPhase.getChallengeId())) {
                     if (challenge.getPhases() == null) {
-                        challenge.setPhases(new ArrayList<PhaseData>());
+                        challenge.setPhases(new ArrayList<>());
                     }
                     challenge.getPhases().add(aPhase);
                     
                     if (challenge.getCurrentPhases() == null) {
-                        challenge.setCurrentPhases(new ArrayList<PhaseData>());
+                        challenge.setCurrentPhases(new ArrayList<>());
                     }
                     if (PHASE_OPEN.equalsIgnoreCase(aPhase.getStatus())) {
                         challenge.getCurrentPhases().add(aPhase);
@@ -420,7 +406,7 @@ public class ChallengeListingFeederManager {
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(item.getChallengeId())) {
                     if (challenge.getUserIds() == null) {
-                        challenge.setUserIds(new ArrayList<Long>());
+                        challenge.setUserIds(new ArrayList<>());
                     }
                     challenge.getUserIds().add(item.getUserId());
                     break;

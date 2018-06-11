@@ -23,7 +23,6 @@ ELASTIC_SEARCH_URL=$(eval "echo \$${ENV}_ELASTIC_SEARCH_URL")
 TC_JWT_KEY=$(eval "echo \$${ENV}_TC_JWT_KEY")
 REDISSON_JOB_SINGLE_SERVER_ADDRESS=$(eval "echo \$${ENV}_REDISSON_JOB_SINGLE_SERVER_ADDRESS")
 LOG_LEVEL=$(eval "echo \$${ENV}_LOG_LEVEL")
-CHALLENGES_INDEX_NAME=$(eval "echo \$${ENV}_CHALLENGES_INDEX_NAME")
 #APP_NAME
 OLTP_USER=$(eval "echo \$${ENV}_OLTP_USER")
 OLTP_PW=$(eval "echo \$${ENV}_OLTP_PW")
@@ -85,7 +84,7 @@ push_ecr_image() {
 make_task_def(){
   echo "Creating ECS task definition..."  
   task_template=`cat ecs_task_template.json`
-  task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $AWS_ECS_SERVICE $AWS_REGION "$AUTH_DOMAIN" $AWS_SIGNING_ENABLED $CHALLENGES_INDEX_NAME $ELASTIC_SEARCH_URL $OLTP_PW "$OLTP_URL" $OLTP_USER $TC_JWT_KEY $REDISSON_JOB_SINGLE_SERVER_ADDRESS $LOG_LEVEL $TAG $AWS_ECS_SERVICE $AWS_ACCOUNT_ID $AWS_ECS_SERVICE)
+  task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $AWS_ECS_SERVICE $AWS_REGION "$AUTH_DOMAIN" $AWS_SIGNING_ENABLED $ELASTIC_SEARCH_URL $OLTP_PW "$OLTP_URL" $OLTP_USER $TC_JWT_KEY $REDISSON_JOB_SINGLE_SERVER_ADDRESS $LOG_LEVEL $TAG $AWS_ECS_SERVICE $AWS_ACCOUNT_ID $AWS_ECS_SERVICE)
   echo $task_def > task_def.json
   echo "ECS task definition is created : "
   echo $task_def

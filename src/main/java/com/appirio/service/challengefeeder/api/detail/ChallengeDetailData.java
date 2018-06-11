@@ -4,6 +4,7 @@
 package com.appirio.service.challengefeeder.api.detail;
 
 import com.appirio.service.challengefeeder.api.IdentifiableData;
+import com.appirio.supply.constants.SubTrack;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,17 @@ import java.util.List;
  *
  */
 public class ChallengeDetailData extends IdentifiableData {
+    /**
+     * The track field
+     */
+    @Getter
+    private String track;
+
+    /**
+     * The subTrack field
+     */
+    @Getter
+    private String subTrack;
 
     /**
      * The submission field
@@ -110,9 +122,41 @@ public class ChallengeDetailData extends IdentifiableData {
     private transient String softwareDetailRequirements;
 
     /**
-     * The type field
+     * The marathonMatchDetailRequirements field
      */
     @Getter
     @Setter
-    private transient Long type;
+    private transient String marathonMatchDetailRequirements;
+
+    /**
+     * The marathonMatchRules field
+     */
+    @Getter
+    @Setter
+    private transient String marathonMatchRules;
+
+    /**
+     * Setter for {@link #track}
+     * @param track
+     */
+    public void setTrack(String track) {
+       this.track = track.trim();
+    }
+
+    /**
+     * Setter for {@link #subTrack}
+     * @param subTrack
+     */
+    public void setSubTrack(String subTrack) {
+        SubTrack subTrackE = SubTrack.getEnumFromDescription(subTrack);
+        this.subTrack = subTrackE.getSubTrackName();
+    }
+
+    /**
+     * Set subTrack from SubTrack Enum
+     * @param subTrackE SubTrack item
+     */
+    public void setSubTrackFromEnum(SubTrack subTrackE) {
+        this.subTrack = subTrackE.toString();
+    }
 }

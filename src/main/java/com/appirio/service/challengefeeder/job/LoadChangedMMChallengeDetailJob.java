@@ -61,17 +61,6 @@ public class LoadChangedMMChallengeDetailJob extends BaseJob {
     }
 
     /**
-     * Get timestamp
-     *
-     * @throws SupplyException if any error occurs
-     * @return the Date result
-     */
-    @Override
-    protected Date getTimestamp() throws SupplyException {
-        return this.manager.getTimestamp();
-    }
-
-    /**
      * Push feeders
      *
      * @param ids the ids to use

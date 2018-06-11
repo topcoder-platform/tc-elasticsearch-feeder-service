@@ -16,7 +16,6 @@ import com.appirio.service.challengefeeder.api.UserIdData;
 import com.appirio.service.challengefeeder.api.challengelisting.ChallengeListingData;
 import com.appirio.service.challengefeeder.api.challengelisting.EventData;
 import com.appirio.service.challengefeeder.api.challengelisting.WinnerData;
-import com.appirio.service.challengefeeder.dto.DatabaseTimestamp;
 import com.appirio.supply.dataaccess.ApiQueryInput;
 import com.appirio.supply.dataaccess.DatasourceName;
 import com.appirio.supply.dataaccess.SqlQueryFile;
@@ -104,7 +103,7 @@ public interface ChallengeListingFeederDAO {
     /**
      * Get prize of type prize points
      *
-     * @param challengeId challengeId
+     * @param queryParameter the queryParameter to use
      * @return the list of prizes
      */
     @SqlQueryFile("sql/challenge-feeder/get_challenge_pointsPrize.sql")
@@ -156,11 +155,10 @@ public interface ChallengeListingFeederDAO {
     List<TCID> getChangedChallengeIds(@Bind("lastRunTimestamp") Date lastRunTimestamp);
 
     /**
-     * Get timestamp 
-     *
-     * @param queryParameter the queryParameter to use
-     * @return the result
+     * Get submitter Ids
+     * @param queryParameter query parameter
+     * @return list of id of submitter
      */
-    @SqlQueryFile("sql/challenge-feeder/job/get_timestamp.sql")
-    DatabaseTimestamp getTimestamp();
+    @SqlQueryFile("sql/challenge-feeder/get_submitter_ids.sql")
+    List<Map<String, Object>> getSubmitterIds(@ApiQueryInput QueryParameter queryParameter);
 }
