@@ -138,8 +138,8 @@ public abstract class BaseJob extends Job {
             RMap<String, String> mapCache = redisson.getMap(this.getClass().getName() + ".map.cache");
             
             String enable = mapCache.get(this.jobEnableKey);
-            logger.info("The " + this.getClass().getName() + " is enable:" + (enable == null ? "false" : enable));
-            if ("true".equalsIgnoreCase(enable)) {
+            logger.info("The " + this.getClass().getName() + " is enable:" + enable);
+            if (enable == null || "true".equalsIgnoreCase(enable)) {
                 logger.info("Try to get the lock for " + this.getClass().getName() + " by the locker key:" + this.lockerKey);
                 lock = redisson.getLock(this.lockerKey);
                 if (lock.tryLock()) {
