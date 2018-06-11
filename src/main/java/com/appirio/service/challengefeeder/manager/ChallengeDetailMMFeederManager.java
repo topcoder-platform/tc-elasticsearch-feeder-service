@@ -8,7 +8,6 @@ import com.appirio.service.challengefeeder.api.challengedetail.ChallengeDetailDa
 import com.appirio.service.challengefeeder.api.challengedetail.RegistrantData;
 import com.appirio.service.challengefeeder.api.challengedetail.SubmissionData;
 import com.appirio.service.challengefeeder.dao.ChallengeDetailMMFeederDAO;
-import com.appirio.service.challengefeeder.dao.MmFeederDAO;
 import com.appirio.service.challengefeeder.dto.MmFeederParam;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.supply.SupplyException;
@@ -42,12 +41,6 @@ public class ChallengeDetailMMFeederManager {
      * Logger used to log events
      */
     private static final Logger logger = LoggerFactory.getLogger(ChallengeDetailMMFeederManager.class);
-
-
-    /**
-     * DAO to access marathon match data from the transactional database.
-     */
-    private final MmFeederDAO mmFeederDAO;
     
     /**
      * DAO to access marathon match data from the transactional database.
@@ -63,12 +56,10 @@ public class ChallengeDetailMMFeederManager {
      * Create ChallengeDetailMMFeederManager
      *
      * @param jestClient the jestClient to use
-     * @param mmFeederDAO the mmFeederDAO to use
      * @param challengeDetailMMFeederDAO the challengeDetailMMFeederDAO to use
      */
-    public ChallengeDetailMMFeederManager(JestClient jestClient, MmFeederDAO mmFeederDAO, ChallengeDetailMMFeederDAO challengeDetailMMFeederDAO) {
+    public ChallengeDetailMMFeederManager(JestClient jestClient, ChallengeDetailMMFeederDAO challengeDetailMMFeederDAO) {
         this.jestClient = jestClient;
-        this.mmFeederDAO = mmFeederDAO;
         this.challengeDetailMMFeederDAO = challengeDetailMMFeederDAO;
     }
 
@@ -200,7 +191,7 @@ public class ChallengeDetailMMFeederManager {
      * @return the timestamp result
      */
     public Date getTimestamp() throws SupplyException {
-        return this.mmFeederDAO.getTimestamp().getDate();
+        return this.challengeDetailMMFeederDAO.getTimestamp().getDate();
     }
 
     /**
@@ -211,6 +202,6 @@ public class ChallengeDetailMMFeederManager {
      * @return The list of TCID.
      */
     public List<TCID> getMatchesWithRegistrationPhaseStartedIds(java.sql.Date date, long lastRunTimestamp) {
-        return this.mmFeederDAO.getMatchesWithRegistrationPhaseStartedIds(date, lastRunTimestamp);
+        return this.challengeDetailMMFeederDAO.getMatchesWithRegistrationPhaseStartedIds(date, lastRunTimestamp);
     }
 }

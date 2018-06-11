@@ -1,0 +1,109 @@
+{
+	"info": {
+		"_postman_id": "d1083801-f6dd-4220-a6c6-55ddab035754",
+		"name": "Job Cleanup and Improvement",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "View challenges in challenges listing index",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://cockpit.cloud.topcoder.com:9200/challengeslisting/challenges/30005520"
+			},
+			"response": []
+		},
+		{
+			"name": "View challenges in challenges details index",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://cockpit.cloud.topcoder.com:9200/challengesdetail/challenges/30005520"
+			},
+			"response": []
+		},
+		{
+			"name": "View marachon match in challenges listing index",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://cockpit.cloud.topcoder.com:9200/challengeslisting/challenges/13675"
+			},
+			"response": []
+		},
+		{
+			"name": "View marathon match in challenges details index",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://cockpit.cloud.topcoder.com:9200/challengeslisting/challenges/13675"
+			},
+			"response": []
+		},
+		{
+			"name": "View marathon match",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://cockpit.cloud.topcoder.com:9200/mmatches/mmatches/_search"
+			},
+			"response": []
+		},
+		{
+			"name": "View single round match",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://cockpit.cloud.topcoder.com:9200/srms/srms/_search"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "d61f2275-4803-4bac-9787-1bfd6c2540e8",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "40db868c-a50a-4b47-a1cd-73f959da9145",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
