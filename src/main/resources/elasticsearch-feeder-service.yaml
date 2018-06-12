@@ -143,8 +143,8 @@ logging:
 
     # Sets the level for 'com.example.app' to DEBUG.
     com.appirio: INFO
-    io.searchbox: DEBUG
-    org.apache.http: DEBUG
+    #io.searchbox: DEBUG
+    #org.apache.http: DEBUG
 
 
   appenders:
