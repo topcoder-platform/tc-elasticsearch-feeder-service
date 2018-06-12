@@ -84,6 +84,10 @@ public class ChallengeDetailMMFeederManager {
 
             ids.removeAll(idsNotFound);
         }
+
+        if (mms.size() == 0) {
+            return;
+        }
         
         List<SubmissionData> submissions = this.challengeDetailMMFeederDAO.getSubmissionsForChallengeDetail(queryParameter);
         associateAllSubmissions(mms, submissions);

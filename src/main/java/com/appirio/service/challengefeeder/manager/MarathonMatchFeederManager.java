@@ -89,6 +89,9 @@ public class MarathonMatchFeederManager {
         // check if all MMs with given roundIds exist
         DataScienceHelper.checkDataScienceExist(roundIds, marathonMatches);
 
+        if (marathonMatches.size() == 0) {
+            return;
+        }
         List<Map<String, Object>> userIds = this.marathonMatchFeederDAO.getUserIds(queryParameter);
 
         // associate users data to the marathon matches

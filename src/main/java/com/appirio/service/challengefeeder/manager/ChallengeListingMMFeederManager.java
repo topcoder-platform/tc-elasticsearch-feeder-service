@@ -110,6 +110,10 @@ public class ChallengeListingMMFeederManager {
 
             ids.removeAll(idsNotFound);
         }
+
+        if (mms.size() == 0) {
+            return;
+        }
         
         // associate all the data
         List<PhaseData> phases = this.challengeListingMmFeederDAO.getPhases(queryParameter);

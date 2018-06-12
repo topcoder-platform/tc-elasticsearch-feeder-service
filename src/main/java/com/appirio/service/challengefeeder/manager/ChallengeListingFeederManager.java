@@ -131,6 +131,10 @@ public class ChallengeListingFeederManager {
             ids.removeAll(idsNotFound);
         }
 
+        if (challenges.size() == 0) {
+            return;
+        }
+
         List<EventData> events = this.challengeListingFeederDAO.getEventsListing(queryParameter);
         associateAllEvents(challenges, events);
         

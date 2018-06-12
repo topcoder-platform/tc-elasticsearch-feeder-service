@@ -86,6 +86,10 @@ public class SRMFeederManager {
         // check if all SRMs with given roundIds exist
         DataScienceHelper.checkDataScienceExist(roundIds, srms);
 
+        if (srms.size() == 0) {
+            return;
+        }
+
         List<Map<String, Object>> userIds = this.srmFeederDAO.getUserIds(queryParameter);
 
         // associate users data to the SRMs

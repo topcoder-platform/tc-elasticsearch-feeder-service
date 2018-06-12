@@ -116,6 +116,10 @@ public class ChallengeDetailFeederManager {
 
         logger.info("aggregating challenge detail data for " + ids);
 
+        if (challenges.size() == 0) {
+            return;
+        }
+
         for (ChallengeDetailData challenge : challenges) {
             String requirement = "";
             if ("DESIGN".equalsIgnoreCase(challenge.getTrack())) {
