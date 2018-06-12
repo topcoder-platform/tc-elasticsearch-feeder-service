@@ -97,7 +97,7 @@ public interface ChallengeListingFeederDAO {
      * @param queryParameter the queryParameter to use
      * @return the List<Map<String,Object>> result
      */
-    @SqlQueryFile("sql/challenge-feeder/get_challenge_plagforms.sql")
+    @SqlQueryFile("sql/challenge-feeder/get_challenge_platforms.sql")
     List<Map<String, Object>> getChallengePlatforms(@ApiQueryInput QueryParameter queryParameter);
     
     /**
