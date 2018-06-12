@@ -66,7 +66,7 @@ jobsConfiguration:
     batchUpdateSize: "${REDISSON_JOB_LOAD_CHANGED_CHALLENGES_DETAIL_JOB_BATCH_UPDATE_SIZE:-5}"
   legacyMMToChallengeListingJob:
     indexName: "${REDISSON_JOB_LEGACY_MM_TO_CHALLENGE_LISTING_JOB_INDEX_NAME:-challengeslisting}"
-    batchUpdateSize: "${REDISSON_JOB_LEGACY_MM_TO_CHALLENGE_LISTING_JOB_BATCH_UPDATE_SIZE:-5}"
+    batchUpdateSize: "${REDISSON_JOB_LEGACY_MM_TO_CHALLENGE_LISTING_JOB_BATCH_UPDATE_SIZE:-1}"
     marathonMatchesDaysToSubtract: -180
     marathonMatchesForumUrl: "https://apps.topcoder.com/forums/?module=ThreadList&forumID="
   loadChangedMMChallengeDetailJob:
