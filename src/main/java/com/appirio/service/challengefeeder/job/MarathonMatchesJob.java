@@ -75,11 +75,8 @@ public class MarathonMatchesJob extends BaseJob {
         param.setIndex(this.indexName);
         param.setType(this.typeName);
         param.setRoundIds(ids);
-        try {
-             this.manager.pushMarathonMatchFeeder(param);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+
+        this.manager.pushMarathonMatchFeeder(param);
     }
 
     /**

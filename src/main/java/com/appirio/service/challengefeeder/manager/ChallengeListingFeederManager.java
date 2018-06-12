@@ -220,7 +220,6 @@ public class ChallengeListingFeederManager {
         try {
             JestClientUtils.pushFeeders(jestClient, param, challenges);
         } catch (IOException ioe) {
-            ioe.printStackTrace();
             SupplyException se = new SupplyException("Internal server error occurs", ioe);
             se.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             throw se;

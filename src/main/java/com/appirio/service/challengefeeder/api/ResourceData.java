@@ -101,7 +101,7 @@ public class ResourceData {
                 e.printStackTrace();
             }
         } else if (dateObject instanceof Date) {
-            this.registrationDate = (Date) dateObject;
+            this.registrationDate = dateObject;
         }
     }
 }

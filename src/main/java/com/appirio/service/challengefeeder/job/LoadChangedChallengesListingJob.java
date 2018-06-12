@@ -75,12 +75,8 @@ public class LoadChangedChallengesListingJob extends BaseJob {
         param.setIndex(this.indexName);
         param.setType(this.typeName);
         param.setChallengeIds(ids);
-        try {
-            this.challengeListingFeederManager.pushChallengeFeeder(param);
-        } catch (Exception e) {
-            // ignore all exception
-            e.printStackTrace();
-        }
+
+        this.challengeListingFeederManager.pushChallengeFeeder(param);
     }
 
     /**

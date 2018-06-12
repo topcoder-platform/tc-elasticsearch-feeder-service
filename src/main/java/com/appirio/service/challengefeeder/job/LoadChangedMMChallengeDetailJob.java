@@ -73,11 +73,8 @@ public class LoadChangedMMChallengeDetailJob extends BaseJob {
         param.setType(this.typeName);
         param.setRoundIds(ids);
         param.setLegacy(Boolean.TRUE);
-        try {
-            this.manager.pushMarathonMatchDataIntoChallengeDetail(param);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+
+        this.manager.pushMarathonMatchDataIntoChallengeDetail(param);
     }
 
     /**

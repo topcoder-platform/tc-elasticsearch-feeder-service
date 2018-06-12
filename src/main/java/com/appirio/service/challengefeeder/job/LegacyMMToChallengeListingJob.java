@@ -77,11 +77,7 @@ public class LegacyMMToChallengeListingJob extends BaseJob {
         param.setType(this.typeName);
         param.setRoundIds(ids);
         param.setLegacy(Boolean.TRUE);
-        try {
-            this.manager.pushMarathonMatchDataIntoChallenge(param);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+        this.manager.pushMarathonMatchDataIntoChallenge(param);
     }
 
     /**

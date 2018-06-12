@@ -163,7 +163,12 @@ public abstract class BaseJob extends Job {
                         while (to < ids.size()) {
                             to += (to + batchSize) > ids.size() ? (ids.size() - to) : batchSize;
                             List<Long> sub = ids.subList(from, to);
-                            this.pushFeeders(sub);
+                            try {
+                                this.pushFeeders(sub);
+                            } catch (Exception e) {
+                                // continue the batch process
+                                e.printStackTrace();
+                            }
                             from = to;
                         }
 
