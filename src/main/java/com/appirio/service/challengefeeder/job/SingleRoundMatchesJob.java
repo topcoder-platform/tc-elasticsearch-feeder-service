@@ -57,7 +57,7 @@ public class SingleRoundMatchesJob extends BaseJob {
             this.indexName = this.config.getJobsConfiguration().getSingleRoundMatchesJob().getIndexName();
             this.typeName = "srms";
             this.lastRuntimestampeKey = this.indexName + BaseJob.JOB_LAST_RUN_TIMESTAMP_SUFFIX;
-            this.lockerKey = this.indexName + BaseJob.JOB_LOCKER_NAME_SUFFIX;
+            this.lockerKey = this.getClass().getName() + "." + this.indexName + BaseJob.JOB_LOCKER_NAME_SUFFIX;
             this.jobEnableKey = this.indexName + BaseJob.JOB_ENABLE_SUFFIX;
             this.batchSize = this.config.getJobsConfiguration().getSingleRoundMatchesJob().getBatchUpdateSize();
         }
