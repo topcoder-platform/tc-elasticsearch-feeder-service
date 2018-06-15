@@ -455,8 +455,14 @@ public class ChallengeListingData extends IdentifiableData {
      * @param subTrack
      */
     public void setSubTrack(String subTrack) {
-        SubTrack subTrackE = SubTrack.getEnumFromDescription(subTrack);
-        this.subTrack = subTrackE.getSubTrackName();
+        // the subTrack should be directly set, should not be changed between
+        // enum description and name
+        try {
+            SubTrack subTrackE = SubTrack.getEnumFromDescription(subTrack);
+            this.subTrack = subTrackE.getSubTrackName();
+        } catch (IllegalArgumentException iae) {
+            this.subTrack = subTrack;
+        }
     }
 
     /**
