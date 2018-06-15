@@ -2,13 +2,12 @@ select
 r.round_id as id,
 r.round_id as challengeId,
 c.name || ' - ' || r.name as challengeTitle,
-'DATA SCIENCE' as track,
+'DATA_SCIENCE' as track,
 'Marathon Match' as subTrack,
-'mmatches' as type,
 r.tc_direct_project_id as projectId,
 tcdirect.name as projectName,
 'system' as createdBy,
-'system' as reviewType,
+'SYSTEM' as reviewType,
 r.forum_id as forumId,
 CASE
      WHEN (r.status = 'P') THEN 'Completed'

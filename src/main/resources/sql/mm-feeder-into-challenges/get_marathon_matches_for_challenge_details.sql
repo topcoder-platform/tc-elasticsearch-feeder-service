@@ -1,6 +1,8 @@
-select 
+select
 r.round_id as id,
 r.round_id as challengeId,
+'DATA_SCIENCE' as track,
+'Marathon Match' as subTrack,
 c.component_text as detailRequirements
 from informixoltp\:round r
 join informixoltp\:round_component rc on r.round_id = rc.round_id
