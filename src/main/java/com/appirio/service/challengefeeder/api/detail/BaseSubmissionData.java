@@ -34,7 +34,7 @@ public class BaseSubmissionData {
     private String submitter;
 
     /**
-     * The submittedAt field
+     * The submissionTime field
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     @JsonDeserialize(using = CustomDateDeserializer.class)
