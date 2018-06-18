@@ -24,7 +24,7 @@ SELECT
          Nvl(pp2.actual_end_time, pp2.scheduled_end_time) AS submissionEndDate,
          review_type_info.value AS reviewType,
          forum_id_info.value AS forumId,
-    (SELECT Count(*)
+    (SELECT Count(unique s1.create_user))
      FROM submission s1
      INNER JOIN upload u1 ON s1.upload_id = u1.upload_id
      WHERE u1.project_id = p.project_id
