@@ -1,0 +1,99 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Implement Endpoint To Populate Elasticsearch For The Given Challenges",
+		"_postman_id": "7db581cc-9635-e7b3-b3ba-8f3e52254c1b",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "View challenge details via ElasticSearch",
+			"request": {
+				"url": "http://cockpit.cloud.topcoder.com:9200/challengesdetail/challenges/30005532",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": [
+				{
+					"id": "5ea84ed3-bbac-42f2-b15f-e9c6e4e8fda9",
+					"name": "View challenge details via ElasticSearch",
+					"originalRequest": {
+						"url": "http://cockpit.cloud.topcoder.com:9200/challengesdetail/challenges/30005532",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"_postman_previewtype": "text",
+					"header": [
+						{
+							"name": "content-length",
+							"key": "content-length",
+							"value": "1296",
+							"description": "The length of the response body in octets (8-bit bytes)"
+						},
+						{
+							"name": "content-type",
+							"key": "content-type",
+							"value": "application/json; charset=UTF-8",
+							"description": "The mime type of this content"
+						}
+					],
+					"cookie": [],
+					"responseTime": 50,
+					"body": "{\"_index\":\"challengesdetail\",\"_type\":\"challenges\",\"_id\":\"30005532\",\"_version\":6,\"found\":true,\"_source\":{\"track\":\"DEVELOP\",\"subTrack\":\"ARCHITECTURE\",\"detailRequirements\":\"test\",\"finalSubmissionGuidelines\":\"test\",\"terms\":[{\"termsOfUseId\":21193,\"role\":\"Submitter\",\"agreeabilityType\":\"Electronically-agreeable\",\"title\":\"Standard Terms for TopCoder Competitions v2.0\"},{\"termsOfUseId\":20704,\"role\":\"Primary Screener\",\"agreeabilityType\":\"Electronically-agreeable\",\"title\":\"Reviewer terms of use text 20704\"},{\"termsOfUseId\":20704,\"role\":\"Reviewer\",\"agreeabilityType\":\"Electronically-agreeable\",\"title\":\"Reviewer terms of use text 20704\"},{\"termsOfUseId\":20704,\"role\":\"Aggregator\",\"agreeabilityType\":\"Electronically-agreeable\",\"title\":\"Reviewer terms of use text 20704\"},{\"termsOfUseId\":20704,\"role\":\"Final Reviewer\",\"agreeabilityType\":\"Electronically-agreeable\",\"title\":\"Reviewer terms of use text 20704\"},{\"termsOfUseId\":20794,\"role\":\"Manager\",\"agreeabilityType\":\"Non-agreeable\",\"title\":\"Approved OR Managers - TopCoder Technical Team\"},{\"termsOfUseId\":20893,\"role\":\"Copilot\",\"agreeabilityType\":\"Non-electronically-agreeable\",\"title\":\"MSA\"},{\"termsOfUseId\":20704,\"role\":\"Specification Reviewer\",\"agreeabilityType\":\"Electronically-agreeable\",\"title\":\"Reviewer terms of use text 20704\"}],\"id\":30005532}}"
+				}
+			]
+		},
+		{
+			"name": "View challenge listing via ElasticSearch",
+			"request": {
+				"url": "http://cockpit.cloud.topcoder.com:9200/challengeslisting/challenges/30005532",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Push challenges",
+			"request": {
+				"url": "http://localhost:8083/v3/esfeeder/challenges",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"param\": {\r\n    \"index\": \"challenges\",\r\n    \"type\": \"challenges\",\r\n    \"challengeIds\": [30005532]\r\n  }\r\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

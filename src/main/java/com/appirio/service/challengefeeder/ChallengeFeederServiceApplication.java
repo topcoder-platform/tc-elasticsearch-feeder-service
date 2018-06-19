@@ -75,8 +75,13 @@ import io.searchbox.client.JestClient;
  * Version 1.8 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
  * - remove the useless resources, jobs and logging of configuration values
  * </p>
+ * 
+ * <p>
+ * Version 1.9 - Implement Endpoint To Populate Elasticsearch For The Given Challenges
+ * - Changes the challenge resource object creation logic/
+ * </p>
  * @author TCSCODER
- * @version 1.8 
+ * @version 1.9
  */
 public class ChallengeFeederServiceApplication extends BaseApplication<ChallengeFeederServiceConfiguration> {
     /**
@@ -183,7 +188,7 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
 
         // Register resources here
         env.jersey().register(new HealthCheckResource());
-        env.jersey().register(new ChallengeFeederFactory(jestClient).getResourceInstance());
+        env.jersey().register(new ChallengeFeederFactory(jestClient,config).getResourceInstance());
         env.jersey().register(new MmFeederResourceFactory(jestClient).getResourceInstance());
         env.jersey().register(new MarathonMatchFeederFactory(jestClient).getResourceInstance());
         env.jersey().register(new SRMFeederFactory(jestClient).getResourceInstance());
