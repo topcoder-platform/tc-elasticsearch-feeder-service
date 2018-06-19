@@ -84,6 +84,8 @@ public class ChallengeFeederResource {
 			if (request == null || request.getParam() == null) {
 				throw new SupplyException("The request body should be provided", HttpServletResponse.SC_BAD_REQUEST);
 			}
+
+			
 			challengeListingFeederManager.pushChallengeFeeder(request.getParam());
 			challengeDetailFeederManager.pushChallengeFeeder(request.getParam());
 			return MetadataApiResponseFactory.createResponse(null);

@@ -107,8 +107,9 @@ public class ChallengeListingFeederManager {
         if (param.getType() == null || param.getType().trim().length() == 0) {
             param.setType("challenges");
         }
+
         if (param.getIndex() == null || param.getIndex().trim().length() == 0) {
-            throw new SupplyException("The index should be non-null and non-empty string.", HttpServletResponse.SC_BAD_REQUEST);
+            param.setIndex("challengeslisting");
         }
         if (param.getChallengeIds() == null || param.getChallengeIds().size() == 0) {
             throw new SupplyException("Challenge ids must be provided", HttpServletResponse.SC_BAD_REQUEST);
