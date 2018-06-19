@@ -106,7 +106,7 @@ commonConfiguration:
 #    port: 8080
 
 server:
-  rootPath: '/v3/*'
+  rootPath: '/v4/*'
 #  softNofileLimit: 1000
 #  hardNofileLimit: 1000
   applicationConnectors:
@@ -165,4 +165,4 @@ logging:
 authScheme: v3
 
 # Api version
-apiVersion: v3
+apiVersion: v4
