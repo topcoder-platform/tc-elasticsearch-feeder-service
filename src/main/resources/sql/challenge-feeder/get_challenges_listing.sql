@@ -32,6 +32,8 @@ SELECT
        AND s1.submission_status_id <> 5) AS numberOfSubmissions,
     (SELECT Count(*)
      FROM RESOURCE r
+     INNER JOIN resource_info ri1 ON ri1.resource_info_type_id = 1 and r.resource_id = ri1.resource_id
+     INNER JOIN user u ON ri1.value = u.user_id
      WHERE r.project_id = p.project_id
        AND r.resource_role_id = 1) AS numberOfRegistrants,
          Nvl(pp15.actual_end_time, pp15.scheduled_end_time) AS checkpointSubmissionEndDate,
