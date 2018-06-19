@@ -3,8 +3,8 @@
  */
 package com.appirio.service.challengefeeder.api.detail;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import freemarker.template.SimpleDate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,6 +31,7 @@ public class RegistrantData {
     /**
      * The submissionDate field
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     @Getter
     @Setter
     private Date submissionDate;
@@ -66,6 +67,7 @@ public class RegistrantData {
     /**
      * The registrationDate field
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     @Getter
     @Setter
     private Date registrationDate;

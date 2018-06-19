@@ -3,10 +3,9 @@
  */
 package com.appirio.service.challengefeeder.api.detail;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Date;
 
 /**
  * Represents the SubmissionData model 
@@ -50,6 +49,7 @@ public class SubmissionData extends BaseSubmissionData {
      */
     @Getter
     @Setter
+    @JsonIgnore
     private transient Long challengeId;
     
     /**
