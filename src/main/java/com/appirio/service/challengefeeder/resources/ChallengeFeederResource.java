@@ -3,8 +3,6 @@
  */
 package com.appirio.service.challengefeeder.resources;
 
-import java.util.Arrays;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -16,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.appirio.service.challengefeeder.ChallengeFeederServiceConfiguration;
 import com.appirio.service.challengefeeder.dto.ChallengeFeederParam;
 import com.appirio.service.challengefeeder.manager.ChallengeDetailFeederManager;
 import com.appirio.service.challengefeeder.manager.ChallengeListingFeederManager;
@@ -63,11 +62,17 @@ public class ChallengeFeederResource {
     
 
     /**
+     * The config field.
+     */
+    protected ChallengeFeederServiceConfiguration config;
+    
+    /**
      * Create ChallengeFeederResource
      */
-    public ChallengeFeederResource(ChallengeDetailFeederManager challengeDetailFeederManager,ChallengeListingFeederManager challengeListingFeederManager) {
+    public ChallengeFeederResource(ChallengeDetailFeederManager challengeDetailFeederManager,ChallengeListingFeederManager challengeListingFeederManager,ChallengeFeederServiceConfiguration config) {
     	this.challengeDetailFeederManager = challengeDetailFeederManager;
     	this.challengeListingFeederManager = challengeListingFeederManager;
+    	this.config = config;
     }
     
     /**
@@ -84,9 +89,11 @@ public class ChallengeFeederResource {
 			if (request == null || request.getParam() == null) {
 				throw new SupplyException("The request body should be provided", HttpServletResponse.SC_BAD_REQUEST);
 			}
-
-			
+			String challengeListingIndexname = this.config.getJobsConfiguration().getLoadChangedChallengesListingJob().getIndexName();
+			request.getParam().setIndex(challengeListingIndexname);
 			challengeListingFeederManager.pushChallengeFeeder(request.getParam());
+			String challengeDetailsIndexname = this.config.getJobsConfiguration().getLoadChangedChallengesDetailJob().getIndexName();
+			request.getParam().setIndex(challengeDetailsIndexname);
 			challengeDetailFeederManager.pushChallengeFeeder(request.getParam());
 			return MetadataApiResponseFactory.createResponse(null);
 		} catch (Exception e) {
