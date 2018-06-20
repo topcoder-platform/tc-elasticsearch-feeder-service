@@ -11,4 +11,4 @@ SELECT
        INNER JOIN user ON user.user_id = s.create_user
   WHERE ((s.submission_type_id = 1 AND p.prize_type_id = 15) OR (s.submission_type_id = 3 AND p.prize_type_id = 14))
        AND {filter}
-       
+  ORDER BY s.placement

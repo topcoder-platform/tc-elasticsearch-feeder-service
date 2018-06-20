@@ -1,19 +1,20 @@
-select 
-user.handle as submitter,
-lcr.placed as rank,
-lcr.round_id as challengeId,
-lcr.system_point_total as points,
-(select decode(submit_time, null, null, dbinfo("utc_to_datetime", submit_time/1000))
- from (select FIRST 1 ls.submit_time as submit_time from informixoltp\:long_component_state lcs, informixoltp\:long_submission ls
-        where lcs.long_component_state_id = ls.long_component_state_id
-        and lcs.round_id = lcr.round_id and lcs.coder_id = lcr.coder_id and ls.example = 0 ORDER BY ls.submission_number DESC)
- ) as submissionDate,
- (select decode(submissionId, null, null, submissionId)
- from (select FIRST 1 lcs.long_component_state_id as submissionId from informixoltp\:long_component_state lcs, informixoltp\:long_submission ls
-        where lcs.long_component_state_id = ls.long_component_state_id
-        and lcs.round_id = lcr.round_id and lcs.coder_id = lcr.coder_id and ls.example = 0 ORDER BY ls.submission_number DESC)
- ) as submissionId
-from informixoltp\:long_comp_result lcr
-   inner join user on user.user_id = lcr.coder_id
-where lcr.placed is not null
-and {filter}
+SELECT u.handle as submitter,
+       rr.round_id as challengeId,
+       decode(s.submit_time, null, null, dbinfo("utc_to_datetime", submit_time/1000)) as submissionDate,
+       cs.long_component_state_id || s.submission_number as submissionId,
+       rr.point_total as points,
+       u.handle_lower
+  FROM long_comp_result rr
+     , user u
+     , long_component_state cs
+     , outer (long_submission s)
+ WHERE rr.attended = 'Y'
+   and rr.coder_id = u.user_id
+   and cs.coder_id = u.user_id
+   AND rr.round_id = cs.round_id
+   and s.long_component_state_id = cs.long_component_state_id
+   and s.submission_number = cs.submission_number
+   and s.example = 0
+   and {filter}
+ORDER BY points desc, u.handle_lower asc
+and
