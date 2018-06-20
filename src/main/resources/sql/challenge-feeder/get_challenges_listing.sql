@@ -102,15 +102,15 @@ SELECT
   AND pp2.phase_type_id = 2
   INNER JOIN project_info pn ON pn.project_id = p.project_id
   AND pn.project_info_type_id = 6
-  LEFT JOIN TCS_CATALOG\:project_info AS forum_id_info ON forum_id_info.project_id = p.project_id
+  LEFT JOIN project_info AS forum_id_info ON forum_id_info.project_id = p.project_id
   AND forum_id_info.project_info_type_id = 4
-  LEFT JOIN TCS_CATALOG\:project_info AS review_type_info ON review_type_info.project_id = p.project_id
+  LEFT JOIN project_info AS review_type_info ON review_type_info.project_id = p.project_id
   AND review_type_info.project_info_type_id = 79
   LEFT JOIN project_phase pp15 ON pp15.project_id = p.project_id
   AND pp15.phase_type_id = 15
   LEFT JOIN project_info pidr ON pidr.project_id = p.project_id
   AND pidr.project_info_type_id = 26
-  LEFT JOIN CORPORATE_OLTP\:tc_direct_project AS tcdirect ON p.tc_direct_project_id = tcdirect.project_id
+  LEFT JOIN tc_direct_project AS tcdirect ON p.tc_direct_project_id = tcdirect.project_id
   LEFT JOIN project_info pvs ON pvs.project_id = p.project_id
   AND pvs.project_info_type_id = 53
   LEFT JOIN project_info rel_flag ON rel_flag.project_id = p.project_id AND rel_flag.project_info_type_id = 45

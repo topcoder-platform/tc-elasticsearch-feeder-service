@@ -283,7 +283,7 @@ public class ChallengeListingData extends IdentifiableData {
      */
     @Getter
     @Setter
-    private Long cmcTaskId;
+    private String cmcTaskId;
 
 
     /**
