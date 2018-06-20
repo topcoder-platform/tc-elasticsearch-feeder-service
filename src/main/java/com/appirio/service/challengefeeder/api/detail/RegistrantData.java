@@ -8,9 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * Represents the RegistrantData model
@@ -71,26 +69,4 @@ public class RegistrantData {
     @Getter
     @Setter
     private Date registrationDate;
-
-    /**
-     * The registrationDateStr field
-     */
-    private transient String registrationDateStr;
-
-    /**
-     * Parse registrationDate string value to Date
-     *
-     * @param registrationDateStr registration date
-     */
-    public void setRegistrationDateStr(String registrationDateStr) {
-        this.registrationDateStr = registrationDateStr;
-        SimpleDateFormat sdf = new SimpleDateFormat("MM.dd.yyyy hh:mm a");
-        //informix timezone
-        sdf.setTimeZone(TimeZone.getTimeZone("America/New_York"));
-        try {
-            this.registrationDate = sdf.parse(registrationDateStr);
-        } catch (Exception e) {
-            //do nothing
-        }
-    }
 }
