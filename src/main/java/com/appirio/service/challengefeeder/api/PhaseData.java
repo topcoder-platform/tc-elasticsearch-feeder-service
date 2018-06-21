@@ -5,10 +5,13 @@ package com.appirio.service.challengefeeder.api;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.appirio.service.challengefeeder.helper.CustomDateDeserializer;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -43,7 +46,6 @@ public class PhaseData {
      * The status field
      */
     @Getter
-    @Setter
     private String status;
 
     /**
@@ -137,4 +139,14 @@ public class PhaseData {
     @Getter
     @Setter
     private String updatedBy;
+
+	/**
+	 * Remove the whitespace from both ends and assign the value
+	 * 
+	 * @param status
+	 *            the status to set
+	 */
+	public void setStatus(String status) {
+		this.status = StringUtils.trim(status);
+	}
 }
