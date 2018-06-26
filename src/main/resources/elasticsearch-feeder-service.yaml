@@ -26,7 +26,7 @@ databases:
     minSize: 1
     maxSize: 5
     initialSize: 1
-  
+
 jestClientConfiguration:
   # the elastic search URL
   elasticSearchUrl: "${ELASTIC_SEARCH_URL:-http://cockpit.cloud.topcoder.com:9200}"
@@ -44,7 +44,7 @@ jestClientConfiguration:
   awsRegion: "${AWS_REGION:-us-east-1}"
   # AWS service
   awsService: "${AWS_SERVICE:-es}"
- 
+
 challengeConfiguration:
   designForumUrlPrefix: https://design.topcoder.com/forums/?module=Category&categoryID=
   studioForumsUrlPrefix: https://studio.topcoder.com/forums/?module=Category&categoryID=

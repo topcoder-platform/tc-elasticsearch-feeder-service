@@ -13,13 +13,13 @@ test:
 deployment:
   development:
     branch: ["dev"]
-    commands:      
+    commands:
       - .deploy/ecs_deploy.sh DEV
   test:
     branch: ["listing-detail-indexes"]
-    commands:      
+    commands:
       - .deploy/ecs_deploy.sh TEST
   production:
-    branch: master
+    branch: ["master","listing-detail-indexes"]
     commands:
       - .deploy/ecs_deploy.sh PROD
