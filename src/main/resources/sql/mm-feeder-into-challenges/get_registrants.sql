@@ -11,5 +11,5 @@ ar.rating as rating,
 from informixoltp\:round_registration rr
 join user on user.user_id = coder_id
 left join informixoltp\:algo_rating ar on ar.coder_id = rr.coder_id and ar.algo_rating_type_id=3
-where
-{filter}
+where {filter}
+ORDER BY rr.timestamp

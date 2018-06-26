@@ -138,9 +138,9 @@ public abstract class BaseJob extends Job {
             RMap<String, String> mapCache = redisson.getMap(this.getClass().getName() + ".map.cache");
             
             String enable = mapCache.get(this.jobEnableKey);
-            logger.info("The " + this.getClass().getName() + " is enable:" + enable);
+            logger.info("The " + this.getClass().getName() + " is enable: " + enable);
             if (null == enable || "true".equalsIgnoreCase(enable)) {
-                logger.info("Try to get the lock for " + this.getClass().getName() + " by the locker key:" + this.lockerKey);
+                logger.info("Try to get the lock for " + this.getClass().getName() + " by the locker key: " + this.lockerKey);
                 lock = redisson.getLock(this.lockerKey);
                 if (lock.tryLock()) {
                     logger.info("Get the lock successfully for " + this.getClass().getName());
@@ -151,7 +151,7 @@ public abstract class BaseJob extends Job {
                             lastRunTimestamp = dateFormat.parse(timestamp);
                         }
 
-                        logger.info("The last run timestamp for " + this.getClass().getName() + " is:" + timestamp);
+                        logger.info("The last run timestamp for " + this.getClass().getName() + " is: " + timestamp);
 
                         Date currentTime = new Date();
                         List<Long> ids = this.getFeederIdsToPush(lastRunTimestamp);
@@ -164,6 +164,7 @@ public abstract class BaseJob extends Job {
                             to += (to + batchSize) > ids.size() ? (ids.size() - to) : batchSize;
                             List<Long> sub = ids.subList(from, to);
                             try {
+                                logger.info(this.getClass().getName() + " - populate documents for " + ids);
                                 this.pushFeeders(sub);
                             } catch (Exception e) {
                                 // continue the batch process
@@ -172,7 +173,7 @@ public abstract class BaseJob extends Job {
                             from = to;
                         }
 
-                        logger.info("update last run timestamp for " + this.getClass().getName() + " is:" + dateFormat.format(currentTime));
+                        logger.info("update last run timestamp for " + this.getClass().getName() + " is: " + dateFormat.format(currentTime));
                         mapCache.put(this.lastRuntimestampeKey, dateFormat.format(currentTime));
                     } finally {
                         logger.info("release the lock for " + this.getClass().getName());

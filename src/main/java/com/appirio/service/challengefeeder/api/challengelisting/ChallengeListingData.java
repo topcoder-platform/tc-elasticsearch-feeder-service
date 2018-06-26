@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.appirio.service.challengefeeder.api.FileTypeData;
 import com.appirio.service.challengefeeder.api.IdentifiableData;
 import com.appirio.service.challengefeeder.api.PhaseData;
@@ -71,7 +73,6 @@ public class ChallengeListingData extends IdentifiableData {
      * The status field
      */
     @Getter
-    @Setter
     private String status;
 
     /**
@@ -283,7 +284,7 @@ public class ChallengeListingData extends IdentifiableData {
      */
     @Getter
     @Setter
-    private Long cmcTaskId;
+    private String cmcTaskId;
 
 
     /**
@@ -447,7 +448,7 @@ public class ChallengeListingData extends IdentifiableData {
      * @param track
      */
     public void setTrack(String track) {
-        this.track = track.trim();
+        this.track = StringUtils.trim(track);
     }
 
     /**
@@ -472,4 +473,11 @@ public class ChallengeListingData extends IdentifiableData {
     public void setSubTrackFromEnum(SubTrack subTrackE) {
         this.subTrack = subTrackE.toString();
     }
+
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(String status) {
+		this.status = StringUtils.trim(status);
+	}
 }

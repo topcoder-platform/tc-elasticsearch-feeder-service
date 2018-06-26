@@ -57,6 +57,6 @@ public class ChallengeFeederFactory implements ResourceFactory<ChallengeFeederRe
 				this.config.getChallengeConfiguration());
 		final ChallengeDetailFeederManager challengeDetailFeederManager= new ChallengeDetailFeederManager(JestClientUtils.get(this.config.getJestClientConfiguration()),
 				DAOFactory.getInstance().createDAO(ChallengeDetailFeederDAO.class));
-        return new ChallengeFeederResource(challengeDetailFeederManager,challengeListingFeederManager);
+        return new ChallengeFeederResource(challengeDetailFeederManager,challengeListingFeederManager,config);
     }
 }

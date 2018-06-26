@@ -24,7 +24,7 @@ SELECT
          Nvl(pp2.actual_end_time, pp2.scheduled_end_time) AS submissionEndDate,
          review_type_info.value AS reviewType,
          forum_id_info.value AS forumId,
-    (SELECT Count(unique s1.create_user))
+    (SELECT Count(unique s1.create_user)
      FROM submission s1
      INNER JOIN upload u1 ON s1.upload_id = u1.upload_id
      WHERE u1.project_id = p.project_id
@@ -32,6 +32,8 @@ SELECT
        AND s1.submission_status_id <> 5) AS numberOfSubmissions,
     (SELECT Count(*)
      FROM RESOURCE r
+     INNER JOIN resource_info ri1 ON ri1.resource_info_type_id = 1 and r.resource_id = ri1.resource_id
+     INNER JOIN user u ON ri1.value = u.user_id
      WHERE r.project_id = p.project_id
        AND r.resource_role_id = 1) AS numberOfRegistrants,
          Nvl(pp15.actual_end_time, pp15.scheduled_end_time) AS checkpointSubmissionEndDate,
@@ -100,15 +102,15 @@ SELECT
   AND pp2.phase_type_id = 2
   INNER JOIN project_info pn ON pn.project_id = p.project_id
   AND pn.project_info_type_id = 6
-  LEFT JOIN TCS_CATALOG\:project_info AS forum_id_info ON forum_id_info.project_id = p.project_id
+  LEFT JOIN project_info AS forum_id_info ON forum_id_info.project_id = p.project_id
   AND forum_id_info.project_info_type_id = 4
-  LEFT JOIN TCS_CATALOG\:project_info AS review_type_info ON review_type_info.project_id = p.project_id
+  LEFT JOIN project_info AS review_type_info ON review_type_info.project_id = p.project_id
   AND review_type_info.project_info_type_id = 79
   LEFT JOIN project_phase pp15 ON pp15.project_id = p.project_id
   AND pp15.phase_type_id = 15
   LEFT JOIN project_info pidr ON pidr.project_id = p.project_id
   AND pidr.project_info_type_id = 26
-  LEFT JOIN CORPORATE_OLTP\:tc_direct_project AS tcdirect ON p.tc_direct_project_id = tcdirect.project_id
+  LEFT JOIN tc_direct_project AS tcdirect ON p.tc_direct_project_id = tcdirect.project_id
   LEFT JOIN project_info pvs ON pvs.project_id = p.project_id
   AND pvs.project_info_type_id = 53
   LEFT JOIN project_info rel_flag ON rel_flag.project_id = p.project_id AND rel_flag.project_info_type_id = 45

@@ -1,6 +1,6 @@
 select
 lcs.round_id as challengeId,
-lcs.long_component_state_id as submissionId,
+lcs.long_component_state_id || ls.submission_number as submissionId,
 user.handle as submitter,
 ls.submission_points as finalScore,
 ls.submission_points as initialScore,
@@ -14,4 +14,4 @@ END as submissionTime,
 from informixoltp\:long_submission ls
 left join informixoltp\:long_component_state lcs on lcs.long_component_state_id = ls.long_component_state_id
 left join user on user.user_id = lcs.coder_id
-where {filter}
+where ls.example = 0 AND {filter}
