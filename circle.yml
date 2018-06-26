@@ -16,10 +16,10 @@ deployment:
     commands:
       - .deploy/ecs_deploy.sh DEV
   test:
-    branch: ["dev"]
+    branch: ["listing-detail-indexes"]
     commands:
       - .deploy/ecs_deploy.sh TEST
   production:
-    branch: ["master","listing-detail-indexes"]
+    branch: ["master"]
     commands:
       - .deploy/ecs_deploy.sh PROD
