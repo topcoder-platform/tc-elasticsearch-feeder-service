@@ -17,4 +17,3 @@ SELECT u.handle as submitter,
    and s.example = 0
    and {filter}
 ORDER BY points desc, u.handle_lower asc
-and
