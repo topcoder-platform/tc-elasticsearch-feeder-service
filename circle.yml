@@ -12,7 +12,7 @@ test:
 
 deployment:
   development:
-    branch: ["dev", "listing-detail-indexes"]
+    branch: ["dev"]
       - .deploy/ecs_deploy.sh TEST
   production:
     branch: ["master"]
