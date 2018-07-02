@@ -5,7 +5,10 @@ user.handle as submitter,
 lcs.coder_id as submitterId,
 ls.submission_points as finalScore,
 ls.submission_points as initialScore,
-extend(dbinfo("UTC_TO_DATETIME",ls.submit_time/1000), year to fraction) as submittedAt,
+CASE
+  WHEN ls.submit_time IS NOT NULL THEN extend(dbinfo("UTC_TO_DATETIME",ls.submit_time/1000), year to fraction)
+  ELSE NULL
+END as submittedAt,
 -1 as placement,
 -1 as screeningScore,
 'Active' as status

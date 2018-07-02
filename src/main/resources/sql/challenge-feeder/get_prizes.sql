@@ -7,3 +7,4 @@ FROM
     prize AS prize
 INNER JOIN project AS project  ON prize.project_id = project.project_id
 WHERE prize.prize_type_id = 15 AND {filter}
+ORDER BY prize.place

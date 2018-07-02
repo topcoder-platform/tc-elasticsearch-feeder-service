@@ -3,7 +3,6 @@
  */
 package com.appirio.service.challengefeeder.manager;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +77,6 @@ public class MarathonMatchFeederManager {
      *             if any error occurs
      */
     public void pushMarathonMatchFeeder(DataScienceFeederParam param) throws SupplyException {
-        logger.info("Enter of pushMarathonMatchFeeder(DataScienceFeederParam)");
         DataScienceHelper.checkDataScienceFeederParam(param, "mmatches");
 
         List<Long> roundIds = param.getRoundIds();
@@ -91,8 +89,9 @@ public class MarathonMatchFeederManager {
         // check if all MMs with given roundIds exist
         DataScienceHelper.checkDataScienceExist(roundIds, marathonMatches);
 
-        logger.info("Total hits:" + marathonMatches.size());
-
+        if (marathonMatches.size() == 0) {
+            return;
+        }
         List<Map<String, Object>> userIds = this.marathonMatchFeederDAO.getUserIds(queryParameter);
 
         // associate users data to the marathon matches
@@ -113,19 +112,8 @@ public class MarathonMatchFeederManager {
      *             if any error occurs
      */
     public void pushMarathonMatchFeeder(AuthUser authUser, DataScienceFeederParam param) throws SupplyException {
-        logger.info("Enter of pushMarathonMatchFeeder(AuthUser, DataScienceFeederParam)");
         Helper.checkAdmin(authUser);
         pushMarathonMatchFeeder(param);
-    }
-    
-    /**
-     * Get current timestamp from the database.
-     *
-     * @throws SupplyException if any error occurs
-     * @return the timestamp result
-     */
-    public Date getTimestamp() throws SupplyException {
-        return this.marathonMatchFeederDAO.getTimestamp().getDate();
     }
 
     /**

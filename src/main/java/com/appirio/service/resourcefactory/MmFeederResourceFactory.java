@@ -3,11 +3,8 @@
  */
 package com.appirio.service.resourcefactory;
 
-import com.appirio.service.challengefeeder.dao.MmFeederDAO;
-import com.appirio.service.challengefeeder.manager.MmFeederManager;
 import com.appirio.service.challengefeeder.resources.MmFeederResource;
 import com.appirio.service.supply.resources.ResourceFactory;
-import com.appirio.supply.DAOFactory;
 import com.appirio.supply.SupplyException;
 import io.searchbox.client.JestClient;
 
@@ -15,9 +12,13 @@ import io.searchbox.client.JestClient;
  * Factory for MmFeederResource
  *
  * It's added in Topcoder - Populate Marathon Match Related Data Into Challenge Model In Elasticsearch v1.0
+ * 
+ * Version 1.1 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * - create dummy resource
+ * 
  *  
  * @author TCSCODER
- * @version 1.0
+ * @version 1.1 
  */
 public class MmFeederResourceFactory implements ResourceFactory<MmFeederResource> {
 
@@ -43,7 +44,6 @@ public class MmFeederResourceFactory implements ResourceFactory<MmFeederResource
      */
     @Override
     public MmFeederResource getResourceInstance() throws SupplyException {
-        final MmFeederManager mmFeederManager = new MmFeederManager(jestClient, DAOFactory.getInstance().createDAO(MmFeederDAO.class));
-        return new MmFeederResource(mmFeederManager);
+        return new MmFeederResource();
     }
 }

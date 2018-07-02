@@ -170,7 +170,7 @@ public class JestClientUtils {
          * @throws JsonParseException if the deserialization fails
          */
         public Map<String, Object> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            Map<String, Object> m = new HashMap<String, Object>();
+            Map<String, Object> m = new HashMap<>();
             JsonObject jo = json.getAsJsonObject();
             for (Map.Entry<String, JsonElement> mx : jo.entrySet()) {
                 String key = mx.getKey();
@@ -223,7 +223,7 @@ public class JestClientUtils {
         /**
          * Empty constructor
          */
-        public ListDeserializer() {
+        ListDeserializer() {
         }
 
         /**
@@ -236,7 +236,7 @@ public class JestClientUtils {
          * @throws JsonParseException if the deserialization fails
          */
         public List<Object> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            List<Object> m = new ArrayList<Object>();
+            List<Object> m = new ArrayList<>();
             JsonArray arr = json.getAsJsonArray();
             for (JsonElement jsonElement : arr) {
                 if (jsonElement.isJsonObject()) {

@@ -4,10 +4,8 @@
 package com.appirio.service.challengefeeder.resources;
 
 import com.appirio.service.challengefeeder.dto.MmFeederParam;
-import com.appirio.service.challengefeeder.manager.MmFeederManager;
 import com.appirio.service.supply.resources.MetadataApiResponseFactory;
 import com.appirio.supply.ErrorHandler;
-import com.appirio.supply.SupplyException;
 import com.appirio.tech.core.api.v3.request.PostPutRequest;
 import com.appirio.tech.core.api.v3.response.ApiResponse;
 import com.appirio.tech.core.auth.AuthUser;
@@ -17,7 +15,6 @@ import io.dropwizard.auth.Auth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
@@ -30,9 +27,13 @@ import javax.ws.rs.core.MediaType;
  * 
  * It's added in Topcoder - Populate Marathon Match Related Data Into Challenge Model In Elasticsearch v1.0
  * 
+ * Version 1.1 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * - make it dummy 
+ * 
+ * 
  * 
  * @author TCSCODER
- * @version 1.0
+ * @version 1.1 
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -44,18 +45,12 @@ public class MmFeederResource {
      */
     private static final Logger logger = LoggerFactory.getLogger(MmFeederResource.class);
 
-    /**
-     * Manager to handle the marathon match feeders
-     */
-    private final MmFeederManager mmFeederManager;
 
     /**
      * Create MmFeederResource
      *
-     * @param mmFeederManager the mmFeederManager to use
      */
-    public MmFeederResource(MmFeederManager mmFeederManager) {
-        this.mmFeederManager = mmFeederManager;
+    public MmFeederResource() {
     }
     
     /**
@@ -70,10 +65,6 @@ public class MmFeederResource {
     @Timed
     public ApiResponse pushMarathonMatchDataIntoChallenge(@Auth AuthUser user, @Valid PostPutRequest<MmFeederParam> request) {
         try {
-            if (request == null || request.getParam() == null) {
-                throw new SupplyException("The request body should be provided", HttpServletResponse.SC_BAD_REQUEST);
-            }
-            this.mmFeederManager.pushMarathonMatchDataIntoChallenge(user, request.getParam());
             return MetadataApiResponseFactory.createResponse(null);
         } catch (Exception e) {
             return ErrorHandler.handle(e, logger);

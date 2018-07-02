@@ -33,10 +33,6 @@
             "value": "%s"
           },
           {
-            "name": "CHALLENGES_INDEX_NAME",
-            "value": "%s"
-          },
-          {
             "name": "ELASTIC_SEARCH_URL",
             "value": "%s"
           },

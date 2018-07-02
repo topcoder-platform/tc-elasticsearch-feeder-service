@@ -5,19 +5,25 @@ package com.appirio.service.challengefeeder.api;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.appirio.service.challengefeeder.helper.CustomDateDeserializer;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import lombok.Getter;
 import lombok.Setter;
 
 
 /**
  * Represents the PhaseData model 
- * 
+ *
+ * Version 1.1 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index v1.0
+ * - change the fields name from 'phaseStatus' and 'phaseType' to 'status' and 'type'
+ *
  * @author TCCoder
- * @version 1.0
+ * @version 1.1 
  *
  */
 public class PhaseData {
@@ -37,18 +43,17 @@ public class PhaseData {
     private Long phaseId;
 
     /**
-     * The phaseStatus field
+     * The status field
      */
     @Getter
-    @Setter
-    private String phaseStatus;
+    private String status;
 
     /**
-     * The phaseType field
+     * The type field
      */
     @Getter
     @Setter
-    private String phaseType;
+    private String type;
 
     /**
      * The duration field
@@ -134,4 +139,14 @@ public class PhaseData {
     @Getter
     @Setter
     private String updatedBy;
+
+	/**
+	 * Remove the whitespace from both ends and assign the value
+	 * 
+	 * @param status
+	 *            the status to set
+	 */
+	public void setStatus(String status) {
+		this.status = StringUtils.trim(status);
+	}
 }

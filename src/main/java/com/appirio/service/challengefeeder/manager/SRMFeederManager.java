@@ -3,7 +3,6 @@
  */
 package com.appirio.service.challengefeeder.manager;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -71,16 +70,12 @@ public class SRMFeederManager {
     /**
      * Push SRM feeder
      *
-     * @param authUser
-     *            the authUser to use
      * @param param
      *            the data science feeders param to use
      * @throws SupplyException
      *             if any error occurs
      */
     public void pushSRMFeeder(DataScienceFeederParam param) throws SupplyException {
-        logger.info("Enter of pushSRMFeeder(DataScienceFeederParam)");
-
         List<Long> roundIds = param.getRoundIds();
         // build query string to filter on round ids
         QueryParameter queryParameter = DataScienceHelper.buildInQueryParameter(roundIds, "roundIds");
@@ -91,7 +86,9 @@ public class SRMFeederManager {
         // check if all SRMs with given roundIds exist
         DataScienceHelper.checkDataScienceExist(roundIds, srms);
 
-        logger.info("Total hits:" + srms.size());
+        if (srms.size() == 0) {
+            return;
+        }
 
         List<Map<String, Object>> userIds = this.srmFeederDAO.getUserIds(queryParameter);
 
@@ -117,16 +114,6 @@ public class SRMFeederManager {
         Helper.checkAdmin(authUser);
         DataScienceHelper.checkDataScienceFeederParam(param, "srms");
         pushSRMFeeder(param);
-    }
-
-    /**
-     * Get current timestamp from the database.
-     *
-     * @throws SupplyException if any error occurs
-     * @return the timestamp result
-     */
-    public Date getTimestamp() throws SupplyException {
-        return this.srmFeederDAO.getTimestamp().getDate();
     }
 
     /**
