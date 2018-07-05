@@ -4,7 +4,6 @@
 package com.appirio.service.challengefeeder.dao;
 
 import com.appirio.service.challengefeeder.api.MarathonMatchData;
-import com.appirio.service.challengefeeder.dto.DatabaseTimestamp;
 import com.appirio.supply.dataaccess.ApiQueryInput;
 import com.appirio.supply.dataaccess.DatasourceName;
 import com.appirio.supply.dataaccess.SqlQueryFile;
@@ -52,15 +51,6 @@ public interface MarathonMatchFeederDAO {
      */
     @SqlQueryFile("sql/mmatches-feeder/get_user_ids.sql")
     List<Map<String, Object>> getUserIds(@ApiQueryInput QueryParameter queryParameter);
-    
-    /**
-     * Get current timestamp. 
-     *
-     * @param queryParameter the queryParameter to use
-     * @return the result
-     */
-    @SqlQueryFile("sql/challenge-feeder/job/get_timestamp.sql")
-    DatabaseTimestamp getTimestamp();
 
     /**
      * Get the marathon matches whose registration phase started after the specified date and after the last run timestamp.

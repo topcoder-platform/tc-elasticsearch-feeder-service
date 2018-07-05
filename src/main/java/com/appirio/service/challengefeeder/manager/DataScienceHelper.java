@@ -4,9 +4,11 @@
 package com.appirio.service.challengefeeder.manager;
 
 import com.appirio.service.challengefeeder.api.DataScienceData;
+import com.appirio.service.challengefeeder.api.IdentifiableData;
 import com.appirio.service.challengefeeder.api.MarathonMatchData;
 import com.appirio.service.challengefeeder.api.SRMData;
 import com.appirio.service.challengefeeder.dto.DataScienceFeederParam;
+import com.appirio.service.challengefeeder.dto.MmFeederParam;
 import com.appirio.supply.SupplyException;
 import com.appirio.tech.core.api.v3.request.FieldSelector;
 import com.appirio.tech.core.api.v3.request.FilterParameter;
@@ -20,8 +22,10 @@ import io.searchbox.core.Index;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,11 +35,85 @@ import javax.servlet.http.HttpServletResponse;
  * <p>
  * Added in Topcoder - Add Endpoints To Populating Marathon Matches And SRMs Into Elasticsearch v1.0
  * </p>
+ * 
+ * <p>
+ * Version 1.1 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index For Legacy Marathon Matches v1.0
+ * - add common methods to validate the marathon match data
+ * </p>
+ *
+ * Version 1.2 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Detail Index For Legacy Marathon Matches v1.0
+ * <p>
+ * add common methods to validate the arguments
+ * </p>
  *
  * @author TCCoder
- * @version 1.0
+ * @version 1.2
  */
 final class DataScienceHelper {
+    /**
+     * Check missed ids
+     *
+     * @param param the param to use
+     * @param result the result to use
+     * @throws SupplyException if any error occurs
+     */
+    static void checkMissedIds(MmFeederParam param, List<? extends IdentifiableData> result) throws SupplyException {
+        List<Long> idsNotFound = new ArrayList<>();
+        for (Long id : param.getRoundIds()) {
+            boolean hit = false;
+            for (IdentifiableData data : result) {
+                if (id.longValue() == data.getId().longValue()) {
+                    hit = true;
+                    break;
+                }
+            }
+            if (!hit) {
+                idsNotFound.add(id);
+            }
+        }
+        if (!idsNotFound.isEmpty()) {
+            throw new SupplyException("The round ids not found: " + idsNotFound, HttpServletResponse.SC_NOT_FOUND);
+        }
+
+    }
+
+    /**
+     * Check marathon feeder parameter
+     *
+     * @param param the param to use
+     * @param defaultType the defaultType to use
+     * @throws SupplyException if any error occurs
+     */
+    static void checkMarathonFeederParam(MmFeederParam param, String defaultType) throws SupplyException {
+        if (param.getType() == null || param.getType().trim().length() == 0) {
+            param.setType(defaultType);
+        }
+        if (param.getIndex() == null || param.getIndex().trim().length() == 0) {
+            throw new SupplyException("The index should be non-null and non-empty string.", HttpServletResponse.SC_BAD_REQUEST);
+        }
+
+        if (param.getRoundIds() == null || param.getRoundIds().size() == 0) {
+            throw new SupplyException("Round ids must be provided", HttpServletResponse.SC_BAD_REQUEST);
+        }
+        if (param.getRoundIds().contains(null)) {
+            throw new SupplyException("Null round id is not allowed", HttpServletResponse.SC_BAD_REQUEST);
+        }
+        
+        Set<Long> duplicateIds = new HashSet<>();
+        for (Long id : param.getRoundIds()) {
+            if (id <= 0) {
+                throw new SupplyException("Round id should be positive", HttpServletResponse.SC_BAD_REQUEST);
+            }
+            if (param.getRoundIds().indexOf(id) != param.getRoundIds().lastIndexOf(id)) {
+                duplicateIds.add(id);
+            }
+        }
+        
+        if (!duplicateIds.isEmpty()) {
+            throw new SupplyException("The round ids are duplicate:" + duplicateIds, HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
+    
     /**
      * Checks if given param is valid: non-null/non-empty index, non-null/non-empty roundIds, and roundIds does not
      * contain null element.
@@ -101,7 +179,7 @@ final class DataScienceHelper {
      */
     static <T extends DataScienceData> void checkDataScienceExist(List<Long> roundIds, List<T> data)
         throws SupplyException {
-        List<Long> idsNotFound = new ArrayList<Long>();
+        List<Long> idsNotFound = new ArrayList<>();
         for (Long roundId : roundIds) {
             boolean hit = false;
             for (DataScienceData dataScience : data) {
@@ -136,7 +214,7 @@ final class DataScienceHelper {
                     List<Long> userIds = dataScience.getUserIds();
                     if (userIds == null) {
                         // create new empty list
-                        userIds = new ArrayList<Long>();
+                        userIds = new ArrayList<>();
                         dataScience.setUserIds(userIds);
                     }
 
@@ -146,14 +224,14 @@ final class DataScienceHelper {
                     if (dataScience instanceof MarathonMatchData) {
                         isRateds = ((MarathonMatchData) dataScience).getIsRatedForMM();
                         if (isRateds == null) {
-                            isRateds = new ArrayList<String>();
+                            isRateds = new ArrayList<>();
                             ((MarathonMatchData) dataScience).setIsRatedForMM(isRateds);
                         }
                         isRated = (String) user.get("isRatedForMM");
                     } else if (dataScience instanceof SRMData) {
                         isRateds = ((SRMData) dataScience).getIsRatedForSRM();
                         if (isRateds == null) {
-                            isRateds = new ArrayList<String>();
+                            isRateds = new ArrayList<>();
                             ((SRMData) dataScience).setIsRatedForSRM(isRateds);
                         }
                         isRated = (String) user.get("isRatedForSRM");

@@ -8,13 +8,12 @@ import com.appirio.service.challengefeeder.job.*;
 import com.appirio.service.challengefeeder.resources.HealthCheckResource;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.service.resourcefactory.ChallengeFeederFactory;
-import com.appirio.service.resourcefactory.MmFeederResourceFactory;
 import com.appirio.service.resourcefactory.MarathonMatchFeederFactory;
+import com.appirio.service.resourcefactory.MmFeederResourceFactory;
 import com.appirio.service.resourcefactory.SRMFeederFactory;
 import com.appirio.service.supply.resources.SupplyDatasourceFactory;
 
 import de.spinscale.dropwizard.jobs.JobsBundle;
-import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.setup.Bootstrap;
@@ -46,9 +45,43 @@ import io.searchbox.client.JestClient;
  * <li>Added job for SingleRoundMatchesJob.</li>
  * </ul>
  * </p>
- *
+ * <p>
+ * Version 1.4 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index v1.0
+ * <ul>
+ * <li>add job for the challenges listing.</li>
+ * </ul>
+ * </p>
+ * <p>
+ * Changes in v1.5 (Topcoder - Create CronJob For Populating Marathon Matches and SRMs To Elasticsearch v1.0):
+ * <ul>
+ * <li>Added LegacyMMToChallengeListingJob for schedule.</li>
+ * </ul>
+ * </p>
+ * 
+ * <p>
+ * Version 1.6 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Detail Index For Legacy Marathon Matches v1.0
+ * <ul>
+ * <li>add job LoadChangedMMChallengeDetailJob for schedule.</li>
+ * </ul>
+ * </p>
+ * <p>
+ * Changes in v 1.7 (Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Detail Index)
+ * <ul>
+ *      <li>Add job for LoadChangedChallengeDetailJob</li>
+ * </ul>
+ * </p>
+ * 
+ * <p>
+ * Version 1.8 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * - remove the useless resources, jobs and logging of configuration values
+ * </p>
+ * 
+ * <p>
+ * Version 1.9 - Implement Endpoint To Populate Elasticsearch For The Given Challenges
+ * - Changes the challenge resource object creation logic/
+ * </p>
  * @author TCSCODER
- * @version 1.3
+ * @version 1.9
  */
 public class ChallengeFeederServiceApplication extends BaseApplication<ChallengeFeederServiceConfiguration> {
     /**
@@ -84,19 +117,47 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         logger.info("\t\tAWS region : " + config.getJestClientConfiguration().getAwsRegion());
         logger.info("\t\tAWS service : " + config.getJestClientConfiguration().getAwsService());
         
-        logger.info("\tRedissonConfiguration ");
-        logger.info("\t\tChallenges index: " + config.getRedissonConfiguration().getChallengesIndex());
-        logger.info("\t\tChallenges type: " + config.getRedissonConfiguration().getChallengesType());
-        logger.info("\t\tSingle server address: " + config.getRedissonConfiguration().getSingleServerAddress());
-        logger.info("\t\tLast run timestamp prefix for job LoadChangedChallengesJob: " + config.getRedissonConfiguration().getLoadChangedChallengesJobLastRunTimestampPrefix());
-        logger.info("\t\tLast run timestamp prefix for job MarathonMatchesJob: " + config.getRedissonConfiguration().getMarathonMatchesJobLastRunTimestampPrefix());
-        logger.info("\t\tLast run timestamp prefix for job SingleRoundMatchesJob: " + config.getRedissonConfiguration().getSingleRoundMatchesJobLastRunTimestampPrefix());
-        logger.info("\t\tCluster enabled: " + config.getRedissonConfiguration().isClusterEnabled());
-        logger.info("\t\tLoadChangedChallengesJob Locker key name: " + config.getRedissonConfiguration().getLoadChangedChallengesJobLockerKeyName());
-        logger.info("\t\tMarathonMatchesJob Locker key name: " + config.getRedissonConfiguration().getMarathonMatchesJobLockerKeyName());
-        logger.info("\t\tSingleRoundMatchesJob Locker key name: " + config.getRedissonConfiguration().getSingleRoundMatchesJobLockerKeyName());
-        logger.info("\t\tLock watchdog timeout: " + config.getRedissonConfiguration().getLockWatchdogTimeout());
-        logger.info("\t\tNode addresses: " + config.getRedissonConfiguration().getNodeAddresses());
+        logger.info("\tJobsConfiguration");
+        logger.info("\t\tRedissonConfiguration");
+        logger.info("\t\t\tSingle server address: " + config.getJobsConfiguration().getRedissonConfiguration().getSingleServerAddress());
+        logger.info("\t\t\tCluster enabled: " + config.getJobsConfiguration().getRedissonConfiguration().isClusterEnabled());
+        logger.info("\t\t\tLock watchdog timeout: " + config.getJobsConfiguration().getRedissonConfiguration().getLockWatchdogTimeout());
+        logger.info("\t\t\tNode addresses: " + config.getJobsConfiguration().getRedissonConfiguration().getNodeAddresses());
+        
+        
+        logger.info("\tJobs configuration");
+        logger.info("\t\t\tRedisson configuration");
+        logger.info("\t\t\t\t\tLock watchdog timeout : " + config.getJobsConfiguration().getRedissonConfiguration().getLockWatchdogTimeout());
+        logger.info("\t\t\t\t\tSingle server address : " + config.getJobsConfiguration().getRedissonConfiguration().getSingleServerAddress());
+        logger.info("\t\t\t\t\tCluster enabled : " + config.getJobsConfiguration().getRedissonConfiguration().isClusterEnabled());
+        logger.info("\t\t\tNode addresses: " + config.getJobsConfiguration().getRedissonConfiguration().getNodeAddresses());
+        logger.info("\t\t\t\t\tNode addresses");
+        logger.info("\t\t\tLoad changed challenges listing job");
+        logger.info("\t\t\t\t\tIndex name");
+        logger.info("\t\t\t\t\tBatch size : " + config.getJobsConfiguration().getLoadChangedChallengesListingJob().getBatchUpdateSize());
+        logger.info("\t\t\tLoad changed challenges detail job");
+        logger.info("\t\t\t\t\tIndex name");
+        logger.info("\t\t\t\t\tBatch size : " + config.getJobsConfiguration().getLoadChangedChallengesDetailJob().getBatchUpdateSize());
+        logger.info("\t\t\tLegacymm to challenge listing job");
+        logger.info("\t\t\t\t\tIndex name");
+        logger.info("\t\t\t\t\tBatch size : " + config.getJobsConfiguration().getLegacyMMToChallengeListingJob().getBatchUpdateSize());
+        logger.info("\t\t\t\t\tMarathon matches days to subtract : " + config.getJobsConfiguration().getLegacyMMToChallengeListingJob().getMarathonMatchesDaysToSubtract());
+        logger.info("\t\t\t\t\tMarathon matches forum url : " + config.getJobsConfiguration().getLegacyMMToChallengeListingJob().getMarathonMatchesForumUrl());
+        logger.info("\t\t\tLoad changedmm challenge detail job");
+        logger.info("\t\t\t\t\tIndex name");
+        logger.info("\t\t\t\t\tBatch size : " + config.getJobsConfiguration().getLoadChangedMMChallengeDetailJob().getBatchUpdateSize());
+        logger.info("\t\t\t\t\tMarathon matches days to subtract : " + config.getJobsConfiguration().getLoadChangedMMChallengeDetailJob().getMarathonMatchesDaysToSubtract());
+        logger.info("\t\t\t\t\tMarathon matches forum url : " + config.getJobsConfiguration().getLoadChangedMMChallengeDetailJob().getMarathonMatchesForumUrl());
+        logger.info("\t\t\tMarathon matches job");
+        logger.info("\t\t\t\t\tIndex name");
+        logger.info("\t\t\t\t\tBatch size : " + config.getJobsConfiguration().getMarathonMatchesJob().getBatchUpdateSize());
+        logger.info("\t\t\t\t\tMarathon matches days to subtract : " + config.getJobsConfiguration().getMarathonMatchesJob().getMarathonMatchesDaysToSubtract());
+        logger.info("\t\t\t\t\tMarathon matches forum url : " + config.getJobsConfiguration().getMarathonMatchesJob().getMarathonMatchesForumUrl());
+        logger.info("\t\t\tSingle round matches job");
+        logger.info("\t\t\t\t\tIndex name");
+        logger.info("\t\t\t\t\tBatch size : " + config.getJobsConfiguration().getSingleRoundMatchesJob().getBatchUpdateSize());
+        logger.info("\t\t\t\t\tSingle round matches days to subtract : " + config.getJobsConfiguration().getSingleRoundMatchesJob().getSingleRoundMatchesDaysToSubtract());
+
 
         logger.info("\tJobs ");
         logger.info("\t\tJobs: " + config.getJobs());
@@ -126,9 +187,9 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         JestClient jestClient = JestClientUtils.get(config.getJestClientConfiguration());
 
         // Register resources here
-        env.jersey().register(new ChallengeFeederFactory(jestClient).getResourceInstance());
-        env.jersey().register(new MmFeederResourceFactory(jestClient).getResourceInstance());
         env.jersey().register(new HealthCheckResource());
+        env.jersey().register(new ChallengeFeederFactory(jestClient,config).getResourceInstance());
+        env.jersey().register(new MmFeederResourceFactory(jestClient).getResourceInstance());
         env.jersey().register(new MarathonMatchFeederFactory(jestClient).getResourceInstance());
         env.jersey().register(new SRMFeederFactory(jestClient).getResourceInstance());
         logger.info("Services registered");
@@ -158,7 +219,8 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         // Enable variable substitution with environment variables
         bootstrap.setConfigurationSourceProvider(
                 new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
-        bootstrap.addBundle(new JobsBundle(new StartupJob(), new LoadChangedChallengesJob(),
-                new MarathonMatchesJob(), new SingleRoundMatchesJob(), new LegacyMMToChallengeJob()));
+
+        bootstrap.addBundle(new JobsBundle(new LoadChangedChallengesListingJob(), new LegacyMMToChallengeListingJob(), new MarathonMatchesJob(),
+                new SingleRoundMatchesJob(), new LoadChangedChallengesDetailJob(), new LoadChangedMMChallengeDetailJob()));
     }
 }

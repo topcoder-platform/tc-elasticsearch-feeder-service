@@ -1,0 +1,70 @@
+{
+	"info": {
+		"_postman_id": "3fce3179-2893-4357-a56f-b07f1ce9785a",
+		"name": "challenges-listing-feeder",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "View all challenges listing via ElasticSearch",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://cockpit.cloud.topcoder.com:9200/challengeslisting/challengeslisting/_search"
+			},
+			"response": []
+		},
+		{
+			"name": "View challenge via ElasticSearch(assembly with checkpoints)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://cockpit.cloud.topcoder.com:9200/challengeslisting/challengeslisting/30005571"
+			},
+			"response": []
+		},
+		{
+			"name": "View challenge via ElasticSearch(wireframe with winner)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://cockpit.cloud.topcoder.com:9200/challengeslisting/challengeslisting/30005528"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "ee05cdd3-c989-46d1-b3b5-871634dca591",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "be4c2dd3-d241-4c45-891e-001dd4cc6eb1",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

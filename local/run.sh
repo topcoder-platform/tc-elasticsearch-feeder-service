@@ -5,7 +5,4 @@ export TC_JWT_KEY="secret"
 # export AWS_ACCESS_KEY=your key
 # export AWS_SECRET_KEY=your secret
 
-export REDISSON_JOB_CLUSTER_ENABLED=false
-export REDISSON_JOB_FORCE_INITIAL_LOAD=true
-
-java -jar ../target/elasticsearch-feeder-service-*.jar server ../src/main/resources/elasticsearch-feeder-service.yaml
+java -jar -Duser.timezone=America/New_York ../target/elasticsearch-feeder-service-*.jar server ../src/main/resources/elasticsearch-feeder-service.yaml

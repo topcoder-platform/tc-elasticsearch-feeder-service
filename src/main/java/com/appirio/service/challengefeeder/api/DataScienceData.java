@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,7 +44,6 @@ public abstract class DataScienceData {
      * The status field.
      */
     @Getter
-    @Setter
     private String status;
 
     /**
@@ -158,4 +159,11 @@ public abstract class DataScienceData {
     @Getter
     @Setter
     private Long numberOfRegistrants;
+
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(String status) {
+		this.status = StringUtils.trim(status);
+	}
 }

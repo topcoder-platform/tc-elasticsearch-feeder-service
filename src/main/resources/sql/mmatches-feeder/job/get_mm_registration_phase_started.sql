@@ -5,8 +5,9 @@ FROM
       informixoltp\:round_segment AS registration_segment
       ON registration_segment.round_id = round.round_id
       AND registration_segment.segment_id = 1
+   LEFT JOIN tcs_catalog\:project_info pi on pi.project_info_type_id = 56 and pi.value::decimal = round.round_id
 WHERE
-   round.round_type_id = 13
+   pi.project_id is null AND round.round_type_id = 13
    AND (
             (1 = :lastRunTimestamp)
             OR 

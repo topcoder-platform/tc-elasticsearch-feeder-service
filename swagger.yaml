@@ -8,7 +8,7 @@ info:
     name: MIT
     url: 'http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT'
 host: api.topcoder.com
-basePath: /v3
+basePath: /v4
 schemes:
   - http
   - https

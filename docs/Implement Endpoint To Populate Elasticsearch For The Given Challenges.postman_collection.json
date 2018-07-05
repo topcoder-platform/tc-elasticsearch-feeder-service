@@ -1,0 +1,90 @@
+{
+	"info": {
+		"_postman_id": "6eee70d5-764c-428f-8c7a-136193804b81",
+		"name": "Implement Endpoint To Populate Elasticsearch For The Given Challenges",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "View challenge details via ElasticSearch",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://cockpit.cloud.topcoder.com:9200/challengesdetail/challenges/30005550"
+			},
+			"response": [
+				{
+					"id": "9156ce02-ba6b-41bb-8819-f7d69d7e8000",
+					"name": "View challenge details via ElasticSearch",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": "http://cockpit.cloud.topcoder.com:9200/challengesdetail/challenges/30005532"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"name": "content-length",
+							"key": "content-length",
+							"value": "1296",
+							"description": "The length of the response body in octets (8-bit bytes)"
+						},
+						{
+							"name": "content-type",
+							"key": "content-type",
+							"value": "application/json; charset=UTF-8",
+							"description": "The mime type of this content"
+						}
+					],
+					"cookie": [],
+					"body": "{\"_index\":\"challengesdetail\",\"_type\":\"challenges\",\"_id\":\"30005532\",\"_version\":6,\"found\":true,\"_source\":{\"track\":\"DEVELOP\",\"subTrack\":\"ARCHITECTURE\",\"detailRequirements\":\"test\",\"finalSubmissionGuidelines\":\"test\",\"terms\":[{\"termsOfUseId\":21193,\"role\":\"Submitter\",\"agreeabilityType\":\"Electronically-agreeable\",\"title\":\"Standard Terms for TopCoder Competitions v2.0\"},{\"termsOfUseId\":20704,\"role\":\"Primary Screener\",\"agreeabilityType\":\"Electronically-agreeable\",\"title\":\"Reviewer terms of use text 20704\"},{\"termsOfUseId\":20704,\"role\":\"Reviewer\",\"agreeabilityType\":\"Electronically-agreeable\",\"title\":\"Reviewer terms of use text 20704\"},{\"termsOfUseId\":20704,\"role\":\"Aggregator\",\"agreeabilityType\":\"Electronically-agreeable\",\"title\":\"Reviewer terms of use text 20704\"},{\"termsOfUseId\":20704,\"role\":\"Final Reviewer\",\"agreeabilityType\":\"Electronically-agreeable\",\"title\":\"Reviewer terms of use text 20704\"},{\"termsOfUseId\":20794,\"role\":\"Manager\",\"agreeabilityType\":\"Non-agreeable\",\"title\":\"Approved OR Managers - TopCoder Technical Team\"},{\"termsOfUseId\":20893,\"role\":\"Copilot\",\"agreeabilityType\":\"Non-electronically-agreeable\",\"title\":\"MSA\"},{\"termsOfUseId\":20704,\"role\":\"Specification Reviewer\",\"agreeabilityType\":\"Electronically-agreeable\",\"title\":\"Reviewer terms of use text 20704\"}],\"id\":30005532}}"
+				}
+			]
+		},
+		{
+			"name": "View challenge listing via ElasticSearch",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://cockpit.cloud.topcoder.com:9200/challengeslisting/challenges/30005550"
+			},
+			"response": []
+		},
+		{
+			"name": "Push challenges",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJhZG1pbmlzdHJhdG9yIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJoZWZmYW4iLCJleHAiOjE3NjYyODkyNDYsInVzZXJJZCI6IjEzMjQ1NiIsImlhdCI6MTQ1MDkyOTI0NiwiZW1haWwiOm51bGwsImp0aSI6IjEzNjljNjAwLWUwYTEtNDUyNS1hN2M3LTU2YmU3ZDgxM2Y1MSJ9.hp5peSoj-fh3KFkskvBpfUFIcJNtsv4zIMFV-D8F3JA"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"param\": {\r\n    \"challengeIds\": [30005550]\r\n  }\r\n}"
+				},
+				"url": "http://localhost:8083/v4/esfeeder/challenges"
+			},
+			"response": []
+		}
+	]
+}

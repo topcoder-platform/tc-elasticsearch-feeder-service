@@ -1,8 +1,8 @@
 SELECT
      project_phase.project_id AS challengeId,
      project_phase.project_phase_id AS phaseId,
-     phase_type_lu.description AS phaseType,
-     phase_status_lu.description AS phaseStatus,
+     phase_type_lu.description AS type,
+     phase_status_lu.description AS status,
      project_phase.create_user AS createdBy,
      project_phase.create_date AS createdAt,
      project_phase.modify_user AS updatedBy,

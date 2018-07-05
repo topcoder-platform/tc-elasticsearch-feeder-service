@@ -1,15 +1,22 @@
 /*
- * Copyright (C) 2017 TopCoder Inc., All Rights Reserved.
+<<<<<<< HEAD
+ * Copyright (C) 2018 TopCoder Inc., All Rights Reserved.
+=======
+ * Copyright (C) 2017 - 2018 TopCoder Inc., All Rights Reserved.
+>>>>>>> cb1aae67e0f2e8125747683d2b9bea5295b8ad7d
  */
 package com.appirio.service.challengefeeder;
 
 import com.appirio.service.BaseAppConfiguration;
+import com.appirio.service.challengefeeder.config.ChallengeConfiguration;
+import com.appirio.service.challengefeeder.config.CommonConfiguration;
 import com.appirio.service.challengefeeder.config.JestClientConfiguration;
-import com.appirio.service.challengefeeder.config.RedissonConfiguration;
+import com.appirio.service.challengefeeder.config.JobsConfiguration;
 import com.appirio.service.supply.resources.SupplyDatasourceFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import de.spinscale.dropwizard.jobs.JobConfiguration;
+import lombok.Getter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -23,8 +30,18 @@ import java.util.Map;
  * Version 1.1 - Topcoder - Create CronJob For Populating Changed Challenges To Elasticsearch v1.0
  * - add the cron job related configuration
  * 
+ * Version 1.2 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index v1.0
+ * - add the challenge configuration
+ *
+ * Version 1.3 - Topcoder ElasticSearch Feeder Service - Way To Populate Challenge-Listing Index
+ * - add commonConfiguration
+ * 
+ * Version 1.4 - Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
+ * - refactor the job configuration
+ * 
+ * 
  * @author TCSCODER
- * @version 1.1 
+ * @version 1.4 
  */
 public class ChallengeFeederServiceConfiguration extends BaseAppConfiguration implements JobConfiguration {
 
@@ -51,10 +68,27 @@ public class ChallengeFeederServiceConfiguration extends BaseAppConfiguration im
     private Map<String , String> jobs;
     
     /**
-     * Represents the redissonConfiguration field
+     * Represents the jobsConfiguration field
      */
-    @JsonProperty("redissonConfiguration")
-    private RedissonConfiguration redissonConfiguration;
+    @JsonProperty("jobsConfiguration")
+    @Getter
+    private JobsConfiguration jobsConfiguration;
+    
+    /**
+     * The challengeConfiguration
+     */
+    @Valid
+    @NotNull
+    @JsonProperty("challengeConfiguration")
+    private final ChallengeConfiguration challengeConfiguration = new ChallengeConfiguration();
+
+    /**
+     * common configuration section
+     */
+    @Valid
+    @NotNull
+    @JsonProperty("commonConfiguration")
+    private CommonConfiguration commonConfiguration;
 
     /**
      * Get the data source factory
@@ -84,11 +118,19 @@ public class ChallengeFeederServiceConfiguration extends BaseAppConfiguration im
     }
 
     /**
-     * Get redissonConfiguration
-     * @return the redissonConfiguration
+     * Get challenge configuration
+     *
+     * @return the ChallengeConfiguration
      */
-    public RedissonConfiguration getRedissonConfiguration() {
-        return this.redissonConfiguration;
+    public ChallengeConfiguration getChallengeConfiguration() {
+        return this.challengeConfiguration;
     }
 
+    /**
+     * Getter commonConfiguration
+     * @return
+     */
+    public CommonConfiguration getCommonConfiguration() {
+        return commonConfiguration;
+    }
 }
