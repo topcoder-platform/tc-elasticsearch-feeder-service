@@ -4,13 +4,10 @@
 
 package com.appirio.service.challengefeeder.job;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-
+import com.appirio.service.challengefeeder.ChallengeFeederServiceConfiguration;
+import com.appirio.supply.SupplyException;
+import com.appirio.tech.core.api.v3.TCID;
+import de.spinscale.dropwizard.jobs.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.redisson.Redisson;
@@ -21,11 +18,12 @@ import org.redisson.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.appirio.service.challengefeeder.ChallengeFeederServiceConfiguration;
-import com.appirio.supply.SupplyException;
-import com.appirio.tech.core.api.v3.TCID;
-
-import de.spinscale.dropwizard.jobs.Job;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
 
 /**
  * BaseJob abstract class used as base class to children job classes.
@@ -164,7 +162,7 @@ public abstract class BaseJob extends Job {
                             to += (to + batchSize) > ids.size() ? (ids.size() - to) : batchSize;
                             List<Long> sub = ids.subList(from, to);
                             try {
-                                logger.info(this.getClass().getName() + " - populate documents for " + ids);
+                                logger.info(this.getClass().getName() + " - populate documents for " + sub);
                                 this.pushFeeders(sub);
                             } catch (Exception e) {
                                 // continue the batch process
