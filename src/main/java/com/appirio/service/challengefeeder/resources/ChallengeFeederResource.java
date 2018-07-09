@@ -3,17 +3,6 @@
  */
 package com.appirio.service.challengefeeder.resources;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.appirio.service.challengefeeder.ChallengeFeederServiceConfiguration;
 import com.appirio.service.challengefeeder.dto.ChallengeFeederParam;
 import com.appirio.service.challengefeeder.manager.ChallengeDetailFeederManager;
@@ -25,6 +14,17 @@ import com.appirio.tech.core.api.v3.request.PostPutRequest;
 import com.appirio.tech.core.api.v3.request.annotation.AllowAnonymous;
 import com.appirio.tech.core.api.v3.response.ApiResponse;
 import com.codahale.metrics.annotation.Timed;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import java.util.Date;
 
 /**
  * Resource to handle the challenge feeder
@@ -89,13 +89,23 @@ public class ChallengeFeederResource {
 			if (request == null || request.getParam() == null) {
 				throw new SupplyException("The request body should be provided", HttpServletResponse.SC_BAD_REQUEST);
 			}
+
+
 			String challengeListingIndexname = this.config.getJobsConfiguration().getLoadChangedChallengesListingJob().getIndexName();
 			request.getParam().setIndex(challengeListingIndexname);
+            logger.info("start populating index - " + request.getParam().getIndex()  + " for challenge - " + request.getParam().getChallengeIds());
+            Date startTime = new Date();
 			challengeListingFeederManager.pushChallengeFeeder(request.getParam());
+            long usedTime = new Date().getTime() - startTime.getTime();
+            logger.info("end populating index - " + request.getParam().getIndex()  + " for challenge - " + request.getParam().getChallengeIds() + ", using " + usedTime + "ms");
 			String challengeDetailsIndexname = this.config.getJobsConfiguration().getLoadChangedChallengesDetailJob().getIndexName();
 			request.getParam().setIndex(challengeDetailsIndexname);
+            logger.info("start populating index - " + request.getParam().getIndex()  + " for challenge - " + request.getParam().getChallengeIds());
+            startTime = new Date();
 			challengeDetailFeederManager.pushChallengeFeeder(request.getParam());
-			return MetadataApiResponseFactory.createResponse(null);
+            usedTime = new Date().getTime() - startTime.getTime();
+            logger.info("end populating index - " + request.getParam().getIndex()  + " for challenge - " + request.getParam().getChallengeIds() + ", using " + usedTime + "ms");
+            return MetadataApiResponseFactory.createResponse(null);
 		} catch (Exception e) {
 			return ErrorHandler.handle(e, logger);
 		}
