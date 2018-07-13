@@ -4,10 +4,10 @@ SELECT u.handle as submitter,
        cs.long_component_state_id || s.submission_number as submissionId,
        rr.point_total as points,
        u.handle_lower
-  FROM long_comp_result rr
+  FROM informixoltp\:long_comp_result rr
      , user u
-     , long_component_state cs
-     , outer (long_submission s)
+     , informixoltp\:long_component_state cs
+     , outer (informixoltp\:long_submission s)
  WHERE rr.attended = 'Y'
    and rr.coder_id = u.user_id
    and cs.coder_id = u.user_id
