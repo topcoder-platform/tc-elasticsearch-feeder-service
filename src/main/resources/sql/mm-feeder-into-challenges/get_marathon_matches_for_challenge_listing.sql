@@ -10,12 +10,10 @@ tcdirect.name as projectName,
 'SYSTEM' as reviewType,
 r.forum_id as forumId,
 CASE
-     WHEN (r.status = 'P') THEN 'Completed'
-     WHEN (r.status = 'A') THEN 'Active'
-     WHEN (r.status = 'F') THEN 'Draft'
-     WHEN (r.status = 'X') THEN 'Deleted'
-     WHEN (r.status = 'T') THEN 'Active'
-     ELSE 'Open'
+     WHEN (rs_sub.start_time > CURRENT) THEN 'Draft'
+     WHEN (rs_sub.end_time > CURRENT AND CURRENT >= rs_sub.start_time ) THEN 'Active'
+     WHEN (CURRENT > rs_sub.end_time) THEN 'Completed'
+     ELSE 'Unknown'
  END as status,
 rs_reg.start_time as registrationStartDate,
 rs_reg.end_time as registrationEndDate,
