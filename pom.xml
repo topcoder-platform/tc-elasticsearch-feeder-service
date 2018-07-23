@@ -213,11 +213,11 @@
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <!--dependency>
+        <dependency>
             <groupId>com.fortitudetec</groupId>
             <artifactId>spring-appcontext-builder</artifactId>
             <version>0.1.0</version>
-        </dependency-->
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -334,14 +334,14 @@
                 </releases>
     	</repository>	
 
-        <!--repository>
+        <repository>
               <id>temp-maven-repo</id>
               <url>https://github.com/appirio-tech/temp-maven-repo/raw/master</url>
               <snapshots>
                   <enabled>true</enabled>
                   <updatePolicy>always</updatePolicy>
               </snapshots>
-        </repository-->
+        </repository>
         <repository>
             <id>com.springsource.repository.bundles.release</id>
             <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
