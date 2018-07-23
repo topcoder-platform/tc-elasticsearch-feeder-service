@@ -65,7 +65,7 @@ workflows:
       - deploy_dev:
           filters:
             branches:
-              only: dev
+              only: [dev,dev-circlec2]
           requires:
             - build
       - deploy_prod:
