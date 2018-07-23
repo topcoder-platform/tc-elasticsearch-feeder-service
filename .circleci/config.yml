@@ -43,12 +43,12 @@ jobs:
             sudo sed -i.bak "/<\/servers>/ s/.*/${C}\n&/" /opt/apache-maven/conf/settings.xml     
       - setup_remote_docker          
       - restore_cache:
-          key: tc-elasticsearch-feeder-service-{{ checksum "~/project/service/pom.xml" }}
-      - run: mvn -f ~/project/service/pom.xml dependency:go-offline
+          key: tc-elasticsearch-feeder-service-{{ checksum "~/project/pom.xml" }}
+      - run: mvn -f ~/project/pom.xml dependency:go-offline
       - save_cache:
           paths:
             - ~/.m2
-          key: tc-elasticsearch-feeder-service-{{ checksum "~/project/service/pom.xml" }}
+          key: tc-elasticsearch-feeder-service-{{ checksum "~/project/pom.xml" }}
           
       - run: mvn clean compile package
       - persist_to_workspace:
