@@ -213,11 +213,11 @@
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>com.fortitudetec</groupId>
             <artifactId>spring-appcontext-builder</artifactId>
             <version>0.1.0</version>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
