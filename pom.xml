@@ -8,7 +8,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <core.api.version>4.0.1-DEV</core.api.version>
+        <core.api.version>4.2.0</core.api.version>
         <supply-library.version>1.0.20-SNAPSHOT</supply-library.version>
         <spring.version>4.2.5.RELEASE</spring.version>
         <jackson-version>2.7.3</jackson-version>
@@ -17,6 +17,15 @@
     </properties>
 
     <build>
+
+         <extensions>
+			<extension>
+				<groupId>org.kuali.maven.wagons</groupId>
+				<artifactId>maven-s3-wagon</artifactId>
+				<version>1.2.1</version>
+			</extension>
+		</extensions>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -204,11 +213,11 @@
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>com.fortitudetec</groupId>
             <artifactId>spring-appcontext-builder</artifactId>
             <version>0.1.0</version>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -301,13 +310,38 @@
 
     <repositories>
         <repository>
+                    <id>tcrepo</id>
+                    <url>s3://tc-mvn-repo/release</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                    <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>always</updatePolicy>
+                    </releases>
+         </repository>
+        <repository>
+                <id>tcreposnap</id>
+                    <url>s3://tc-mvn-repo/snapshot</url>
+                    <snapshots>
+                    <enabled>true</enabled>
+                    <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                <releases>
+                    <enabled>false</enabled>
+                    <updatePolicy>always</updatePolicy>
+                </releases>
+    	</repository>	
+
+        <!--repository>
               <id>temp-maven-repo</id>
               <url>https://github.com/appirio-tech/temp-maven-repo/raw/master</url>
               <snapshots>
                   <enabled>true</enabled>
                   <updatePolicy>always</updatePolicy>
               </snapshots>
-        </repository>
+        </repository-->
         <repository>
             <id>com.springsource.repository.bundles.release</id>
             <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
@@ -374,7 +408,16 @@
 
     <distributionManagement>
         <!-- for deployment on the build server -->
-        <repository>
+		 <snapshotRepository>
+     		 <id>tcreposnap</id>
+     		 <url>s3://tc-mvn-repo/snapshot</url>
+    	</snapshotRepository>
+    	<repository>
+    		  <id>tcrepo</id>
+     		 <url>s3://tc-mvn-repo/release</url>
+    	</repository>
+
+        <!--repository>
             <id>appirio-repo</id>
             <name>Appirio Maven Repository</name>
             <url>file:///mnt/maven/repository</url>
@@ -383,6 +426,6 @@
             <id>appirio-repo</id>
             <name>Appirio Maven Repository</name>
             <url>file:///mnt/maven/repository</url>
-        </snapshotRepository>
+        </snapshotRepository-->
     </distributionManagement>
 </project>
