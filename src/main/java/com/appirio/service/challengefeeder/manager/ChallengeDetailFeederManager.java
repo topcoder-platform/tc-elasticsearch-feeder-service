@@ -10,6 +10,7 @@ import com.appirio.service.challengefeeder.api.detail.RegistrantData;
 import com.appirio.service.challengefeeder.api.detail.SubmissionData;
 import com.appirio.service.challengefeeder.api.detail.SubmissionImage;
 import com.appirio.service.challengefeeder.api.detail.TermsOfUseData;
+import com.appirio.service.challengefeeder.api.detail.UserSubmissionData;
 import com.appirio.service.challengefeeder.dao.ChallengeDetailFeederDAO;
 import com.appirio.service.challengefeeder.dto.ChallengeFeederParam;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.Setter;
@@ -52,6 +54,11 @@ public class ChallengeDetailFeederManager {
      * contest submission type id
      */
     private static final Long CONTEST_SUBMISSION_TYPE_ID = 1L;
+
+    /**
+     * Checkpoint submission type id
+     */
+    private static final Long CHECKPOINT_SUBMISSION_TYPE_ID = 3L;
 
     /**
      * DAO to access challenge data from the transactional database.
@@ -236,29 +243,36 @@ public class ChallengeDetailFeederManager {
      * @param submissions the submissions to use
      */
     private void associateAllSubmissions(List<ChallengeDetailData> challenges, List<SubmissionData> submissions) {
-        for (SubmissionData item : submissions) {
-            for (ChallengeDetailData challenge : challenges) {
-                if (challenge.getId().equals(item.getChallengeId())) {
-                    if (CONTEST_SUBMISSION_TYPE_ID.equals(item.getSubmissionTypeId())) {
-                        if (challenge.getSubmissions() == null) {
-                            challenge.setSubmissions(new ArrayList<>());
-                        }
-                        if ("DESIGN".equalsIgnoreCase(challenge.getTrack()))
-                            item.setSubmissionImage(generateSubmissionImageUrls(item.getSubmissionId()));
-                        challenge.getSubmissions().add(item);
-                    } else {
-                        if (challenge.getCheckpoints() == null) {
-                            challenge.setCheckpoints(new ArrayList<>());
-                        }
-                        BaseSubmissionData checkpoint = new BaseSubmissionData();
-                        checkpoint.setSubmissionId(item.getSubmissionId());
-                        checkpoint.setSubmissionTime(item.getSubmissionTime());
-                        checkpoint.setSubmitter(item.getSubmitter());
-                        challenge.getCheckpoints().add(checkpoint);
-                    }
+        Map<Long, Map<Long, List<SubmissionData>>> challengeSubmissions = submissions.stream()
+                .filter(c -> CONTEST_SUBMISSION_TYPE_ID.equals(c.getSubmissionTypeId()))
+                .collect(Collectors.groupingBy(SubmissionData::getChallengeId,
+                            Collectors.groupingBy(SubmissionData::getSubmitterId)));
+
+        Map<Long, List<BaseSubmissionData>> checkpointSubmissions = submissions.stream()
+                .filter(c -> CHECKPOINT_SUBMISSION_TYPE_ID.equals(c.getSubmissionTypeId()))
+                .map(c -> new BaseSubmissionData(c.getChallengeId(), c.getSubmissionId(), c.getSubmitter(), c.getSubmissionTime()))
+                .collect(Collectors.groupingBy(BaseSubmissionData::getChallengeId));
+
+        challenges.forEach(c -> {
+            if (challengeSubmissions.get(c.getId()) != null) {
+                List<UserSubmissionData> userSubmissions = new ArrayList<>();
+                for (Map.Entry<Long, List<SubmissionData>> entry : challengeSubmissions.get(c.getId()).entrySet()) {
+                    UserSubmissionData userSubmissionData = new UserSubmissionData();
+                    userSubmissionData.setSubmitterId(entry.getKey());
+                    userSubmissionData.setSubmitter(entry.getValue().get(0).getSubmitter());
+                    if ("DESIGN".equalsIgnoreCase(c.getTrack()))
+                        entry.getValue().forEach(s -> s.setSubmissionImage(
+                                generateSubmissionImageUrls(s.getSubmissionId())));
+
+                    userSubmissionData.setSubmissions(entry.getValue());
+                    userSubmissions.add(userSubmissionData);
                 }
+                c.setSubmissions(userSubmissions);
             }
-        }
+            if (checkpointSubmissions.get(c.getId()) != null) {
+                c.setCheckpoints(checkpointSubmissions.get(c.getId()));
+            }
+        });
     }
 
     /**
