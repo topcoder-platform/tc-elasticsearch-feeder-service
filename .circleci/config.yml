@@ -83,7 +83,7 @@ workflows:
       - deploy_dev:
           filters:
             branches:
-              only: [dev]
+              only: [dummy-dev]
           requires:
             - build
       - deploy_prod:
@@ -95,6 +95,6 @@ workflows:
       - deploy_test:
           filters:
             branches:
-              only: [test-env,dev-circlec2]
+              only: dev
           requires:
             - build
