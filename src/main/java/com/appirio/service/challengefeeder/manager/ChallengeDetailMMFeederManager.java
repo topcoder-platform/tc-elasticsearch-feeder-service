@@ -4,10 +4,14 @@
 package com.appirio.service.challengefeeder.manager;
 
 import com.appirio.service.challengefeeder.api.detail.ChallengeDetailData;
+import com.appirio.service.challengefeeder.api.detail.MmResult;
+import com.appirio.service.challengefeeder.api.detail.Rank;
 import com.appirio.service.challengefeeder.api.detail.RegistrantData;
+import com.appirio.service.challengefeeder.api.detail.Score;
 import com.appirio.service.challengefeeder.api.detail.SubmissionData;
 import com.appirio.service.challengefeeder.api.detail.UserSubmissionData;
 import com.appirio.service.challengefeeder.dao.ChallengeDetailMMFeederDAO;
+import com.appirio.service.challengefeeder.dao.MarathonMatchResultFeederDAO;
 import com.appirio.service.challengefeeder.dto.MmFeederParam;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.supply.SupplyException;
@@ -49,6 +53,11 @@ public class ChallengeDetailMMFeederManager {
     private final ChallengeDetailMMFeederDAO challengeDetailMMFeederDAO;
 
     /**
+     * DAO to access marathon match on topcoder_dw
+     */
+    private final MarathonMatchResultFeederDAO marathonMatchResultFeederDAO;
+
+    /**
      * The jestClient field
      */
     private final JestClient jestClient;
@@ -59,9 +68,11 @@ public class ChallengeDetailMMFeederManager {
      * @param jestClient the jestClient to use
      * @param challengeDetailMMFeederDAO the challengeDetailMMFeederDAO to use
      */
-    public ChallengeDetailMMFeederManager(JestClient jestClient, ChallengeDetailMMFeederDAO challengeDetailMMFeederDAO) {
+    public ChallengeDetailMMFeederManager(JestClient jestClient, ChallengeDetailMMFeederDAO challengeDetailMMFeederDAO,
+                                          MarathonMatchResultFeederDAO marathonMatchResultFeederDAO) {
         this.jestClient = jestClient;
         this.challengeDetailMMFeederDAO = challengeDetailMMFeederDAO;
+        this.marathonMatchResultFeederDAO = marathonMatchResultFeederDAO;
     }
 
     /**
@@ -91,11 +102,13 @@ public class ChallengeDetailMMFeederManager {
         }
         
         List<SubmissionData> submissions = this.challengeDetailMMFeederDAO.getSubmissionsForChallengeDetail(queryParameter);
-        associateAllSubmissions(mms, submissions);
+        List<MmResult> provisonalResult = this.challengeDetailMMFeederDAO.getMmProvisionalResult(queryParameter);
+        List<MmResult> finalResult = this.marathonMatchResultFeederDAO.getMmFinalResult(queryParameter);
+        associateAllSubmissions(mms, submissions, provisonalResult, finalResult);
         
         List<RegistrantData> registrants = this.challengeDetailMMFeederDAO.getRegistrants(queryParameter);
         associateAllRegistrants(mms, registrants);
-        
+
         try {
             JestClientUtils.pushFeeders(jestClient, param, mms);
         } catch (IOException ioe) {
@@ -106,12 +119,27 @@ public class ChallengeDetailMMFeederManager {
     }
     
     /**
-     * Associate all submissions
+     * Associate all submissions and result
      *
      * @param challenges the challenges to use
      * @param submissions the submissions to use
+     * @param provisionalResult the provisional result
+     * @param finalResult the final result
      */
-    private static void associateAllSubmissions(List<ChallengeDetailData> challenges, List<SubmissionData> submissions) {
+    private static void associateAllSubmissions(List<ChallengeDetailData> challenges, List<SubmissionData> submissions,
+                                                List<MmResult> provisionalResult, List<MmResult> finalResult) {
+        for (int i = 0; i < provisionalResult.size(); i++) {
+            provisionalResult.get(i).setProvisionalRank(i + 1);
+        }
+
+        Map<Long, Map<Long, List<MmResult>>> provisionalResultMap = provisionalResult.stream()
+                .collect(Collectors.groupingBy(MmResult::getChallengeId,
+                        Collectors.groupingBy(MmResult::getUserId)));
+
+        Map<Long, Map<Long, List<MmResult>>> finalResultMap = finalResult.stream()
+                .collect(Collectors.groupingBy(MmResult::getChallengeId,
+                        Collectors.groupingBy(MmResult::getUserId)));
+
         Map<Long, Map<Long, List<SubmissionData>>> challengeSubmissions = submissions.stream()
                 .collect(Collectors.groupingBy(SubmissionData::getChallengeId,
                         Collectors.groupingBy(SubmissionData::getSubmitterId)));
@@ -124,6 +152,37 @@ public class ChallengeDetailMMFeederManager {
                     userSubmissionData.setSubmitterId(entry.getKey());
                     userSubmissionData.setSubmitter(entry.getValue().get(0).getSubmitter());
                     userSubmissionData.setSubmissions(entry.getValue());
+
+                    MmResult provisionItem = null;
+                    MmResult finalItem = null;
+                    try {
+                        provisionItem = provisionalResultMap.get(c.getId()).get(entry.getKey()).get(0);
+                    } catch (Exception e) {
+                        //do nothing
+                    }
+                    try {
+                        finalItem = finalResultMap.get(c.getId()).get(entry.getKey()).get(0);
+                    } catch (Exception e) {
+                        //do nothing
+                    }
+                    Rank rank = null;
+                    Score score = null;
+                    if (finalItem != null) {
+                        rank = new Rank();
+                        score = new Score();
+                        rank.setFinalRank(finalItem.getFinalRank());
+                        rank.setInterim(finalItem.getProvisionalRank());
+                        score.setFinalScore(finalItem.getFinalScore());
+                        score.setProvisional(finalItem.getProvisionalScore());
+                    } else if (provisionItem != null) {
+                        rank = new Rank();
+                        score = new Score();
+                        rank.setInterim(provisionItem.getProvisionalRank());
+                        score.setProvisional(provisionItem.getProvisionalScore());
+                    }
+
+                    userSubmissionData.setRank(rank);
+                    userSubmissionData.setScore(score);
                     userSubmissions.add(userSubmissionData);
                 }
                 c.setSubmissions(userSubmissions);

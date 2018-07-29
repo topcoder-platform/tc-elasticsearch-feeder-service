@@ -27,6 +27,16 @@ databases:
     maxSize: 5
     initialSize: 1
 
+  - datasourceName: topcoder_dw
+    driverClass: com.informix.jdbc.IfxDriver
+    user: "${DW_USER:-informix}"
+    password: "${DW_PW:-1nf0rm1x}"
+    url: "${DW_URL:-jdbc:informix-sqli://cockpit.cloud.topcoder.com:2021/topcoder_dw:INFORMIXSERVER=informixoltp_tcp;IFX_LOCK_MODE_WAIT=5;OPTCOMPIND=0;STMT_CACHE=1;}"
+    validationQuery: select 1 from systables
+    minSize: 1
+    maxSize: 5
+    initialSize: 1
+
 jestClientConfiguration:
   # the elastic search URL
   elasticSearchUrl: "${ELASTIC_SEARCH_URL:-http://cockpit.cloud.topcoder.com:9200}"
