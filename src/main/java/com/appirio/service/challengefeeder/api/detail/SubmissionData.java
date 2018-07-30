@@ -42,15 +42,6 @@ public class SubmissionData extends BaseSubmissionData {
     @Getter
     @Setter
     private Double finalScore;
-
-
-    /**
-     * The challengeId field
-     */
-    @Getter
-    @Setter
-    @JsonIgnore
-    private transient Long challengeId;
     
     /**
      * The submissionType field
@@ -64,7 +55,14 @@ public class SubmissionData extends BaseSubmissionData {
      */
     @Getter
     @Setter
-    private Long submitterId;
+    private transient Long submitterId;
+
+    /**
+     * The submitter field
+     */
+    @Getter
+    @Setter
+    private transient String submitter;
 
     /**
      * The submissionStatus field

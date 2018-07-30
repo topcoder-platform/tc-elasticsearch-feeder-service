@@ -34,6 +34,13 @@ public class BaseSubmissionData {
     private String submitter;
 
     /**
+     * The challenge Id field
+     */
+    @Getter
+    @Setter
+    private transient Long challengeId;
+
+    /**
      * The submissionTime field
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
@@ -41,4 +48,13 @@ public class BaseSubmissionData {
     @Getter
     @Setter
     private Date submissionTime;
+
+    public BaseSubmissionData() {}
+
+    public BaseSubmissionData(Long challengeId, Long submissionId, String submitter, Date submissionTime) {
+        this.challengeId = challengeId;
+        this.submissionId = submissionId;
+        this.submitter = submitter;
+        this.submissionTime = submissionTime;
+    }
 }
