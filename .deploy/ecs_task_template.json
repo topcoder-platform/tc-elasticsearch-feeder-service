@@ -49,6 +49,18 @@
             "value": "%s"
           },
           {
+            "name": "DW_PW",
+            "value": "%s"
+          },
+          {
+            "name": "DW_URL",
+            "value": "%s"
+          },
+          {
+            "name": "DW_USER",
+            "value": "%s"
+          },
+          {
             "name": "TC_JWT_KEY",
             "value": "%s"
           },
