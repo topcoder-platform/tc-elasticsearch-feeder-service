@@ -311,7 +311,7 @@
     <repositories>
         <repository>
                     <id>tcrepo</id>
-                    <url>s3://tc-mvn-repo/release</url>
+                    <url>http://tc-mvn-repo.s3-website-us-east-1.amazonaws.com/release</url>
                     <snapshots>
                         <enabled>false</enabled>
                         <updatePolicy>always</updatePolicy>
@@ -323,7 +323,7 @@
          </repository>
         <repository>
                 <id>tcreposnap</id>
-                    <url>s3://tc-mvn-repo/snapshot</url>
+                    <url>http://tc-mvn-repo.s3-website-us-east-1.amazonaws.com/snapshot</url>
                     <snapshots>
                     <enabled>true</enabled>
                     <updatePolicy>always</updatePolicy>
