@@ -1,6 +1,7 @@
 select
 lcs.round_id as challengeId,
 lcs.long_component_state_id || ls.submission_number as submissionId,
+user.user_id as submitterId,
 user.handle as submitter,
 ls.submission_points as finalScore,
 ls.submission_points as initialScore,

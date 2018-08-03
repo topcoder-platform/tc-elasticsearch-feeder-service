@@ -1,0 +1,100 @@
+version: 2
+
+# Java image to compile the source code
+java_env: &java_env
+  docker:
+    - image: circleci/openjdk:8-jdk
+
+# Python image to run aws utilities
+python_env: &python_env
+  docker:
+    - image: circleci/python:2.7-stretch-browsers
+
+# Instructions of installing aws utilities
+install_awscli: &install_awscli
+  name: "Install awscli"
+  command: |
+    sudo pip install awscli awsebcli --upgrade
+    aws --version
+    eb --version
+
+# Instructions of deployment
+deploy_steps: &deploy_steps
+  - checkout
+  - attach_workspace:
+      at: .
+  - run: *install_awscli
+  - setup_remote_docker
+  - run: .deploy/ecs_deploy.sh $DEPLOY_ENV
+
+jobs:
+  build:
+    <<: *java_env
+    steps:
+      - checkout
+      - run:
+          name: Configuring maven
+          command: |
+            MVNSERVERSETTING='<server>\n  <id>tcrepo</id> \n <username>${env.MVNUSERNAME}</username> \n <password>${env.MVNPASSWD}</password> \n  </server> '
+            C=$(echo $MVNSERVERSETTING | sed 's/\//\\\//g')
+            sudo sed -i.bak "/<\/servers>/ s/.*/${C}\n&/" /opt/apache-maven/conf/settings.xml
+            MVNSERVERSETTING='<server>\n  <id>tcreposnap</id> \n <username>${env.MVNUSERNAME}</username> \n <password>${env.MVNPASSWD}</password> \n  </server> '
+            C=$(echo $MVNSERVERSETTING | sed 's/\//\\\//g')
+            sudo sed -i.bak "/<\/servers>/ s/.*/${C}\n&/" /opt/apache-maven/conf/settings.xml     
+      - setup_remote_docker          
+      - restore_cache:
+          key: tc-elasticsearch-feeder-service-{{ checksum "~/project/pom.xml" }}
+      - run: mvn -f ~/project/pom.xml dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: tc-elasticsearch-feeder-service-{{ checksum "~/project/pom.xml" }}
+          
+      - run: mvn clean compile package
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./target
+
+  deploy_prod:
+    <<: *python_env
+    environment:
+      DEPLOY_ENV: "PROD"
+    steps: *deploy_steps
+
+  deploy_dev:
+    <<: *python_env
+    environment:
+      DEPLOY_ENV: "DEV"
+    steps: *deploy_steps
+  
+  deploy_test:
+    <<: *python_env
+    environment:
+      DEPLOY_ENV: "TEST"
+    steps: *deploy_steps
+      
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy_dev:
+          filters:
+            branches:
+              only: [dummy-dev]
+          requires:
+            - build
+      - deploy_prod:
+          filters:
+            branches:
+              only: master
+          requires:
+            - build
+      - deploy_test:
+          filters:
+            branches:
+              only: dev
+          requires:
+            - build

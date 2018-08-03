@@ -35,7 +35,7 @@ public class ChallengeDetailData extends IdentifiableData {
      */
     @Getter
     @Setter
-    private List<SubmissionData> submissions;
+    private List<UserSubmissionData> submissions;
 
     /**
      * The detailRequirement field

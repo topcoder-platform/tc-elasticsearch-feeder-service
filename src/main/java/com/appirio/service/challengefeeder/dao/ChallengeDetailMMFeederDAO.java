@@ -6,6 +6,7 @@ package com.appirio.service.challengefeeder.dao;
 import java.sql.Date;
 import java.util.List;
 
+import com.appirio.service.challengefeeder.api.detail.MmResult;
 import org.skife.jdbi.v2.sqlobject.Bind;
 
 import com.appirio.service.challengefeeder.api.detail.ChallengeDetailData;
@@ -66,4 +67,7 @@ public interface ChallengeDetailMMFeederDAO {
      */
     @SqlQueryFile("sql/mmatches-feeder/job/get_mm_registration_phase_started.sql")
     List<TCID> getMatchesWithRegistrationPhaseStartedIds(@Bind("initialDate") Date date, @Bind("lastRunTimestamp") Long lastRunTimestamp);
+
+    @SqlQueryFile("sql/mm-feeder-into-challenges/get_marathon_match_standing.sql")
+    List<MmResult> getMmProvisionalResult(@ApiQueryInput QueryParameter queryParameter);
 }

@@ -27,6 +27,9 @@ LOG_LEVEL=$(eval "echo \$${ENV}_LOG_LEVEL")
 OLTP_USER=$(eval "echo \$${ENV}_OLTP_USER")
 OLTP_PW=$(eval "echo \$${ENV}_OLTP_PW")
 OLTP_URL=$(eval "echo \$${ENV}_OLTP_URL")
+DW_USER=$(eval "echo \$${ENV}_DW_USER")
+DW_PW=$(eval "echo \$${ENV}_DW_PW")
+DW_URL=$(eval "echo \$${ENV}_DW_URL")
 
 JQ="jq --raw-output --exit-status"
 
@@ -45,7 +48,8 @@ cp $WORKSPACE/.deploy/ecs_task_template.json ecs_task_template.json
 
 echo "Logging into docker"
 echo "############################"
-docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWD
+#docker login $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWD
+docker login -u $DOCKER_USER -p $DOCKER_PASSWD
 
 #Converting environment varibale as lower case for build purpose
 #ENV=`echo "$ENV" | tr '[:upper:]' '[:lower:]'`
@@ -63,7 +67,7 @@ configure_aws_cli() {
 
 build_ecr_image() {
   echo "Building docker image..."
- 	eval $(aws ecr get-login  --region $AWS_REGION)
+ 	eval $(aws ecr get-login  --region $AWS_REGION --no-include-email)
 	TAG=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$AWS_REPOSITORY:$CIRCLE_SHA1
 	docker build -t $TAG .
   echo "Docker image built with the TAG :"
@@ -83,7 +87,7 @@ push_ecr_image() {
 make_task_def(){
   echo "Creating ECS task definition..."  
   task_template=`cat ecs_task_template.json`
-  task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $AWS_ECS_SERVICE $AWS_REGION "$AUTH_DOMAIN" $AWS_SIGNING_ENABLED $ELASTIC_SEARCH_URL $OLTP_PW "$OLTP_URL" $OLTP_USER $TC_JWT_KEY $REDISSON_JOB_SINGLE_SERVER_ADDRESS $LOG_LEVEL $TAG $AWS_ECS_SERVICE $AWS_ACCOUNT_ID $AWS_ECS_SERVICE)
+  task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $AWS_ECS_SERVICE $AWS_REGION "$AUTH_DOMAIN" $AWS_SIGNING_ENABLED $ELASTIC_SEARCH_URL $OLTP_PW "$OLTP_URL" $OLTP_USER $DW_PW $DW_URL $DW_USER $TC_JWT_KEY $REDISSON_JOB_SINGLE_SERVER_ADDRESS $LOG_LEVEL $TAG $AWS_ECS_SERVICE $AWS_ACCOUNT_ID $AWS_ECS_SERVICE)
   echo $task_def > task_def.json
   echo "ECS task definition is created : "
   echo $task_def

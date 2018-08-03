@@ -15,4 +15,4 @@ end_time as actualEndTime,
 end_time as scheduledEndTime
 from informixoltp\:round_segment rs
 left join informixoltp\:segment s on rs.segment_id = s.segment_id
-where {filter}
+where s.segment_id in (1,2,5) and {filter}

@@ -58,6 +58,7 @@ public class LoadChangedChallengesDetailJob extends BaseJob {
             this.jobEnableKey = this.indexName + BaseJob.JOB_ENABLE_SUFFIX;
             this.batchSize = this.config.getJobsConfiguration().getLoadChangedChallengesDetailJob().getBatchUpdateSize();
         }
+        this.challengeDetailFeederManager.setSubmissionImageUrl(this.config.getCommonConfiguration().getSubmissionImageUrl());
     }
 
     /**

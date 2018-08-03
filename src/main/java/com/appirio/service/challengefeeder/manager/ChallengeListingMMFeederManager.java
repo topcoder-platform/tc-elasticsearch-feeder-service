@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,6 +65,17 @@ public class ChallengeListingMMFeederManager {
      * DAO to access marathon match data from the transactional database.
      */
     private final ChallengeListingMMFeederDAO challengeListingMmFeederDAO;
+
+    /**
+     * Phase name map from MM segment
+     */
+    private static final Map<Long, String> PHASE_NAME_MAP = new HashMap<>();
+
+    static {
+        PHASE_NAME_MAP.put(1L, "Registration");
+        PHASE_NAME_MAP.put(2L, "Submission");
+        PHASE_NAME_MAP.put(5L, "Review");
+    }
 
     /**
      * The jestClient field
@@ -237,6 +249,7 @@ public class ChallengeListingMMFeederManager {
                     if (challenge.getPhases() == null) {
                         challenge.setPhases(new ArrayList<>());
                     }
+                    aPhase.setType(PHASE_NAME_MAP.get(aPhase.getPhaseId()));
                     challenge.getPhases().add(aPhase);
                     if (challenge.getCurrentPhases() == null) {
                         challenge.setCurrentPhases(new ArrayList<>());
