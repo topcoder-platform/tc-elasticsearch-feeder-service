@@ -15,4 +15,4 @@ END as submissionTime,
 from informixoltp\:long_submission ls
 left join informixoltp\:long_component_state lcs on lcs.long_component_state_id = ls.long_component_state_id
 left join user on user.user_id = lcs.coder_id
-where ls.example = 0 AND {filter}
+where ls.example = 0 AND {filter} ORDER BY ls.submit_time DESC
