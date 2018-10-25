@@ -1,5 +1,5 @@
 SELECT
-   contest.contest_id AS id,
+   round.round_id AS id,
    contest.name AS name,
    CASE
       WHEN
@@ -35,9 +35,9 @@ SELECT
    contest.contest_id AS contestId,
    component.component_id AS componentId
 FROM
-   informixoltp\:contest AS contest
+   informixoltp\:round AS round
    INNER JOIN
-      informixoltp\:round AS round
+      informixoltp\:contest AS contest
       ON round.contest_id = contest.contest_id
    LEFT JOIN
       INFORMIXOLTP\:round_segment AS registration_segment

@@ -1,5 +1,5 @@
 SELECT DISTINCT
-   contest.contest_id AS id,
+   round.round_id AS id,
    round_registration.coder_id AS userId,
    round_registration.coder_id || (SELECT CASE
                  WHEN q.count > 0 THEN 'T'
@@ -11,10 +11,7 @@ SELECT DISTINCT
          WHERE long_comp_result.round_id = round.round_id
            AND long_comp_result.coder_id = round_registration.coder_id and long_comp_result.rated_ind = 1) AS q) AS isRatedForMM
 FROM
-   informixoltp\:contest AS contest
-   INNER JOIN
-      informixoltp\:round AS round
-      ON round.contest_id = contest.contest_id
+   informixoltp\:round AS round
    LEFT JOIN
       informixoltp\:round_registration AS round_registration
       ON round_registration.round_id = round.round_id
