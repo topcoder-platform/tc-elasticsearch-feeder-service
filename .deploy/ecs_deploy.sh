@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# fail if any occurs
+set -e
+
 ENV=$1
 if [[ -z "$ENV" ]] ; then
 	echo "Environment should be set on startup with one of the below values"
