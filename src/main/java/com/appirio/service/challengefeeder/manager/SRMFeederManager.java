@@ -3,12 +3,6 @@
  */
 package com.appirio.service.challengefeeder.manager;
 
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.appirio.service.challengefeeder.Helper;
 import com.appirio.service.challengefeeder.api.SRMData;
 import com.appirio.service.challengefeeder.dao.SRMFeederDAO;
@@ -17,8 +11,12 @@ import com.appirio.supply.SupplyException;
 import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
 import com.appirio.tech.core.auth.AuthUser;
-
 import io.searchbox.client.JestClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -82,6 +80,9 @@ public class SRMFeederManager {
 
         // fetch SRM data from persistence
         List<SRMData> srms = this.srmFeederDAO.getSRMs(queryParameter);
+        for (SRMData srm : srms) {
+            srm.setStatus(srm.getStatus().trim());
+        }
 
         // check if all SRMs with given roundIds exist
         DataScienceHelper.checkDataScienceExist(roundIds, srms);
