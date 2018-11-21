@@ -8,7 +8,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <core.api.version>4.2.0</core.api.version>
+        <core.api.version>4.3.1</core.api.version>
         <supply-library.version>1.0.20-SNAPSHOT</supply-library.version>
         <spring.version>4.2.5.RELEASE</spring.version>
         <jackson-version>2.7.3</jackson-version>
@@ -17,14 +17,13 @@
     </properties>
 
     <build>
-
-         <extensions>
-			<extension>
-				<groupId>org.kuali.maven.wagons</groupId>
-				<artifactId>maven-s3-wagon</artifactId>
-				<version>1.2.1</version>
-			</extension>
-		</extensions>
+        <extensions>
+            <extension>
+		<groupId>org.kuali.maven.wagons</groupId>
+		<artifactId>maven-s3-wagon</artifactId>
+		<version>1.2.1</version>
+     	    </extension>
+        </extensions>
 
         <plugins>
             <plugin>

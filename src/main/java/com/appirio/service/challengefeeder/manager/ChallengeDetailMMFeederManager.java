@@ -11,7 +11,6 @@ import com.appirio.service.challengefeeder.api.detail.Score;
 import com.appirio.service.challengefeeder.api.detail.SubmissionData;
 import com.appirio.service.challengefeeder.api.detail.UserSubmissionData;
 import com.appirio.service.challengefeeder.dao.ChallengeDetailMMFeederDAO;
-import com.appirio.service.challengefeeder.dao.MarathonMatchResultFeederDAO;
 import com.appirio.service.challengefeeder.dto.MmFeederParam;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.supply.SupplyException;
@@ -53,11 +52,6 @@ public class ChallengeDetailMMFeederManager {
     private final ChallengeDetailMMFeederDAO challengeDetailMMFeederDAO;
 
     /**
-     * DAO to access marathon match on topcoder_dw
-     */
-    private final MarathonMatchResultFeederDAO marathonMatchResultFeederDAO;
-
-    /**
      * The jestClient field
      */
     private final JestClient jestClient;
@@ -68,11 +62,9 @@ public class ChallengeDetailMMFeederManager {
      * @param jestClient the jestClient to use
      * @param challengeDetailMMFeederDAO the challengeDetailMMFeederDAO to use
      */
-    public ChallengeDetailMMFeederManager(JestClient jestClient, ChallengeDetailMMFeederDAO challengeDetailMMFeederDAO,
-                                          MarathonMatchResultFeederDAO marathonMatchResultFeederDAO) {
+    public ChallengeDetailMMFeederManager(JestClient jestClient, ChallengeDetailMMFeederDAO challengeDetailMMFeederDAO) {
         this.jestClient = jestClient;
         this.challengeDetailMMFeederDAO = challengeDetailMMFeederDAO;
-        this.marathonMatchResultFeederDAO = marathonMatchResultFeederDAO;
     }
 
     /**
@@ -103,8 +95,7 @@ public class ChallengeDetailMMFeederManager {
         
         List<SubmissionData> submissions = this.challengeDetailMMFeederDAO.getSubmissionsForChallengeDetail(queryParameter);
         List<MmResult> provisonalResult = this.challengeDetailMMFeederDAO.getMmProvisionalResult(queryParameter);
-        List<MmResult> finalResult = this.marathonMatchResultFeederDAO.getMmFinalResult(queryParameter);
-        associateAllSubmissions(mms, submissions, provisonalResult, finalResult);
+        associateAllSubmissions(mms, submissions, provisonalResult);
         
         List<RegistrantData> registrants = this.challengeDetailMMFeederDAO.getRegistrants(queryParameter);
         associateAllRegistrants(mms, registrants);
@@ -124,19 +115,22 @@ public class ChallengeDetailMMFeederManager {
      * @param challenges the challenges to use
      * @param submissions the submissions to use
      * @param provisionalResult the provisional result
-     * @param finalResult the final result
      */
     private static void associateAllSubmissions(List<ChallengeDetailData> challenges, List<SubmissionData> submissions,
-                                                List<MmResult> provisionalResult, List<MmResult> finalResult) {
+                                                List<MmResult> provisionalResult) {
+        int provRank = 0;
+        int provRankNoTie = 0;
+        Double proveScore = 0.0;
         for (int i = 0; i < provisionalResult.size(); i++) {
-            provisionalResult.get(i).setProvisionalRank(i + 1);
+            provRankNoTie++;
+            if (!proveScore.equals(provisionalResult.get(i).getProvisionalScore())) {
+                provRank = provRankNoTie;
+            }
+            proveScore = provisionalResult.get(i).getProvisionalScore();
+            provisionalResult.get(i).setProvisionalRank(provRank);
         }
 
         Map<Long, Map<Long, List<MmResult>>> provisionalResultMap = provisionalResult.stream()
-                .collect(Collectors.groupingBy(MmResult::getChallengeId,
-                        Collectors.groupingBy(MmResult::getUserId)));
-
-        Map<Long, Map<Long, List<MmResult>>> finalResultMap = finalResult.stream()
                 .collect(Collectors.groupingBy(MmResult::getChallengeId,
                         Collectors.groupingBy(MmResult::getUserId)));
 
@@ -154,31 +148,23 @@ public class ChallengeDetailMMFeederManager {
                     userSubmissionData.setSubmissions(entry.getValue());
 
                     MmResult provisionItem = null;
-                    MmResult finalItem = null;
                     try {
                         provisionItem = provisionalResultMap.get(c.getId()).get(entry.getKey()).get(0);
                     } catch (Exception e) {
                         //do nothing
                     }
-                    try {
-                        finalItem = finalResultMap.get(c.getId()).get(entry.getKey()).get(0);
-                    } catch (Exception e) {
-                        //do nothing
-                    }
+
                     Rank rank = null;
                     Score score = null;
-                    if (finalItem != null) {
-                        rank = new Rank();
-                        score = new Score();
-                        rank.setFinalRank(finalItem.getFinalRank());
-                        rank.setInterim(finalItem.getProvisionalRank());
-                        score.setFinalScore(finalItem.getFinalScore());
-                        score.setProvisional(finalItem.getProvisionalScore());
-                    } else if (provisionItem != null) {
+                    if (provisionItem != null) {
                         rank = new Rank();
                         score = new Score();
                         rank.setInterim(provisionItem.getProvisionalRank());
                         score.setProvisional(provisionItem.getProvisionalScore());
+                        if (provisionItem.getFinalRank() != null && provisionItem.getFinalScore() !=null) {
+                            rank.setFinalRank(provisionItem.getFinalRank());
+                            score.setFinalScore(provisionItem.getFinalScore());
+                        }
                     }
 
                     userSubmissionData.setRank(rank);

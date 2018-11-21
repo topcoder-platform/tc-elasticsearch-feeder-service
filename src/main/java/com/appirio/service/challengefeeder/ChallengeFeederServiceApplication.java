@@ -4,7 +4,13 @@
 package com.appirio.service.challengefeeder;
 
 import com.appirio.service.BaseApplication;
-import com.appirio.service.challengefeeder.job.*;
+import com.appirio.service.challengefeeder.job.BaseJob;
+import com.appirio.service.challengefeeder.job.LegacyMMToChallengeListingJob;
+import com.appirio.service.challengefeeder.job.LoadChangedChallengesDetailJob;
+import com.appirio.service.challengefeeder.job.LoadChangedChallengesListingJob;
+import com.appirio.service.challengefeeder.job.LoadChangedMMChallengeDetailJob;
+import com.appirio.service.challengefeeder.job.MarathonMatchesJob;
+import com.appirio.service.challengefeeder.job.SingleRoundMatchesJob;
 import com.appirio.service.challengefeeder.resources.HealthCheckResource;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
 import com.appirio.service.resourcefactory.ChallengeFeederFactory;
@@ -12,13 +18,16 @@ import com.appirio.service.resourcefactory.MarathonMatchFeederFactory;
 import com.appirio.service.resourcefactory.MmFeederResourceFactory;
 import com.appirio.service.resourcefactory.SRMFeederFactory;
 import com.appirio.service.supply.resources.SupplyDatasourceFactory;
-
 import de.spinscale.dropwizard.jobs.JobsBundle;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.searchbox.client.JestClient;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The entry point for challenge feeder micro service
@@ -84,6 +93,23 @@ import io.searchbox.client.JestClient;
  * @version 1.9
  */
 public class ChallengeFeederServiceApplication extends BaseApplication<ChallengeFeederServiceConfiguration> {
+    private static final String PROP_KEY_JWT_SECRET = "TC_JWT_KEY";
+    private static final String PROP_KEY_VALID_ISSUERS = "VALID_ISSUERS";
+
+    private static String getProperty(String propertyKey) {
+        String key = System.getenv(propertyKey);
+        if (key != null) {
+            return key;
+        }
+        key = System.getProperty(propertyKey);
+        if (key == null) {
+            logger.warn(
+                    propertyKey + " is not found in both of environment variables and system properties.");
+        }
+        return key;
+    }
+
+
     /**
      * Refer to APIApplication
      */
@@ -91,6 +117,33 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
     public String getName() {
         return "challenge-feeder-service";
     }
+
+    /**
+     * Override the get secret method.
+     * @return the secret value
+     */
+    @Override
+    public String getSecret() {
+        return getProperty(PROP_KEY_JWT_SECRET);
+    }
+    /**
+     * Override the get valid issues method.
+     * @return the issues value
+     */
+    @Override
+    public List<String> getValidIssuers() {
+        // Read valid issuers from env
+        List<String> validIssuers = null;
+        String validIssuersStr = getProperty(PROP_KEY_VALID_ISSUERS);
+        if (validIssuersStr != null) {
+            validIssuers = Arrays.asList(validIssuersStr.split(","));
+        }
+        if (validIssuers == null) {
+            validIssuers = new ArrayList<>();
+        }
+        return validIssuers;
+    }
+
 
     /**
      * Log service specific configuration values.

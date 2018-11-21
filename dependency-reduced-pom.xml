@@ -6,6 +6,13 @@
   <name>elasticsearch-feeder-service</name>
   <version>1.0.0</version>
   <build>
+    <extensions>
+      <extension>
+        <groupId>org.kuali.maven.wagons</groupId>
+        <artifactId>maven-s3-wagon</artifactId>
+        <version>1.2.1</version>
+      </extension>
+    </extensions>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -130,11 +137,26 @@
   </build>
   <repositories>
     <repository>
+      <releases>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+      <id>tcrepo</id>
+      <url>http://tc-mvn-repo.s3-website-us-east-1.amazonaws.com/release</url>
+    </repository>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
       <snapshots>
         <updatePolicy>always</updatePolicy>
       </snapshots>
-      <id>temp-maven-repo</id>
-      <url>https://github.com/appirio-tech/temp-maven-repo/raw/master</url>
+      <id>tcreposnap</id>
+      <url>http://tc-mvn-repo.s3-website-us-east-1.amazonaws.com/snapshot</url>
     </repository>
     <repository>
       <id>com.springsource.repository.bundles.release</id>
@@ -464,19 +486,17 @@
   </reporting>
   <distributionManagement>
     <repository>
-      <id>appirio-repo</id>
-      <name>Appirio Maven Repository</name>
-      <url>file:///mnt/maven/repository</url>
+      <id>tcrepo</id>
+      <url>s3://tc-mvn-repo/release</url>
     </repository>
     <snapshotRepository>
-      <id>appirio-repo</id>
-      <name>Appirio Maven Repository</name>
-      <url>file:///mnt/maven/repository</url>
+      <id>tcreposnap</id>
+      <url>s3://tc-mvn-repo/snapshot</url>
     </snapshotRepository>
   </distributionManagement>
   <properties>
     <jest.version>2.0.0</jest.version>
-    <core.api.version>4.0.1-DEV</core.api.version>
+    <core.api.version>4.3.1</core.api.version>
     <spring.version>4.2.5.RELEASE</spring.version>
     <amazon.aws.version>1.10.77</amazon.aws.version>
     <jackson-version>2.7.3</jackson-version>
