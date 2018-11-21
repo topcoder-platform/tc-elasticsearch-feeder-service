@@ -392,9 +392,6 @@ public class ChallengeListingFeederManager {
             aPhase.setUpdatedBy(null);
             aPhase.setCreatedAt(null);
             aPhase.setCreatedBy(null);
-            aPhase.setPhaseId(null);
-            aPhase.setDuration(null);
-            aPhase.setFixedStartTime(null);
         }
     }
     
