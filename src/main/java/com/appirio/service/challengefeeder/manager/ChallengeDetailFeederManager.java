@@ -20,6 +20,7 @@ import com.appirio.tech.core.api.v3.request.FieldSelector;
 import com.appirio.tech.core.api.v3.request.FilterParameter;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
 import io.searchbox.client.JestClient;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,8 +31,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import lombok.Setter;
 
 /**
  * ChallengeDetailFeederManager is used to handle the challenge detail feeder.
@@ -112,6 +111,10 @@ public class ChallengeDetailFeederManager {
         QueryParameter queryParameter = new QueryParameter(new FieldSelector());
         queryParameter.setFilter(filter);
         List<ChallengeDetailData> challenges = this.challengeDetailFeederDAO.getChallenges(queryParameter);
+        for (ChallengeDetailData challenge : challenges) {
+            // fixing for trailing space caused by `case when` statement
+            challenge.setTrack(challenge.getTrack());
+        }
 
         List<Long> ids = challenges.stream().map(c -> c.getId()).collect(Collectors.toList());
         List<Long> idsNotFound = param.getChallengeIds().stream().filter(id -> !ids.contains(id)).collect(Collectors.toList());

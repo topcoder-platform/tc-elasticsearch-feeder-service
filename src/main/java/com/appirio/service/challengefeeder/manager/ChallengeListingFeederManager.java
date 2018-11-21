@@ -3,18 +3,6 @@
  */
 package com.appirio.service.challengefeeder.manager;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.appirio.service.challengefeeder.api.FileTypeData;
 import com.appirio.service.challengefeeder.api.PhaseData;
 import com.appirio.service.challengefeeder.api.PrizeData;
@@ -31,8 +19,17 @@ import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.FieldSelector;
 import com.appirio.tech.core.api.v3.request.FilterParameter;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
-
 import io.searchbox.client.JestClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * ChallengeListingFeederManager is used to handle the challenge feeder for listing.
@@ -122,6 +119,10 @@ public class ChallengeListingFeederManager {
         QueryParameter queryParameter = new QueryParameter(new FieldSelector());
         queryParameter.setFilter(filter);
         List<ChallengeListingData> challenges = this.challengeListingFeederDAO.getChallenges(queryParameter);
+        for (ChallengeListingData challengeListingData : challenges) {
+            // fixing for trailing space caused by `case when` statement
+            challengeListingData.setTrack(challengeListingData.getTrack());
+        }
 
         List<Long> ids = challenges.stream().map(c -> c.getId()).collect(Collectors.toList());
         List<Long> idsNotFound = param.getChallengeIds().stream().filter(id -> !ids.contains(id)).collect(Collectors.toList());

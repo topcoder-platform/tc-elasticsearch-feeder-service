@@ -3,12 +3,6 @@
  */
 package com.appirio.service.challengefeeder.manager;
 
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.appirio.service.challengefeeder.Helper;
 import com.appirio.service.challengefeeder.api.MarathonMatchData;
 import com.appirio.service.challengefeeder.dao.MarathonMatchFeederDAO;
@@ -17,8 +11,12 @@ import com.appirio.supply.SupplyException;
 import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
 import com.appirio.tech.core.auth.AuthUser;
-
 import io.searchbox.client.JestClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -85,6 +83,9 @@ public class MarathonMatchFeederManager {
 
         // fetch marathon matches data from persistence
         List<MarathonMatchData> marathonMatches = this.marathonMatchFeederDAO.getMarathonMatches(queryParameter);
+        for (MarathonMatchData marathonMatch : marathonMatches) {
+            marathonMatch.setStatus(marathonMatch.getStatus().trim());
+        }
 
         // check if all MMs with given roundIds exist
         DataScienceHelper.checkDataScienceExist(roundIds, marathonMatches);
