@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.appirio.service.challengefeeder.dao.ChallengeDetailMMFeederDAO;
-import com.appirio.service.challengefeeder.dao.MarathonMatchResultFeederDAO;
 import com.appirio.service.challengefeeder.dto.MmFeederParam;
 import com.appirio.service.challengefeeder.manager.ChallengeDetailMMFeederManager;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
@@ -48,8 +47,7 @@ public class LoadChangedMMChallengeDetailJob extends BaseJob {
         super.init();
         if (this.manager == null) {
             this.manager = new ChallengeDetailMMFeederManager(JestClientUtils.get(this.config.getJestClientConfiguration()), 
-                    DAOFactory.getInstance().createDAO(ChallengeDetailMMFeederDAO.class),
-                    DAOFactory.getInstance().createDAO(MarathonMatchResultFeederDAO.class));
+                    DAOFactory.getInstance().createDAO(ChallengeDetailMMFeederDAO.class));
         }
         
         if (this.indexName == null) {

@@ -17,21 +17,17 @@ import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.FieldSelector;
 import com.appirio.tech.core.api.v3.request.FilterParameter;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
-
 import io.searchbox.client.JestClient;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * ChallengeListingMMFeederManager is used to handle the marathon match feeders for challenge listing.
@@ -113,6 +109,9 @@ public class ChallengeListingMMFeederManager {
         QueryParameter queryParameter = new QueryParameter(new FieldSelector());
         queryParameter.setFilter(filter);
         List<ChallengeListingData> mms = this.challengeListingMmFeederDAO.getMarathonMatches(queryParameter);
+        for (ChallengeListingData mm : mms) {
+            mm.setStatus(mm.getStatus().trim());
+        }
 
         List<Long> ids = mms.stream().map(c -> c.getId()).collect(Collectors.toList());
         List<Long> idsNotFound = param.getRoundIds().stream().filter(id -> !ids.contains(id)).collect(Collectors.toList());
@@ -244,6 +243,9 @@ public class ChallengeListingMMFeederManager {
      */
     private static void associateAllPhases(List<ChallengeListingData> challenges, List<PhaseData> allPhases) {
         for (PhaseData aPhase : allPhases) {
+            // fix for status
+            aPhase.setStatus(aPhase.getStatus().trim());
+
             for (ChallengeListingData challenge : challenges) {
                 if (challenge.getId().equals(aPhase.getChallengeId())) {
                     if (challenge.getPhases() == null) {

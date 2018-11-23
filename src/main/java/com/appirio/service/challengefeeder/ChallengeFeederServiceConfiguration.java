@@ -14,7 +14,6 @@ import com.appirio.service.challengefeeder.config.JestClientConfiguration;
 import com.appirio.service.challengefeeder.config.JobsConfiguration;
 import com.appirio.service.supply.resources.SupplyDatasourceFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import de.spinscale.dropwizard.jobs.JobConfiguration;
 import lombok.Getter;
 

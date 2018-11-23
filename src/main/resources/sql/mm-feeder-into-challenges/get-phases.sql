@@ -2,11 +2,23 @@ select
 round_id as challengeId,
 rs.segment_id as phaseId,
 CASE
-     WHEN (rs.status = 'P') THEN 'Closed'
-     WHEN (rs.status = 'A') THEN 'Open'
-     WHEN (rs.status = 'F') THEN 'Scheduled'
-     ELSE 'Scheduled'
- END as status,
+  WHEN
+     (
+        ( rs.start_time < sysdate)
+        AND
+        (rs.end_time > sysdate)
+     )
+  THEN
+     'Open'
+  WHEN
+     (rs.start_time > sysdate)
+  THEN
+     'Scheduled'
+  WHEN
+     (rs.end_time < sysdate )
+  THEN
+     'Closed'
+ END AS status,
 s.segment_desc as type,
 start_time as fixedStartTime,
 start_time as scheduledStartTime,
