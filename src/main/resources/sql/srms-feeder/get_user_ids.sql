@@ -12,9 +12,6 @@ SELECT DISTINCT
           AND room_result.coder_id = round_registrations.coder_id AND room_result.rated_flag=1) AS q) isRatedForSRM
 	FROM
 	   INFORMIXOLTP\:round AS round
-	   INNER JOIN
-		  INFORMIXOLTP\:contest AS contest
-		  ON round.contest_id = contest.contest_id
 	 LEFT JOIN
 	    INFORMIXOLTP\:round_registration AS round_registrations
 		ON round_registrations.round_id = round.round_id
