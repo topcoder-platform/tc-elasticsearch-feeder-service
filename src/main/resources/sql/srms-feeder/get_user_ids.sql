@@ -1,5 +1,5 @@
 SELECT DISTINCT
-    contest.contest_id id,
+    round.round_id id,
     round_registrations.coder_id userId,
     round_registrations.coder_id || (SELECT CASE
                 WHEN q.count > 0 THEN 'T'
