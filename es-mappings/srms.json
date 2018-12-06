@@ -1,0 +1,75 @@
+{
+  "mappings": {
+    "srms": {
+      "properties": {
+        "codingEndAt": {
+          "type": "date",
+          "format": "dateOptionalTime"
+        },
+        "codingStartAt": {
+          "type": "date",
+          "format": "dateOptionalTime"
+        },
+        "endDate": {
+          "type": "date",
+          "format": "dateOptionalTime"
+        },
+        "forumId": {
+          "type": "string"
+        },
+        "id": {
+          "type": "long"
+        },
+        "isRatedForSRM": {
+          "type": "string",
+          "index":    "not_analyzed"
+        },
+        "name": {
+          "type": "string"
+        },
+        "numberOfRegistrants": {
+          "type": "long"
+        },
+        "registrationEndAt": {
+          "type": "date",
+          "format": "dateOptionalTime"
+        },
+        "registrationStartAt": {
+          "type": "date",
+          "format": "dateOptionalTime"
+        },
+        "roundId": {
+          "type": "long"
+        },
+        "startDate": {
+          "type": "date",
+          "format": "dateOptionalTime"
+        },
+        "status": {
+          "type": "string"
+        },
+        "subTrack": {
+          "type": "string"
+        },
+        "systemTestEndAt": {
+          "type": "date",
+          "format": "dateOptionalTime"
+        },
+        "systemTestStartAt": {
+          "type": "date",
+          "format": "dateOptionalTime"
+        },
+        "track": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "userIds": {
+          "type": "long",
+          "index":    "not_analyzed"
+        }
+      }
+    }
+  }
+}

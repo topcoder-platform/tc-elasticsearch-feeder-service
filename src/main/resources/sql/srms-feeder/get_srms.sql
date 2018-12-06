@@ -1,5 +1,5 @@
 SELECT
-   contest.contest_id AS id,
+   round.round_id AS id,
    contest.NAME AS NAME,
    CASE
       WHEN
