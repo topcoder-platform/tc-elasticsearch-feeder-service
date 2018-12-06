@@ -21,4 +21,4 @@ SELECT
         AND u.upload_type_id = 1
         AND u.upload_status_id = 1
         AND {filter}
-   ORDER BY s.placement
+   ORDER BY s.create_date DESC
