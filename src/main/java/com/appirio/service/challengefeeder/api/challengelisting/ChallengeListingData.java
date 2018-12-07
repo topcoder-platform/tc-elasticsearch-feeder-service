@@ -3,12 +3,6 @@
  */
 package com.appirio.service.challengefeeder.api.challengelisting;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.appirio.service.challengefeeder.api.FileTypeData;
 import com.appirio.service.challengefeeder.api.IdentifiableData;
 import com.appirio.service.challengefeeder.api.PhaseData;
@@ -16,9 +10,13 @@ import com.appirio.service.challengefeeder.helper.CustomDateDeserializer;
 import com.appirio.supply.constants.SubTrack;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Represents the ChallengeListData model 
@@ -206,6 +204,13 @@ public class ChallengeListingData extends IdentifiableData {
     @Getter
     @Setter
     private List<WinnerData> winners;
+
+    /**
+     * The checkpoint winners field
+     */
+    @Getter
+    @Setter
+    private List<WinnerData> checkpointWinners;
 
     /**
      * The events field

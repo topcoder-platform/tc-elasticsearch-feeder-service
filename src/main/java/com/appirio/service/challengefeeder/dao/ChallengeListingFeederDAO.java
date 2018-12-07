@@ -3,12 +3,6 @@
  */
 package com.appirio.service.challengefeeder.dao;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.skife.jdbi.v2.sqlobject.Bind;
-
 import com.appirio.service.challengefeeder.api.FileTypeData;
 import com.appirio.service.challengefeeder.api.PhaseData;
 import com.appirio.service.challengefeeder.api.PrizeData;
@@ -21,6 +15,11 @@ import com.appirio.supply.dataaccess.DatasourceName;
 import com.appirio.supply.dataaccess.SqlQueryFile;
 import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
+import org.skife.jdbi.v2.sqlobject.Bind;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * DAO to interact with challenge data
@@ -72,7 +71,16 @@ public interface ChallengeListingFeederDAO {
      */
     @SqlQueryFile("sql/challenge-feeder/get_winners_for_challenge_listing.sql")
     List<WinnerData> getWinnersForChallengeListing(@ApiQueryInput QueryParameter queryParameter);
-    
+
+    /**
+     * Get checkpoint winners for challenge listing
+     *
+     * @param queryParameter the queryParameter to use
+     * @return the List<WinnerData> result
+     */
+    @SqlQueryFile("sql/challenge-feeder/get_checkpoint_winners_for_challenge_listing.sql")
+    List<WinnerData> getCheckpointWinnersForChallengeListing(@ApiQueryInput QueryParameter queryParameter);
+
     /**
      * Get user Id
      *
