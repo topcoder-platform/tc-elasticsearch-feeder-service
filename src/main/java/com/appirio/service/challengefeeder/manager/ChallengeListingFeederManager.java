@@ -212,10 +212,10 @@ public class ChallengeListingFeederManager {
             
             for (Map<String, Object> item : groupIds) {
                 if (item.get("challengeId").toString().equals(data.getId().toString())) {
-                    if (data.getGroupIds() == null) {
-                        data.setGroupIds(new ArrayList<>());
-                    }
                     if (item.get("groupId") != null) {
+                        if (data.getGroupIds() == null) {
+                            data.setGroupIds(new ArrayList<>());
+                        }
                         data.getGroupIds().add(Long.parseLong(item.get("groupId").toString()));
                     }
                 }
