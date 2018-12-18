@@ -10,6 +10,7 @@ import com.appirio.service.challengefeeder.job.LoadChangedChallengesDetailJob;
 import com.appirio.service.challengefeeder.job.LoadChangedChallengesListingJob;
 import com.appirio.service.challengefeeder.job.LoadChangedMMChallengeDetailJob;
 import com.appirio.service.challengefeeder.job.MarathonMatchesJob;
+import com.appirio.service.challengefeeder.job.RoundsJob;
 import com.appirio.service.challengefeeder.job.SingleRoundMatchesJob;
 import com.appirio.service.challengefeeder.resources.HealthCheckResource;
 import com.appirio.service.challengefeeder.util.JestClientUtils;
@@ -89,8 +90,14 @@ import java.util.List;
  * Version 1.9 - Implement Endpoint To Populate Elasticsearch For The Given Challenges
  * - Changes the challenge resource object creation logic/
  * </p>
+ * 
+ * <p>
+ * Version 1.10 - TC Elasticsearch feeder - Add Job For populating rounds index v1.0
+ * - add RoundsJob to schedule
+ * </p>
+ * 
  * @author TCSCODER
- * @version 1.9
+ * @version 1.10 
  */
 public class ChallengeFeederServiceApplication extends BaseApplication<ChallengeFeederServiceConfiguration> {
     private static final String PROP_KEY_JWT_SECRET = "TC_JWT_KEY";
@@ -274,6 +281,6 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
                 new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
 
         bootstrap.addBundle(new JobsBundle(new LoadChangedChallengesListingJob(), new LegacyMMToChallengeListingJob(), new MarathonMatchesJob(),
-                new SingleRoundMatchesJob(), new LoadChangedChallengesDetailJob(), new LoadChangedMMChallengeDetailJob()));
+                new SingleRoundMatchesJob(), new LoadChangedChallengesDetailJob(), new LoadChangedMMChallengeDetailJob(), new RoundsJob()));
     }
 }

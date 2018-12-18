@@ -6,6 +6,7 @@ package com.appirio.service.challengefeeder.manager;
 import com.appirio.service.challengefeeder.api.DataScienceData;
 import com.appirio.service.challengefeeder.api.IdentifiableData;
 import com.appirio.service.challengefeeder.api.MarathonMatchData;
+import com.appirio.service.challengefeeder.api.RoundData;
 import com.appirio.service.challengefeeder.api.SRMData;
 import com.appirio.service.challengefeeder.dto.DataScienceFeederParam;
 import com.appirio.service.challengefeeder.dto.MmFeederParam;
@@ -45,9 +46,14 @@ import javax.servlet.http.HttpServletResponse;
  * <p>
  * add common methods to validate the arguments
  * </p>
+ * 
+ * <p>
+ * Version 1.3 - TC Elasticsearch feeder - Add Job For populating rounds index v1.0
+ * - modify associateDataScienceUsers to handle the RoundData
+ * </p>
  *
  * @author TCCoder
- * @version 1.2
+ * @version 1.3 
  */
 final class DataScienceHelper {
     /**
@@ -235,6 +241,13 @@ final class DataScienceHelper {
                             ((SRMData) dataScience).setIsRatedForSRM(isRateds);
                         }
                         isRated = (String) user.get("isRatedForSRM");
+                    } else if (dataScience instanceof RoundData) {
+                        isRateds = ((RoundData) dataScience).getIsRated();
+                        if (isRateds == null) {
+                            isRateds = new ArrayList<>();
+                            ((RoundData) dataScience).setIsRated(isRateds);
+                        }
+                        isRated = (String) user.get("isRated");
                     }
 
                     // add to the data

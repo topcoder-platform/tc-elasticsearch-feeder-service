@@ -9,8 +9,12 @@ import lombok.Getter;
  * 
  * It's added in Topcoder Elasticsearch Feeder Service - Jobs Cleanup And Improvement v1.0
  * 
+ * * Version 1.1 - TC Elasticsearch feeder - Add Job For populating rounds index v1.0
+ * - add the RoundsJobConfiguration
+ * 
+ * 
  * @author TCCoder
- * @version 1.0
+ * @version 1.1 
  *
  */
 public class JobsConfiguration { 
@@ -62,5 +66,12 @@ public class JobsConfiguration {
     @JsonProperty("singleRoundMatchesJob")
     @Getter
     private SRMJobConfiguration singleRoundMatchesJob;
+    
+    /**
+     * The roundsJob field 
+     */
+    @JsonProperty("roundsJob")
+    @Getter
+    private RoundsJobConfiguration roundsJob;
 
 }
