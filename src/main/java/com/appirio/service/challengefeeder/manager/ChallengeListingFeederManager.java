@@ -162,7 +162,7 @@ public class ChallengeListingFeederManager {
         List<Map<String, Object>> checkpointsSubmissions = this.challengeListingFeederDAO.getCheckpointsSubmissions(queryParameter);
         List<Map<String, Object>> groupIds = this.challengeListingFeederDAO.getGroupIds(queryParameter);
         List<UserIdData> userIds = this.challengeListingFeederDAO.getChallengeUserIds(queryParameter);
-        associateAllUserIds(challenges, userIds);
+        ChallengeFeederUtil.associateAllUserIds(challenges, userIds);
         
         List<Map<String, Object>> platforms = this.challengeListingFeederDAO.getChallengePlatforms(queryParameter);
         for (Map<String, Object> item : platforms) {
@@ -418,30 +418,6 @@ public class ChallengeListingFeederManager {
             aPhase.setUpdatedBy(null);
             aPhase.setCreatedAt(null);
             aPhase.setCreatedBy(null);
-        }
-    }
-    
-    
-    /**
-     * Associate all user ids
-     *
-     * @param challenges the challenges to use
-     * @param userIds the userIds to use
-     */
-    private static void associateAllUserIds(List<ChallengeListingData> challenges, List<UserIdData> userIds) {
-        for (UserIdData item : userIds) {
-            for (ChallengeListingData challenge : challenges) {
-                if (challenge.getId().equals(item.getChallengeId())) {
-                    if (challenge.getUserIds() == null) {
-                        challenge.setUserIds(new ArrayList<>());
-                    }
-                    challenge.getUserIds().add(item.getUserId());
-                    break;
-                }
-            }
-        }
-        for (UserIdData item : userIds) {
-            item.setChallengeId(null);
         }
     }
 }

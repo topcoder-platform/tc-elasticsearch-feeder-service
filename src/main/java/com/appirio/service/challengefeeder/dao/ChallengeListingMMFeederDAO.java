@@ -6,6 +6,7 @@ package com.appirio.service.challengefeeder.dao;
 import com.appirio.service.challengefeeder.api.EventData;
 import com.appirio.service.challengefeeder.api.PhaseData;
 import com.appirio.service.challengefeeder.api.PrizeData;
+import com.appirio.service.challengefeeder.api.UserIdData;
 import com.appirio.service.challengefeeder.api.challengelisting.ChallengeListingData;
 import com.appirio.service.challengefeeder.api.challengelisting.WinnerData;
 import com.appirio.supply.dataaccess.ApiQueryInput;
@@ -13,12 +14,11 @@ import com.appirio.supply.dataaccess.DatasourceName;
 import com.appirio.supply.dataaccess.SqlQueryFile;
 import com.appirio.tech.core.api.v3.TCID;
 import com.appirio.tech.core.api.v3.request.QueryParameter;
+import org.skife.jdbi.v2.sqlobject.Bind;
 
 import java.sql.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.skife.jdbi.v2.sqlobject.Bind;
 
 /**
  * DAO to interact with marathon match data
@@ -96,4 +96,13 @@ public interface ChallengeListingMMFeederDAO {
      */
     @SqlQueryFile("sql/mm-feeder-into-challenges/get_submitter_ids.sql")
     List<Map<String, Object>> getSubmitterIds(@ApiQueryInput QueryParameter queryParameter);
+
+    /**
+     * Get user Id
+     *
+     * @param queryParameter the queryParameter to use
+     * @return the List<UserIdData> result
+     */
+    @SqlQueryFile("sql/mm-feeder-into-challenges/get_userids.sql")
+    List<UserIdData> getChallengeUserIds(@ApiQueryInput QueryParameter queryParameter);
 }
