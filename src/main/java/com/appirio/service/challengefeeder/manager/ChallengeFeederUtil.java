@@ -3,11 +3,13 @@
  */
 package com.appirio.service.challengefeeder.manager;
 
+import com.appirio.service.challengefeeder.api.UserIdData;
+import com.appirio.service.challengefeeder.api.challengelisting.ChallengeListingData;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import com.appirio.service.challengefeeder.api.challengelisting.ChallengeListingData;
 
 /**
  * ChallengeFeederUtil provides common methods such as associating the challenge data.
@@ -46,6 +48,29 @@ public class ChallengeFeederUtil {
                     break;
                 }
             }
+        }
+    }
+
+    /**
+     * Associate all user ids
+     *
+     * @param challenges the challenges to use
+     * @param userIds the userIds to use
+     */
+    static void associateAllUserIds(List<ChallengeListingData> challenges, List<UserIdData> userIds) {
+        for (UserIdData item : userIds) {
+            for (ChallengeListingData challenge : challenges) {
+                if (challenge.getId().equals(item.getChallengeId())) {
+                    if (challenge.getUserIds() == null) {
+                        challenge.setUserIds(new ArrayList<>());
+                    }
+                    challenge.getUserIds().add(item.getUserId());
+                    break;
+                }
+            }
+        }
+        for (UserIdData item : userIds) {
+            item.setChallengeId(null);
         }
     }
 

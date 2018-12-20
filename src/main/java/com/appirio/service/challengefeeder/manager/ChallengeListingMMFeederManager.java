@@ -6,6 +6,7 @@ package com.appirio.service.challengefeeder.manager;
 import com.appirio.service.challengefeeder.api.EventData;
 import com.appirio.service.challengefeeder.api.PhaseData;
 import com.appirio.service.challengefeeder.api.PrizeData;
+import com.appirio.service.challengefeeder.api.UserIdData;
 import com.appirio.service.challengefeeder.api.challengelisting.ChallengeListingData;
 import com.appirio.service.challengefeeder.api.challengelisting.WinnerData;
 import com.appirio.service.challengefeeder.dao.ChallengeListingMMFeederDAO;
@@ -125,7 +126,10 @@ public class ChallengeListingMMFeederManager {
         if (mms.size() == 0) {
             return;
         }
-        
+
+        List<UserIdData> userIds = this.challengeListingMmFeederDAO.getChallengeUserIds(queryParameter);
+        ChallengeFeederUtil.associateAllUserIds(mms, userIds);
+
         // associate all the data
         List<PhaseData> phases = this.challengeListingMmFeederDAO.getPhases(queryParameter);
         associateAllPhases(mms, phases);
