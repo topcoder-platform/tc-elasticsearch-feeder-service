@@ -5,15 +5,20 @@ select
                  where u.project_id = p.project_id and s.upload_id = u.upload_id
                  and upload_status_id !=2 and s.submission_status_id != 5
                  and u.resource_id = rur.resource_id) AS submissionDate,
-   decode(ri4.value, 'N/A', '0', ri4.value)::int AS rating,
+   CASE
+       WHEN (pcl.description = 'Marathon Match') THEN ar.rating
+       ELSE decode(ri4.value, 'N/A', '0', ri4.value)::int
+   END AS rating,
    ri5.value::int AS reliability,
    p.project_id AS challengeId
   from resource rur
      , resource_info ri1
      , project p
      , user u
+     , project_category_lu pcl
      , outer resource_info ri4
      , outer resource_info ri5
+     , informixoltp\:algo_rating ar
  where
    p.project_id = rur.project_id
   and rur.resource_id = ri1.resource_id
@@ -24,4 +29,7 @@ select
   and ri5.resource_id = rur.resource_id
   and ri5.resource_info_type_id = 5
   and ri1.value = u.user_id
+  and pcl.project_category_id = p.project_category_id
+  and ar.coder_id = u.user_id
+  and ar.algo_rating_type_id=3
   and {filter}
