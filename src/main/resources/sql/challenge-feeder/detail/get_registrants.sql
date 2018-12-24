@@ -18,7 +18,7 @@ select
      , project_category_lu pcl
      , outer resource_info ri4
      , outer resource_info ri5
-     , informixoltp\:algo_rating ar
+     , outer informixoltp\:algo_rating ar
  where
    p.project_id = rur.project_id
   and rur.resource_id = ri1.resource_id
