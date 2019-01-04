@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -171,6 +172,27 @@ public class ChallengeDetailMMFeederManager {
                     userSubmissionData.setScore(score);
                     userSubmissions.add(userSubmissionData);
                 }
+
+                userSubmissions.sort((UserSubmissionData usd1, UserSubmissionData usd2) -> {
+                    Double r1;
+                    Double r2;
+                    if (c.getIsSysTestCompleted()) {
+                        r1 = (usd1.getScore() != null && usd1.getScore().getFinalScore() != null) ? usd1.getScore().getFinalScore() : null;
+                        r2 = (usd2.getScore() != null && usd2.getScore().getFinalScore() != null) ? usd2.getScore().getFinalScore() : null;
+                    } else {
+                        r1 = (usd1.getSubmissions().size() > 0) ? usd1.getSubmissions().get(0).getFinalScore() : null;
+                        r2 = (usd2.getSubmissions().size() > 0) ? usd2.getSubmissions().get(0).getFinalScore() : null;
+                    }
+                    if (r1 == null) return 1;
+                    if (r2 == null) return -1;
+                    if (r1 > r2) {
+                        return -1;
+                    } else if (r2 > r1) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                });
                 c.setSubmissions(userSubmissions);
             }
         });
