@@ -135,6 +135,10 @@ public class ChallengeDetailData extends IdentifiableData {
     @Setter
     private transient String marathonMatchRules;
 
+    @Getter
+    @Setter
+    private transient Boolean isSysTestCompleted;
+
     /**
      * Setter for {@link #track}
      * @param track
