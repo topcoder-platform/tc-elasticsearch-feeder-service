@@ -57,6 +57,7 @@ FROM (
         AND rr.round_id = lcs.round_id
         AND pi.value::decimal = rr.round_id
         AND pi.project_info_type_id = 56
+        AND ls.submit_time IS NOT NULL
         AND dbinfo('utc_to_datetime',ls.submit_time/1000) < sysdate
         AND dbinfo('utc_to_datetime',ls.submit_time/1000) > :lastRunTimestamp
   ) cc
