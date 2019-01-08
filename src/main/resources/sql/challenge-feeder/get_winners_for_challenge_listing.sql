@@ -9,6 +9,6 @@ SELECT
        INNER JOIN submission s ON s.upload_id = u.upload_id
        INNER JOIN prize p ON p.prize_id = s.prize_id
        INNER JOIN user ON user.user_id = s.create_user
-  WHERE s.submission_type_id = 1 AND p.prize_type_id = 15
+  WHERE s.submission_type_id = 1 AND p.prize_type_id in (15,16)
        AND {filter}
   ORDER BY s.placement
