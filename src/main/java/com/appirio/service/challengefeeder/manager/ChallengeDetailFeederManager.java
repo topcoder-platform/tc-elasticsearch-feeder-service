@@ -60,6 +60,11 @@ public class ChallengeDetailFeederManager {
     private static final Long CHECKPOINT_SUBMISSION_TYPE_ID = 3L;
 
     /**
+     * Round html header
+     */
+    private static final String ROUND_HEADER_HTML = "<h3 class='roundLabel'>Round %s</h3>";
+
+    /**
      * DAO to access challenge data from the transactional database.
      */
     private final ChallengeDetailFeederDAO challengeDetailFeederDAO;
@@ -138,13 +143,13 @@ public class ChallengeDetailFeederManager {
                     requirement = challenge.getStudioDetailRequirements();
                 if (challenge.getRound1Introduction() != null) {
                     if (!requirement.startsWith(challenge.getRound1Introduction())) {
-                        requirement += challenge.getRound1Introduction();
+                        requirement += String.format(ROUND_HEADER_HTML, "1") + challenge.getRound1Introduction();
                         requirement += "\n";
                     }
                 }
 
                 if (challenge.getRound2Introduction() != null) {
-                    requirement += challenge.getRound2Introduction();
+                    requirement += String.format(ROUND_HEADER_HTML, "2") + challenge.getRound2Introduction();
                 }
             } else if ("DEVELOP_MARATHON_MATCH".equalsIgnoreCase(challenge.getSubTrack()) || "MARATHON_MATCH".equalsIgnoreCase(challenge.getSubTrack())) {
                 if (challenge.getMarathonMatchDetailRequirements() != null) {

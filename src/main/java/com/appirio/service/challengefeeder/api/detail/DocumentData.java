@@ -31,9 +31,9 @@ public class DocumentData {
     private String documentName;
 
     /**
-     * The url field
+     * The documentId field
      */
     @Getter
     @Setter
-    private String url;
+    private Long documentId;
 }

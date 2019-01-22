@@ -1,7 +1,7 @@
 select
     pi2.project_id  as challengeId,
     cd.document_name as documentName,
-    cd.url as url
+    cd.document_id as documentId
 from
     project p, comp_versions cv, comp_documentation cd, comp_catalog cc, project_info pi2, project_info pi3
 where
