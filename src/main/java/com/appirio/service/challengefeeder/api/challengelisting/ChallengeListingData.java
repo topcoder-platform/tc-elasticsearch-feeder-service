@@ -114,6 +114,13 @@ public class ChallengeListingData extends IdentifiableData {
     private Integer numberOfSubmissions;
 
     /**
+     * The numberOfSubmitters field
+     */
+    @Getter
+    @Setter
+    private Integer numberOfSubmitters;
+
+    /**
      * The numberOfRegistrants field
      */
     @Getter
