@@ -145,7 +145,7 @@ public class ChallengeListingMMFeederManager {
 
         List<Map<String, Object>> submitterIds = this.challengeListingMmFeederDAO.getSubmitterIds(queryParameter);
         ChallengeFeederUtil.associateSubmitterIds(mms, submitterIds);
-        
+
         mms.forEach(c -> {
             if (c.getForumId() != null) {
                 c.setForumLink(forumLinkUrl + c.getForumId());
@@ -161,6 +161,7 @@ public class ChallengeListingMMFeederManager {
             if (c.getStatus() != null) {
                 c.setStatus(c.getStatus().trim());
             }
+            c.setNumberOfSubmitters(c.getSubmitterIds() != null ? c.getSubmitterIds().size() : 0);
         });
         
         try {
