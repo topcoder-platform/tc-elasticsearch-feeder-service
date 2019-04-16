@@ -32,15 +32,6 @@ jobs:
     <<: *java_env
     steps:
       - checkout
-      - run:
-          name: Configuring maven
-          command: |
-            MVNSERVERSETTING='<server>\n  <id>tcrepo</id> \n <username>${env.MVNUSERNAME}</username> \n <password>${env.MVNPASSWD}</password> \n  </server> '
-            C=$(echo $MVNSERVERSETTING | sed 's/\//\\\//g')
-            sudo sed -i.bak "/<\/servers>/ s/.*/${C}\n&/" /opt/apache-maven/conf/settings.xml
-            MVNSERVERSETTING='<server>\n  <id>tcreposnap</id> \n <username>${env.MVNUSERNAME}</username> \n <password>${env.MVNPASSWD}</password> \n  </server> '
-            C=$(echo $MVNSERVERSETTING | sed 's/\//\\\//g')
-            sudo sed -i.bak "/<\/servers>/ s/.*/${C}\n&/" /opt/apache-maven/conf/settings.xml     
       - setup_remote_docker          
       - restore_cache:
           key: tc-elasticsearch-feeder-service-{{ checksum "~/project/pom.xml" }}
@@ -48,8 +39,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.m2
-          key: tc-elasticsearch-feeder-service-{{ checksum "~/project/pom.xml" }}
-          
+          key: tc-elasticsearch-feeder-service-{{ checksum "~/project/pom.xml" }}          
       - run: mvn clean compile package
       - persist_to_workspace:
           root: .
