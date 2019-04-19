@@ -18,12 +18,20 @@ install_awscli: &install_awscli
     aws --version
     eb --version
 
+install_deploysuite: &install_deploysuite
+  name: Installation of install_deploysuite.
+  command: |
+    git clone --branch v1.3 https://github.com/topcoder-platform/tc-deploy-scripts ../buildscript
+    cp ./../buildscript/master_deploy.sh .
+    cp ./../buildscript/buildenv.sh .
+    cp ./../buildscript/awsconfiguration.sh .
 # Instructions of deployment
 deploy_steps: &deploy_steps
   - checkout
   - attach_workspace:
       at: .
   - run: *install_awscli
+  - run: *install_deploysuite  
   - setup_remote_docker
   - run:
       name: "configuring aws environment"
@@ -90,18 +98,21 @@ workflows:
     jobs:
       - build
       - deploy_dev:
+          context : org-global
           filters:
             branches:
               only: [dummy-dev]
           requires:
             - build
       - deploy_prod:
+          context : org-global
           filters:
             branches:
               only: master
           requires:
             - build
       - deploy_test:
+          context : org-global
           filters:
             branches:
               only:
