@@ -139,18 +139,23 @@ public class ChallengeDetailFeederManager {
         for (ChallengeDetailData challenge : challenges) {
             String requirement = "";
             if ("DESIGN".equalsIgnoreCase(challenge.getTrack())) {
-                if (challenge.getStudioDetailRequirements() != null)
+                if (challenge.getStudioDetailRequirements() != null) {
                     requirement = challenge.getStudioDetailRequirements();
+                }
+
+                String introduction = challenge.getIntroduction() != null ? "" : challenge.getIntroduction();
                 if (challenge.getRound1Introduction() != null) {
-                    if (!requirement.startsWith(challenge.getRound1Introduction())) {
-                        requirement += String.format(ROUND_HEADER_HTML, "1") + challenge.getRound1Introduction();
-                        requirement += "\n";
+                    if (challenge.getRound1Introduction() != null) {
+                        introduction += String.format(ROUND_HEADER_HTML, "1") + challenge.getRound1Introduction();
+                        introduction += "\n";
                     }
                 }
 
                 if (challenge.getRound2Introduction() != null) {
-                    requirement += String.format(ROUND_HEADER_HTML, "2") + challenge.getRound2Introduction();
+                    introduction += String.format(ROUND_HEADER_HTML, "2") + challenge.getRound2Introduction();
                 }
+
+                challenge.setIntroduction(introduction);
             } else if ("DEVELOP_MARATHON_MATCH".equalsIgnoreCase(challenge.getSubTrack()) || "MARATHON_MATCH".equalsIgnoreCase(challenge.getSubTrack())) {
                 if (challenge.getMarathonMatchDetailRequirements() != null) {
                     requirement = challenge.getMarathonMatchDetailRequirements();
