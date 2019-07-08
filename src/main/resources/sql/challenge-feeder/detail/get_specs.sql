@@ -14,7 +14,9 @@ SELECT
     pss.round_one_introduction AS round1Introduction,
     pss.round_two_introduction AS round2Introduction,
     pmm_spec.match_details AS marathonMatchDetailRequirements,
-    pmm_spec.match_rules AS marathonMatchRules
+    pmm_spec.match_rules AS marathonMatchRules,
+    (select count(*) from project_phase pp where pp.project_id = p.project_id and
+    pp.phase_type_id in (15,16,17)) as numberOfCheckpointPhase
 FROM
     project p
     INNER JOIN project_category_lu pcl ON pcl.project_category_id = p.project_category_id
