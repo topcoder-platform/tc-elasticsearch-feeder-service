@@ -139,6 +139,10 @@ public class ChallengeDetailData extends IdentifiableData {
     @Setter
     private transient Boolean isSysTestCompleted;
 
+    @Getter
+    @Setter
+    private transient Long numberOfCheckpointPhase;
+
     /**
      * Setter for {@link #track}
      * @param track

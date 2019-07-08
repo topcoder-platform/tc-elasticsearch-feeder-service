@@ -146,18 +146,18 @@ public class ChallengeDetailFeederManager {
                 String introduction = challenge.getIntroduction() == null ? "" : challenge.getIntroduction();
                 String round1Introduction = challenge.getRound1Introduction() == null ? "" : challenge.getRound1Introduction();
                 String round2Introduction = challenge.getRound2Introduction() == null ? "" : challenge.getRound2Introduction();
-
-                if (round1Introduction != "" && round2Introduction != "") {
-                    // two rounds
-                    introduction += "\n" +
-                            String.format(ROUND_HEADER_HTML, "1") + round1Introduction + "\n"
-                            + String.format(ROUND_HEADER_HTML, "2") + round2Introduction;
-                } else if (round1Introduction != "") {
-                    introduction += "\n" + round1Introduction;
-                } else if (round2Introduction != "") {
-                    introduction += "\n" + round2Introduction;
+                if (challenge.getNumberOfCheckpointPhase() > 0) {
+                    if (round1Introduction != "" && round2Introduction != "") {
+                        // two rounds
+                        introduction += "\n" +
+                                String.format(ROUND_HEADER_HTML, "1") + round1Introduction + "\n"
+                                + String.format(ROUND_HEADER_HTML, "2") + round2Introduction;
+                    } else if (round1Introduction != "") {
+                        introduction += "\n" + round1Introduction;
+                    } else if (round2Introduction != "") {
+                        introduction += "\n" + round2Introduction;
+                    }
                 }
-
                 challenge.setIntroduction(introduction);
             } else if ("DEVELOP_MARATHON_MATCH".equalsIgnoreCase(challenge.getSubTrack()) || "MARATHON_MATCH".equalsIgnoreCase(challenge.getSubTrack())) {
                 if (challenge.getMarathonMatchDetailRequirements() != null) {
