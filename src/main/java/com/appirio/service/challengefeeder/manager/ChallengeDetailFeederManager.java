@@ -158,6 +158,7 @@ public class ChallengeDetailFeederManager {
                         introduction += "\n" + round2Introduction;
                     }
                 }
+
                 challenge.setIntroduction(introduction);
             } else if ("DEVELOP_MARATHON_MATCH".equalsIgnoreCase(challenge.getSubTrack()) || "MARATHON_MATCH".equalsIgnoreCase(challenge.getSubTrack())) {
                 if (challenge.getMarathonMatchDetailRequirements() != null) {
