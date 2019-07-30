@@ -82,31 +82,30 @@ public class ChallengeFeederUtil {
      * @since 1.2
      */
     static String getColorStyle(Integer rating) {
-
         if (rating == null) {
-            return "color: #000000";
+            return "color: #151516";
         }
 
         if (rating < 0) {
-            return "color: #FF9900"; // orange
+            return "color: #BA4C00"; // orange
         }
         if (rating < 900) {
-            return "color: #999999";// gray
+            return "color: #555555";// gray
         }
         if (rating < 1200) {
-            return "color: #00A900";// green
+            return "color: #258025";// green
         }
         if (rating < 1500) {
-            return "color: #6666FF";// blue
+            return "color: #5656F4";// Pastel-Blue
         }
         if (rating < 2200) {
-            return "color: #DDCC00";// yellow
+            return "color: #9A6D00";// Gold
         }
         if (rating > 2199) {
-            return "color: #EE0000";// red
+            return "color: #EA1900";// Red
         }
-        // return black otherwise.
-        return "color: #000000";
+        // return Black otherwise.
+        return "color: #151516";
 
     }
     
