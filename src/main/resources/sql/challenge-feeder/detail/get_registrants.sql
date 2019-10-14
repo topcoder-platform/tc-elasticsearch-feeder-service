@@ -16,8 +16,8 @@ select
      , resource_info ri1
      , project p
      , user u
-     , user_address_xref uax
-     , address a
+     , common_oltp\:user_address_xref uax
+     , common_oltp\:address a
      , project_category_lu pcl
      , outer resource_info ri4
      , outer resource_info ri5
