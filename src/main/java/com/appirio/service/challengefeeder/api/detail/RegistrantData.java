@@ -69,11 +69,4 @@ public class RegistrantData {
     @Getter
     @Setter
     private Date registrationDate;
-
-    /**
-     * The country code field
-     */
-    @Getter
-    @Setter
-    private String countryCode;
 }
