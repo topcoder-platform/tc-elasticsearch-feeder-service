@@ -10,7 +10,7 @@ select
        ELSE decode(ri4.value, 'N/A', '0', ri4.value)::int
    END AS rating,
    ri5.value::int AS reliability,
-   c.iso_alpha3_code AS countryCode,
+   a.country_code AS countryCode,
    p.project_id AS challengeId
   from resource rur
      , resource_info ri1
@@ -18,7 +18,6 @@ select
      , user u
      , common_oltp\:user_address_xref uax
      , common_oltp\:address a
-     , common_oltp\:country c
      , project_category_lu pcl
      , outer resource_info ri4
      , outer resource_info ri5
@@ -38,5 +37,4 @@ select
   and ar.algo_rating_type_id=3
   and uax.user_id = u.user_id
   and a.address_id = uax.address_id
-  and a.country_code = c.country_code
   and {filter}
