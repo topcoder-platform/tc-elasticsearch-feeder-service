@@ -20,7 +20,8 @@ select
      , outer resource_info ri4
      , outer resource_info ri5
      , outer informixoltp\:algo_rating ar
-     , outer(common_oltp\:user_address_xref uax, common_oltp\:address adr, common_oltp\:country ct)
+     , common_oltp\:country ct
+     , coder c
  where
    p.project_id = rur.project_id
   and rur.resource_id = ri1.resource_id
@@ -34,7 +35,6 @@ select
   and pcl.project_category_id = p.project_category_id
   and ar.coder_id = u.user_id
   and ar.algo_rating_type_id=3
-  and uax.user_id = u.user_id
-  and uax.address_id = adr.address_id
-  and adr.country_code = ct.country_code
+  and c.coder_id = u.user_id
+  and c.comp_country_code = ct.country_code
   and {filter}
