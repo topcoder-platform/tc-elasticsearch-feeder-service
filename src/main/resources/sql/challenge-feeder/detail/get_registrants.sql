@@ -20,7 +20,7 @@ select
      , outer resource_info ri4
      , outer resource_info ri5
      , outer informixoltp\:algo_rating ar
-     , common_oltp\:country ct
+     , outer common_oltp\:country ct
      , coder c
  where
    p.project_id = rur.project_id
