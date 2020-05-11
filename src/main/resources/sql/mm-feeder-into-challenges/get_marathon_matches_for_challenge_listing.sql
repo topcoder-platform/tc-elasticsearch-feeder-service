@@ -29,4 +29,4 @@ left join informixoltp\:component comp on comp.component_id = rc.component_id
 left join informixoltp\:round_segment rs_reg on rs_reg.round_id = r.round_id and rs_reg.segment_id = 1
 left join informixoltp\:round_segment rs_sub on rs_sub.round_id = r.round_id and rs_sub.segment_id = 2
 left join tcs_catalog\:project_info pi on pi.project_info_type_id = 56 and pi.value::decimal = r.round_id
-where pi.project_id is null and r.round_type_id = 13 and {filter}
+where pi.project_id is null and r.round_type_id in (13, 19) and {filter}

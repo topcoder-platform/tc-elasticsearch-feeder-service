@@ -19,4 +19,4 @@ FROM
       tcs_catalog\:user AS user_table
       ON user_table.user_id = round_registration.coder_id
 WHERE
-   round.round_type_id = 13 AND {filter}
+   round.round_type_id in (13, 19) AND {filter}

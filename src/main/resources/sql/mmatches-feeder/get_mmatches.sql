@@ -61,5 +61,5 @@ FROM
       INFORMIXOLTP\:problem AS problem
       ON problem.problem_id = component.problem_id
 WHERE
-   round.round_type_id = 13
+   round.round_type_id in (13, 19)
    AND {filter}
