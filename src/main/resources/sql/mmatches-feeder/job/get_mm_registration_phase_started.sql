@@ -7,7 +7,7 @@ FROM
       AND registration_segment.segment_id = 1
    LEFT JOIN tcs_catalog\:project_info pi on pi.project_info_type_id = 56 and pi.value::decimal = round.round_id
 WHERE
-   pi.project_id is null AND round.round_type_id in (13,19)
+   pi.project_id is null AND round.round_type_id in (13, 15, 16, 19, 22, 23 )
    AND (
             (1 = :lastRunTimestamp)
             OR 
