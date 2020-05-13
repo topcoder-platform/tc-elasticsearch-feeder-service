@@ -173,7 +173,7 @@ public class ChallengeDetailMMFeederManager {
                 }
 
                 userSubmissions.sort((UserSubmissionData usd1, UserSubmissionData usd2) -> {
-                    if (usd1 == null and usd2 == null) {
+                    if (usd1 == null && usd2 == null) {
                         return 0;
                     }
 
