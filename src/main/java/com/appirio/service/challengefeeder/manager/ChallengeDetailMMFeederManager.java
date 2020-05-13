@@ -123,7 +123,7 @@ public class ChallengeDetailMMFeederManager {
         Double proveScore = 0.0;
         for (int i = 0; i < provisionalResult.size(); i++) {
             provRankNoTie++;
-            if (proveScore == null || provisionalResult.get(i).getProvisionalScore() || !proveScore.equals(provisionalResult.get(i).getProvisionalScore())) {
+            if (proveScore == null || provisionalResult.get(i).getProvisionalScore() == null || !proveScore.equals(provisionalResult.get(i).getProvisionalScore())) {
                 provRank = provRankNoTie;
             }
             proveScore = provisionalResult.get(i).getProvisionalScore();
