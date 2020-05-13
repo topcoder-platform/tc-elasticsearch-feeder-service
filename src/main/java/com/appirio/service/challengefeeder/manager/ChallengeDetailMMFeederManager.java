@@ -173,6 +173,18 @@ public class ChallengeDetailMMFeederManager {
                 }
 
                 userSubmissions.sort((UserSubmissionData usd1, UserSubmissionData usd2) -> {
+                    if (usd1 == null and usd2 == null) {
+                        return 0;
+                    }
+
+                    if(usd1 == null) {  
+                        return 1;  
+                    }  
+
+                    if(usd2== null) {  
+                        return -1;  
+                    }  
+
                     Double r1;
                     Double r2;
                     if (c.getIsSysTestCompleted()) {
@@ -182,6 +194,11 @@ public class ChallengeDetailMMFeederManager {
                         r1 = (usd1.getSubmissions().size() > 0) ? usd1.getSubmissions().get(0).getFinalScore() : null;
                         r2 = (usd2.getSubmissions().size() > 0) ? usd2.getSubmissions().get(0).getFinalScore() : null;
                     }
+                    
+                    if (r1 == null && r2 == null) {
+                        return 0;
+                    }
+
                     if (r1 == null) return 1;
                     if (r2 == null) return -1;
                     if (r1 > r2) {
