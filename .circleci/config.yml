@@ -1,122 +1,42 @@
+# Java Gradle CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
 version: 2
-
-# Java image to compile the source code
-java_env: &java_env
-  docker:
-    - image: circleci/openjdk:8-jdk
-
-# Python image to run aws utilities
-python_env: &python_env
-  docker:
-    - image: circleci/python:2.7-stretch-browsers
-
-# Instructions of installing aws utilities
-install_awscli: &install_awscli
-  name: "Install awscli"
-  command: |
-    sudo pip install awscli awsebcli --upgrade
-    aws --version
-    eb --version
-
-install_deploysuite: &install_deploysuite
-  name: Installation of install_deploysuite.
-  command: |
-    git clone --branch v1.3 https://github.com/topcoder-platform/tc-deploy-scripts ../buildscript
-    cp ./../buildscript/master_deploy.sh .
-    cp ./../buildscript/buildenv.sh .
-    cp ./../buildscript/awsconfiguration.sh .
-# Instructions of deployment
-deploy_steps: &deploy_steps
-  - checkout
-  - attach_workspace:
-      at: .
-  - run: *install_awscli
-  - run: *install_deploysuite  
-  - setup_remote_docker
-  - run:
-      name: "configuring aws environment"
-      command: |
-        ./awsconfiguration.sh $DEPLOY_ENV
-  - run:
-      name: "Building Docker image for deployment"
-      command: |
-        source awsenvconf
-        .deploy/buildimage.sh $DEPLOY_ENV
-#  - run: .deploy/ecs_deploy.sh $DEPLOY_ENV
-  - deploy:
-      name: Running MasterScript.
-      command: |
-        source awsenvconf
-        ./buildenv.sh -e $DEPLOY_ENV -b $LOGICAL_ENV-tc-elasticsearch-feeder-deployvar
-        source buildenvvar
-        ./master_deploy.sh -d ECS -e $DEPLOY_ENV -t latest -s $LOGICAL_ENV-tc-elasticsearch-feeder-appvar -i elasticsearchfeeder -p FARGATE
-
 jobs:
   build:
-    <<: *java_env
+    docker:
+      # specify the version you desire here
+      - image: circleci/openjdk:8-jdk
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
+
+    working_directory: ~/repo
+
+    environment:
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+
     steps:
       - checkout
-      - setup_remote_docker          
+
+      # Download and cache dependencies
       - restore_cache:
-          key: tc-elasticsearch-feeder-service-{{ checksum "~/project/pom.xml" }}
-      - run: mvn -f ~/project/pom.xml dependency:go-offline
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: gradle dependencies
+
       - save_cache:
           paths:
-            - ~/.m2
-          key: tc-elasticsearch-feeder-service-{{ checksum "~/project/pom.xml" }}          
-      - run: mvn clean compile package
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ./target
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
 
-  deploy_prod:
-    <<: *python_env
-    environment:
-      DEPLOY_ENV: "PROD"
-      LOGICAL_ENV: "PROD"
-    steps: *deploy_steps
-
-  deploy_dev:
-    <<: *python_env
-    environment:
-      DEPLOY_ENV: "DEV"
-      LOGICAL_ENV: "DEV"
-    steps: *deploy_steps
-  
-  deploy_test:
-    <<: *python_env
-    environment:
-      DEPLOY_ENV: "DEV"
-      LOGICAL_ENV: "TEST"
-    steps: *deploy_steps
-      
-
-workflows:
-  version: 2
-  build-and-deploy:
-    jobs:
-      - build
-      - deploy_dev:
-          context : org-global
-          filters:
-            branches:
-              only: [dummy-dev]
-          requires:
-            - build
-      - deploy_prod:
-          context : org-global
-          filters:
-            branches:
-              only: master
-          requires:
-            - build
-      - deploy_test:
-          context : org-global
-          filters:
-            branches:
-              only:
-                - dev
-                - dev-sts
-          requires:
-            - build
+      # run tests!
+      - run: gradle test
