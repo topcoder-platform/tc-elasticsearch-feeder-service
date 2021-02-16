@@ -1,4 +1,4 @@
-# # Topcoder - Elastic Feeder service
+# # Topcoder - Elastic Feeder service 
 
 ## Prerequisites
 - Java 8 with Maven 3
