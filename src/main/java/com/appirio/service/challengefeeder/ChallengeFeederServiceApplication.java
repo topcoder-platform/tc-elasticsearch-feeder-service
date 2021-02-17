@@ -19,6 +19,7 @@ import com.appirio.service.resourcefactory.MarathonMatchFeederFactory;
 import com.appirio.service.resourcefactory.MmFeederResourceFactory;
 import com.appirio.service.resourcefactory.SRMFeederFactory;
 import com.appirio.service.supply.resources.SupplyDatasourceFactory;
+import com.google.gson.Gson;
 import de.spinscale.dropwizard.jobs.JobsBundle;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
@@ -142,8 +143,10 @@ public class ChallengeFeederServiceApplication extends BaseApplication<Challenge
         // Read valid issuers from env
         List<String> validIssuers = null;
         String validIssuersStr = getProperty(PROP_KEY_VALID_ISSUERS);
+
         if (validIssuersStr != null) {
-            validIssuers = Arrays.asList(validIssuersStr.split(","));
+//            validIssuers = Arrays.asList(validIssuersStr.split(","));
+            validIssuers = Arrays.asList(new Gson().fromJson(validIssuersStr, String[].class)); // Uses GSON to parse it as a list of strings - desinged for use with a JSON Array of issuers
         }
         if (validIssuers == null) {
             validIssuers = new ArrayList<>();

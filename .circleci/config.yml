@@ -49,7 +49,7 @@ deploy_steps: &deploy_steps
         source awsenvconf
         ./buildenv.sh -e $DEPLOY_ENV -b $LOGICAL_ENV-tc-elasticsearch-feeder-deployvar
         source buildenvvar
-        ./master_deploy.sh -d ECS -e $DEPLOY_ENV -t latest -s $LOGICAL_ENV-tc-elasticsearch-feeder-appvar -i elasticsearchfeeder -p FARGATE
+        ./master_deploy.sh -d ECS -e $DEPLOY_ENV -t latest -s ${GLOBAL_ENV_VAR}-global-appvar,${LOGICAL_ENV}-tc-elasticsearch-feeder-appvar -i elasticsearchfeeder -p FARGATE
 
 jobs:
   build:
@@ -89,6 +89,7 @@ jobs:
     environment:
       DEPLOY_ENV: "DEV"
       LOGICAL_ENV: "TEST"
+      GLOBAL_ENV_VAR: "dev"
     steps: *deploy_steps
       
 
