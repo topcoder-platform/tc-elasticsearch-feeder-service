@@ -89,7 +89,7 @@ jobs:
     environment:
       DEPLOY_ENV: "DEV"
       LOGICAL_ENV: "TEST"
-      GLOBAL_ENV_VAR: "DEV"
+      GLOBAL_ENV_VAR: "dev"
     steps: *deploy_steps
       
 
