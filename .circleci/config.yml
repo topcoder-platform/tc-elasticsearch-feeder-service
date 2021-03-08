@@ -75,6 +75,7 @@ jobs:
     environment:
       DEPLOY_ENV: "PROD"
       LOGICAL_ENV: "PROD"
+      GLOBAL_ENV_VAR: "prod"
     steps: *deploy_steps
 
   deploy_dev:
