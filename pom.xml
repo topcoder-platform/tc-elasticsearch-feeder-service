@@ -11,7 +11,7 @@
         <core.api.version>4.3.4</core.api.version>
         <supply-library.version>1.0.20-SNAPSHOT</supply-library.version>
         <spring.version>4.2.5.RELEASE</spring.version>
-        <jackson-version>2.7.3</jackson-version>
+        <jackson-version>2.9.10.8</jackson-version>
         <jest.version>2.0.0</jest.version>
         <amazon.aws.version>1.10.77</amazon.aws.version>
     </properties>
