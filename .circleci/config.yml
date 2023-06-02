@@ -61,6 +61,7 @@ jobs:
       - setup_remote_docker          
       - restore_cache:
           key: tc-elasticsearch-feeder-service-{{ checksum "~/project/pom.xml" }}
+      - run: sudo sed -i '/<mirror>/,/<\/mirror>/d' /opt/apache-maven/conf/settings.xml    
       - run:
           name: updating and fetching AWS config
           command: |
