@@ -14,9 +14,9 @@ python_env: &python_env
 install_awscli: &install_awscli
   name: "Install awscli"
   command: |
-    sudo pip install awscli awsebcli --upgrade
+    sudo pip install awscli --upgrade
     aws --version
-    eb --version
+    # eb --version
 
 install_deploysuite: &install_deploysuite
   name: Installation of install_deploysuite.
