@@ -5,6 +5,7 @@ set -e
 
 ENV=$1
 ENV=`echo "$ENV" | tr '[:upper:]' '[:lower:]'`
+CONFIG=$ENV
 # Define script variables
 DEPLOY_DIR="$( cd "$( dirname "$0" )" && pwd )"
 WORKSPACE=$PWD
