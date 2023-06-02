@@ -54,12 +54,26 @@ deploy_steps: &deploy_steps
 jobs:
   build:
     <<: *java_env
+    environment:
+      BUILD_MAVEN_ENV: "DEV"        
     steps:
       - checkout
       - setup_remote_docker          
       - restore_cache:
           key: tc-elasticsearch-feeder-service-{{ checksum "~/project/pom.xml" }}
-      - run: mvn -f ~/project/pom.xml dependency:go-offline
+      - run:
+          name: updating and fetching AWS config
+          command: |
+            sudo apt update
+            sudo apt install awscli 
+      - run: *install_deploysuite             
+      - run: 
+          name: Fetching config and dependency
+          command: |
+            ./awsconfiguration.sh $BUILD_MAVEN_ENV
+            source awsenvconf
+            mvn -f ~/project/pom.xml dependency:go-offline
+            rm -rf awsenvconf
       - save_cache:
           paths:
             - ~/.m2
@@ -97,7 +111,8 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - build
+      - build:
+          context: org-global
       - deploy_dev:
           context : org-global
           filters:
