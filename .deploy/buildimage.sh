@@ -5,6 +5,7 @@ set -e
 
 ENV=$1
 ENV=`echo "$ENV" | tr '[:upper:]' '[:lower:]'`
+CONFIG=$ENV
 # Define script variables
 DEPLOY_DIR="$( cd "$( dirname "$0" )" && pwd )"
 WORKSPACE=$PWD
@@ -18,7 +19,10 @@ echo "Logging into docker"
 echo "############################"
 #docker login $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWD
 #docker login -u $DOCKER_USER -p $DOCKER_PASSWD
-aws s3 cp "s3://appirio-platform-$ENV/services/common/dockercfg" ~/.dockercfg
+#aws s3 cp "s3://appirio-platform-$ENV/services/common/dockercfg" ~/.dockercfg
 #TAG=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$AWS_REPOSITORY:$CIRCLE_SHA1
+DOCKER_USER=$(aws ssm get-parameter --name /$CONFIG/build/dockeruser --with-decryption --output text --query Parameter.Value)
+DOCKER_PASSWD=$(aws ssm get-parameter --name /$CONFIG/build/dockercfg --with-decryption --output text --query Parameter.Value)
+echo $DOCKER_PASSWD | docker login -u $DOCKER_USER --password-stdin
 TAG="elasticsearchfeeder:latest"
 docker build -t $TAG .

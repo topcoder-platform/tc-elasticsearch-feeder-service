@@ -19,9 +19,9 @@
     <build>
         <extensions>
             <extension>
-		<groupId>org.kuali.maven.wagons</groupId>
+		<groupId>com.allogy.maven.wagon</groupId>
 		<artifactId>maven-s3-wagon</artifactId>
-		<version>1.2.1</version>
+		<version>1.2.0</version>
      	    </extension>
         </extensions>
 
@@ -310,7 +310,7 @@
     <repositories>
         <repository>
                     <id>tcrepo</id>
-                    <url>http://tc-mvn-repo.s3-website-us-east-1.amazonaws.com/release</url>
+                    <url>s3://tc-mvn-repo/release</url>
                     <snapshots>
                         <enabled>false</enabled>
                         <updatePolicy>always</updatePolicy>
@@ -322,7 +322,7 @@
          </repository>
         <repository>
                 <id>tcreposnap</id>
-                    <url>http://tc-mvn-repo.s3-website-us-east-1.amazonaws.com/snapshot</url>
+                    <url>s3://tc-mvn-repo/snapshot</url>
                     <snapshots>
                     <enabled>true</enabled>
                     <updatePolicy>always</updatePolicy>
@@ -353,16 +353,7 @@
             <url>http://repository.springsource.com/maven/bundles/external</url>
         </repository>
 
-        <repository>
-            <id>Appirio Technology Maven Repository</id>
-            <url>http://maven.topcoder-dev.com:8080/</url>
-            <snapshots>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-            <releases>
-                <updatePolicy>always</updatePolicy>
-            </releases>
-        </repository>
+
     </repositories>
     <reporting>
         <plugins>

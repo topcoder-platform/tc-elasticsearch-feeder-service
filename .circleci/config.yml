@@ -14,14 +14,14 @@ python_env: &python_env
 install_awscli: &install_awscli
   name: "Install awscli"
   command: |
-    sudo pip install awscli awsebcli --upgrade
+    sudo pip install awscli --upgrade
     aws --version
-    eb --version
+    # eb --version
 
 install_deploysuite: &install_deploysuite
   name: Installation of install_deploysuite.
   command: |
-    git clone --branch v1.3 https://github.com/topcoder-platform/tc-deploy-scripts ../buildscript
+    git clone --branch v1.4.15 https://github.com/topcoder-platform/tc-deploy-scripts ../buildscript
     cp ./../buildscript/master_deploy.sh .
     cp ./../buildscript/buildenv.sh .
     cp ./../buildscript/awsconfiguration.sh .
@@ -54,12 +54,27 @@ deploy_steps: &deploy_steps
 jobs:
   build:
     <<: *java_env
+    environment:
+      BUILD_MAVEN_ENV: "DEV"        
     steps:
       - checkout
       - setup_remote_docker          
       - restore_cache:
           key: tc-elasticsearch-feeder-service-{{ checksum "~/project/pom.xml" }}
-      - run: mvn -f ~/project/pom.xml dependency:go-offline
+      - run: sudo sed -i '/<mirror>/,/<\/mirror>/d' /opt/apache-maven/conf/settings.xml    
+      - run:
+          name: updating and fetching AWS config
+          command: |
+            sudo apt update
+            sudo apt install awscli 
+      - run: *install_deploysuite             
+      - run: 
+          name: Fetching config and dependency
+          command: |
+            ./awsconfiguration.sh $BUILD_MAVEN_ENV
+            source awsenvconf
+            mvn -f ~/project/pom.xml dependency:go-offline
+            rm -rf awsenvconf
       - save_cache:
           paths:
             - ~/.m2
@@ -98,7 +113,8 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - build
+      - build:
+          context: org-global
       - deploy_dev:
           context : org-global
           filters:
